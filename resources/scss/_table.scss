@@ -1,0 +1,50 @@
+.table {
+    td {
+        font-size: .86rem;
+
+        .badge {
+            font-size: .78rem;
+        }
+    }
+
+    @include media-breakpoint-down(md) {
+        display: flex;
+        width: 100%;
+
+        thead {
+            display: none;
+        }
+
+        tbody {
+            --bs-table-hover-bg: transparent;
+
+            display: flex;
+            flex-direction: column;
+            width: inherit;
+
+            tr {
+                border: 1px solid #ccc;
+                border-radius: .5rem;
+                display: flex;
+                flex-direction: column;
+                margin-bottom: 1rem;
+                padding: .5rem;
+
+                td {
+                    border-color: #eee;
+                    display: flex;
+                    justify-content: space-between;
+                    padding-left: .5rem;
+
+                    &:before {
+                        content: attr(data-label);
+                        font-weight: bold;
+                        width: 40%;
+                        padding-right: .5rem;
+                    }
+                }
+            }
+        }
+    }
+
+}

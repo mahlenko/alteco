@@ -1,0 +1,30 @@
+<?php
+
+namespace Blackshot\CoinMarketSdk\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class Signal extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'coin_uuid',
+        'previous_rank',
+        'rank',
+        'diff',
+        'date'
+    ];
+
+    protected $casts = [
+        'date'
+    ];
+
+    public function coin(): BelongsTo
+    {
+        return $this->belongsTo(Coin::class);
+    }
+
+}
