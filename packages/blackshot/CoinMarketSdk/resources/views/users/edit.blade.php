@@ -1,125 +1,124 @@
 @extends('blackshot::layouts.app')
 
 @section('content')
-    <div class="d-flex align-items-center justify-content-between px-2 mb-4">
-        <div>
-            <h1>
-                <i class="fas fa-users text-secondary" aria-hidden="true"></i>
-                <strong>Edit</strong>
+
+    <section class="settings" id="settings">
+        <div class="container">
+            <h1 class="pages__title">
+                Настройки профиля
             </h1>
-        </div>
-    </div>
 
-    <form action="{{ route('users.store') }}" method="post">
-        @csrf
+            <div class="settings__box d-flex" style="margin-top: 2rem;">
+                @if (\Illuminate\Support\Facades\Auth::id() == $user->id)
+                <div class="settings__acc">
+                    <div class="settings__person">
+                        <img src="https://www.gravatar.com/avatar/{{ md5($user->email.'?s=60&d=identicon') }}" alt="" class="settings__ava">
+                        <p class="settings__name">
+                            {{ $user->name }}
+                        </p>
+                    </div>
+                    <ul class="settings__list">
+                        <li class="d-flex active">
+                            <img src="{{ asset('css/img/settings/1.svg') }}" alt="" class="settings__icon svg">
+                            <a href="{{ route('users.edit', \Illuminate\Support\Facades\Auth::id()) }}" class="settings__text">
+                                Профиль
+                            </a>
+                        </li>
+                        <li class="d-flex">
+                            <img src="{{ asset('css/img/settings/2.svg') }}" alt="" class="settings__icon svg">
+                            <a href="{{ route('coins.home') }}" class="settings__text">
+                                Монеты
+                            </a>
+                        </li>
+                        <li class="d-flex">
+                            <img src="{{ asset('css/img/settings/3.svg') }}" alt="" class="settings__icon svg">
+                            <a href="{{ route('signals.home') }}" class="settings__text">
+                                Сигналы
+                            </a>
+                        </li>
+                        <li class="d-flex">
+                            <img src="{{ asset('css/img/settings/4.svg') }}" alt="" class="settings__icon svg">
+                            <a href="{{ route('users.home') }}" class="settings__text">
+                                Пользователи
+                            </a>
+                        </li>
+                        <li class="d-flex">
+                            <img src="{{ asset('css/img/settings/5.svg') }}" alt="" class="settings__icon svg">
+                            <a href="javascript:void(0);" class="settings__text" onclick="return alert('Функция в разработке, попробуйте позже.')">
+                                Тарифы
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" class="scan__show btn btn1 settings__btn" onclick="return alert('Функция в разработке, попробуйте позже.')">
+                                Улучшить тариф
+                            </a>
+                        </li>
 
-        @if(isset($user))
-            <input type="hidden" name="id" value="{{ $user->id }}">
-        @endif
+                        <li class="d-flex">
+                            <img src="{{ asset('css/img/settings/6.svg') }}" alt="" class="settings__icon svg">
+                            <a href="javascript:void(0);" class="settings__text" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                Выйти
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                @endif
 
-        <table class="table">
-            <colgroup>
-                <col span="1" style="width: 30%; text-align: right;" />
-                <col span="1" />
-            </colgroup>
-            <tbody>
-                <tr>
-                    <td>
-                        <label for="name">Name</label>
-                        <span class="text-danger">*</span>
-                    </td>
-                    <td>
-                        <input type="text" id="name" name="name" class="form-control" value="{{ old('name', isset($user) ? $user->name : null) }}" required>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label for="email">Email</label>
-                        <span class="text-danger">*</span>
-                    </td>
-                    <td>
-                        <input type="email"
-                               id="email"
-                               name="email"
-                               class="form-control"
-                               value="{{ old('email', isset($user) ? $user->email : null) }}" required>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label for="password">Password</label>
-                        @if(!isset($user))
-                            <span class="text-danger">*</span>
-                        @else
-                            <br>
-                            <span class="text-secondary">
-                                Fill in if you want to change your password.
-                            </span>
+                {{-- форма --}}
+                <div class="settings__info">
+                    <form action="{{ route('users.store') }}" method="post">
+                        @csrf
+
+                        @if(isset($user))
+                            <input type="hidden" name="id" value="{{ $user->id }}">
                         @endif
-                    </td>
-                    <td>
-                        <input type="password"
-                               id="password"
-                               name="password"
-                               autocomplete="off"
-                               class="form-control" @if(!isset($user))required @endif>
-                    </td>
-                </tr>
 
-                @if (\Illuminate\Support\Facades\Auth::user()->isAdmin())
-                <tr>
-                    <td>
-                        <label for="role">Role</label>
-                        <span class="text-danger">*</span>
-                    </td>
-                    <td>
-                        <select name="role" id="role">
-                            <option value="{{ \App\Models\User::ROLE_USER }}" @if ((isset($user) && old('role', $user->role) === \App\Models\User::ROLE_USER) || old('role') === \App\Models\User::ROLE_USER) selected @endif>User</option>
-                            <option value="{{ \App\Models\User::ROLE_ADMIN }}" @if ((isset($user) && old('role', $user->role) === \App\Models\User::ROLE_ADMIN) || old('role') === \App\Models\User::ROLE_ADMIN) selected @endif>Administrator</option>
-                        </select>
-                    </td>
-                </tr>
+                        <div class="settings__el">
+                            <div class="setting-form__item">
+                                <label>Имя</label><br>
+                                <input type="text" name="name" value="{{ old('name', isset($user) ? $user->name : null) }}" required placeholder="John Johnson" class="name">
+                            </div>
 
-                <tr>
-                    <td>
-                        <label for="expired_at">Expired at</label>
-                    </td>
-                    <td>
-                        <input type="date"
-                               id="expired_at"
-                               name="expired_at"
-                               value="{{ old('expired_at', $user ? (new DateTimeImmutable($user->expired_at))->format('Y-m-d') : null) }}"
-                               class="form-control">
-                    </td>
-                </tr>
-                @endif
+                            <div class="setting-form__item">
+                                <label>Email</label> <br>
+                                <input type="email" name="email" inputmode="email" value="{{ old('name', isset($user) ? $user->email : null) }}" required placeholder="johnjohnson@gmail.com" class="mail">
+                            </div>
+                        </div>
 
-                @if(isset($user) && $user->favorites->count())
-                    <tr>
-                        <td colspan="2" class="table-light">
-                            <strong>User favorites</strong>
-                        </td>
-                    </tr>
+                        <div class="settings__el">
+                            <div class="setting-form__item">
+                                <label>Новый пароль</label> <br>
+                                <input type="password" name="password" placeholder="****************" class="pass">
+                            </div>
+                        </div>
 
-                    @foreach($user->favorites->load('info') as $coin)
-                        <tr>
-                            <td colspan="2">
-                                @if (isset($coin->info->logo))
-                                <img src="{{ $coin->info->logo }}" alt="" height="24" class="me-1">
-                                @endif
-                                {{ $coin->name }}
-                            </td>
-                        </tr>
-                    @endforeach
-                @endif
-            </tbody>
-        </table>
+                        @if (\Illuminate\Support\Facades\Auth::user()->isAdmin())
+                            <div class="settings__el">
+                                <div class="setting-form__item">
+                                    <label>Роль</label> <br>
+                                    <select name="role" id="role">
+                                        <option value="{{ \App\Models\User::ROLE_USER }}" @if ((isset($user) && old('role', $user->role) === \App\Models\User::ROLE_USER) || old('role') === \App\Models\User::ROLE_USER) selected @endif>User</option>
+                                        <option value="{{ \App\Models\User::ROLE_ADMIN }}" @if ((isset($user) && old('role', $user->role) === \App\Models\User::ROLE_ADMIN) || old('role') === \App\Models\User::ROLE_ADMIN) selected @endif>Administrator</option>
+                                    </select>
+                                </div>
 
-        <p>
-            <button type="submit" class="btn btn-outline-success">
-                <i class="far fa-save"></i>
-                Save
-            </button>
-        </p>
-    </form>
+                                <div class="setting-form__item">
+                                    <label>Подписка</label> <br>
+                                    <input type="date"
+                                           id="expired_at"
+                                           name="expired_at"
+                                           value="{{ old('expired_at', $user ? (new DateTimeImmutable($user->expired_at))->format('Y-m-d') : null) }}"
+                                           class="form-control">
+                                </div>
+                            </div>
+                        @endif
+
+                        <button class="settings-form__btn btn btn2">
+                            Сохранить
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
 @endsection

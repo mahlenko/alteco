@@ -1,0 +1,29 @@
+.form-check-input:checked {
+    &.checkbox-primary {
+        background-color: $primary;
+    }
+
+    &.checkbox-success {
+        background-color: $success;
+    }
+
+    &.checkbox-warning {
+        background-color: $warning;
+    }
+
+    &.checkbox-danger {
+        background-color: $danger;
+    }
+
+    &.checkbox-dark {
+        background-color: $dark;
+    }
+
+    &.checkbox-secondary {
+        background-color: $secondary;
+    }
+
+    &.checkbox-light {
+        background-color: $light;
+    }
+}

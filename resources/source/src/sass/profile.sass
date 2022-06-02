@@ -1,0 +1,100 @@
+.settings
+   padding-bottom: 64px
+.settings__acc
+   width: 300px
+   height: auto
+   border: 1px solid #FF7442
+   border-radius: 5px
+   flex: 1 0 auto
+   max-width: 300px
+   padding: 33px 60px
+.settings__ava
+   width: 120px
+   height: 120px
+   border: 2px solid #FF7442
+   border-radius: 50%
+   margin: 0 auto 17px
+   display: block
+.settings__name
+   font-weight: 700
+   font-size: 16px
+   line-height: 140%
+   text-align: center
+   margin-bottom: 30px
+.settings__list
+   li
+      align-items: center
+      margin-left: 38px
+      &:nth-child(6)
+         margin-left: 0
+      a
+         font-weight: 300
+         font-size: 14px
+         line-height: 280%
+         color: #282828
+         margin-left: 14px
+      &:hover
+         a
+            color: $orange
+      &.active
+         a
+            font-weight: 700
+            font-size: 14px
+            line-height: 280%
+            color: #213CC0
+         .svg path
+            fill: #213CC0
+#settings .settings__btn
+   width: 100%
+   height: 50px
+   border: 1px solid #FF7442
+   border-radius: 50px
+   font-weight: 700
+   font-size: 14px
+   color: #FF7442
+   margin: 20px auto
+   &:hover
+      color: $white
+.settings__info
+   margin-left: 36px
+   width: 100%
+.settings-form
+   width: 100%
+   .name
+      background: url(img/2.svg) no-repeat 98% 10px
+   .mail
+      background: url(img/1.svg) no-repeat 98% 10px
+   .pass
+      background: url(img/settings/pass.svg) no-repeat 98% 10px
+   label
+      font-weight: 600
+      font-size: 12px
+      line-height: 140%
+      color: #282828
+      margin-bottom: 3px
+.settings__el
+   width: 100%
+   padding-bottom: 27px
+   margin-bottom: 27px
+   border-bottom: 1px solid #EFEFEF
+   .setting-form__item
+      width: 100%
+      max-width: 596px
+      margin-bottom: 13px
+   &:nth-child(2)
+      margin-bottom: 0
+      padding-bottom: 0
+      border: none
+   input, select
+      -webkit-appearance: none
+      -moz-appearance: none
+      width: 100%
+      height: 50px
+      border: 1px solid #DDDDDD
+      border-radius: 5px
+      padding-left: 21px
+      font-weight: 300
+      font-size: 12px
+      line-height: 140%
+.settings-form__btn
+   margin-top: 31px

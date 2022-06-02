@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+	<meta charset="UTF-8">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="format-detection" content="telephone=no">
+	<meta name="format-detection" content="date=no">
+	<meta name="format-detection" content="address=no">
+	<meta name="format-detection" content="email=no">
+	<meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+	<title>AltEco</title>
+	<meta name="keywords" content="">
+	<meta name="description" content="">
+
+	<meta property="og:locale" content="ru-Ru">
+	<meta property="og:type" content="website">
+	<meta property="og:title" content="">
+	<meta property="og:description" content="">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link
+		href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700;800&family=Merriweather:ital,wght@1,300;1,700;1,900&display=swap"
+		rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css">
+	<script src="https://cdn.jsdelivr.net/npm/pikaday/pikaday.js"></script>
+	<link rel="stylesheet" href="css/jquery.arcticmodal-0.3.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+
+</head>
+
+<body>
+	<div class="body-wrap pages">
+		<header class="header header-pages" id="header-pages">
+			<nav>
+				<div class="container">
+					<div class="nav__box d-flex">
+						<a href="#" class="nav__logo">
+							<img src="css/img/logo2.svg" alt="">
+						</a>
+						<ul class="nav__list d-flex">
+							<li>
+								<a href="#">
+									Монеты
+								</a>
+							</li>
+							<li>
+								<a href="#">
+									Сигналы
+								</a>
+							</li>
+							<li class="active">
+								<a href="#">
+									Пользователи
+								</a>
+							</li>
+							<li>
+								<a href="#">
+									Настройки
+								</a>
+							</li>
+						</ul>
+						<div class="nav__right d-flex">
+							<p class="header-pages__text">
+								У вас есть <span> 3 дня</span> бесплатного доступа
+							</p>
+							<a href="#" class="nav__btn btn btn1">
+								Улучшить тариф
+							</a>
+						</div>
+						<div class="header-pages__info d-flex">
+							<img src="css/img/ava.png" alt="" class="header-pages__ava">
+							<p class="header-pages__name">
+								Dmitry Dovgal
+							</p>
+							<a href="#" class="header-pages__btn">
+								<img src="css/img/arr-icon.svg" alt="">
+							</a>
+						</div>
+						<div class="menu">
+							<a href="#" class="button"><span></span></a>
+						</div>
+						<div class="burger">
+							<div class="nav__right d-flex">
+								<p class="header-pages__text">
+									У вас есть <span> 3 дня</span> бесплатного доступа
+								</p>
+								<a href="#" class="nav__btn btn btn1">
+									Улучшить тариф
+								</a>
+							</div>
+							<div class="header-pages__info d-flex">
+								<img src="css/img/ava.png" alt="" class="header-pages__ava">
+								<p class="header-pages__name">
+									Dmitry Dovgal
+								</p>
+								<a href="#" class="header-pages__btn">
+									<img src="css/img/arr-icon.svg" alt="">
+								</a>
+							</div>
+							<ul class="nav__list">
+								<li>
+									<a href="#">
+										Монеты
+									</a>
+								</li>
+								<li>
+									<a href="#">
+										Сигналы
+									</a>
+								</li>
+								<li class="active">
+									<a href="#">
+										Пользователи
+									</a>
+								</li>
+								<li>
+									<a href="#">
+										Настройки
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</nav>
+		</header>
+		<section class="bread" id="bread">
+			<div class="container">
+				<div class="bread__block d-flex">
+					<a href="#">
+						Главная
+					</a>
+					<p>
+						Пользователи
+					</p>
+				</div>
+			</div>
+		</section>
+
+		<section class="scan signal" id="users">
+			<div class="container">
+				<div class="scan__flex d-flex">
+					<div class="scan__left">
+						<h1 class="pages__title">
+							Пользователи
+						</h1>
+					</div>
+					<a href="#" class="scan__show btn btn1">
+						Добавить пользователя
+					</a>
+				</div>
+
+				<div class="scan__box users__box">
+					<form action="" class="scan-form d-flex">
+						<div class="scan-form__item">
+							<label>Email пользователя</label> <br>
+							<input type="email" name="email" placeholder="johnjohnson@gmail.com" class="mail">
+						</div>
+						<div class="scan-form__item">
+							<label>Имя пользователя</label> <br>
+							<input type="text" name="name" placeholder="John Johnson" class="name">
+						</div>
+						<button class="scan-form__btn btn btn2">
+							Filter
+						</button>
+					</form>
+				</div>
+
+
+				<div class="scan__wrap">
+					<table class="profile__table scan__table users__table adaptive-table">
+						<thead>
+							<tr class="profile__row">
+								<td class="active pad">Имя</td>
+								<td class="active">E-mail</td>
+								<td class="active">Статус <a href="#"><img src="css/img/table/arr1.svg" alt=""
+											class="about__arr svg"></a></td>
+								<td class="active">Последнее обновление</td>
+								<td class="active"></td>
+							</tr>
+						</thead>
+						<tbody class="signal-body">
+							<tr class="profile__row">
+								<td class="active" data-label="Имя">Вергазова Джамиля</td>
+								<td class="active" data-label="E-mail">
+									<a href="mailto:ewg.grigorjewa@mail.ru" class="table__mail">ewg.grigorjewa@mail.ru</a>
+								</td>
+								<td class="active user" data-label="Статус">
+									<p>Пользователь</p>
+								</td>
+								<td class="active" data-label="Последнее обновление">
+									<div>
+										<p class="users__time">13 минут назад</p>
+										<p class="users__info">2022-02-01 10:53:24</p>
+									</div>
+								</td>
+								<td class="active" data-label="">
+									<div class="table__icons d-flex">
+										<a href="#" class="users__link d-flex">
+											<img src="css/img/edit.svg" alt="" class="svg">
+											<p>
+												Редактировать
+											</p>
+										</a>
+										<a href="#" class="users__link d-flex">
+											<img src="css/img/delete.svg" alt="" class="svg">
+											<p>
+												Удалить
+											</p>
+										</a>
+									</div>
+								</td>
+							</tr>
+							<tr class="profile__row">
+								<td class="active" data-label="Имя">Вергазова Джамиля</td>
+								<td class="active" data-label="E-mail">
+									<a href="mailto:ewg.grigorjewa@mail.ru" class="table__mail">ewg.grigorjewa@mail.ru</a>
+								</td>
+								<td class="active admin" data-label="Статус">
+									<p>Admin</p>
+								</td>
+								<td class="active" data-label="Последнее обновление">
+									<div>
+										<p class="users__time">13 минут назад</p>
+										<p class="users__info">2022-02-01 10:53:24</p>
+									</div>
+								</td>
+								<td class="active" data-label="">
+									<div class="table__icons d-flex">
+										<a href="#" class="users__link d-flex">
+											<img src="css/img/edit.svg" alt="" class="svg">
+											<p>
+												Редактировать
+											</p>
+										</a>
+										<a href="#" class="users__link d-flex">
+											<img src="css/img/delete.svg" alt="" class="svg">
+											<p>
+												Удалить
+											</p>
+										</a>
+									</div>
+								</td>
+							</tr>
+							<tr class="profile__row">
+								<td class="active" data-label="Имя">Сергей</td>
+								<td class="active" data-label="E-mail">
+									<a href="mailto:ewg.grigorjewa@mail.ru" class="table__mail">ewg.grigorjewa@mail.ru</a>
+								</td>
+								<td class="active admin" data-label="Статус">
+									<p>Admin</p>
+								</td>
+								<td class="active" data-label="Последнее обновление">
+									<div>
+										<p class="users__time">13 минут назад</p>
+										<p class="users__info">2022-02-01 10:53:24</p>
+									</div>
+								</td>
+								<td class="active" data-label="">
+									<div class="table__icons d-flex">
+										<a href="#" class="users__link d-flex">
+											<img src="css/img/edit.svg" alt="" class="svg">
+											<p>
+												Редактировать
+											</p>
+										</a>
+										<a href="#" class="users__link d-flex">
+											<img src="css/img/delete.svg" alt="" class="svg">
+											<p>
+												Удалить
+											</p>
+										</a>
+									</div>
+								</td>
+							</tr>
+							<tr class="profile__row">
+								<td class="active" data-label="Имя">Anastasiya</td>
+								<td class="active" data-label="E-mail">
+									<a href="mailto:ewg.grigorjewa@mail.ru" class="table__mail">ewg.grigorjewa@mail.ru</a>
+								</td>
+								<td class="active user" data-label="Статус">
+									<p>Пользователь</p>
+								</td>
+								<td class="active" data-label="Последнее обновление">
+									<div>
+										<p class="users__time">13 минут назад</p>
+										<p class="users__info">2022-02-01 10:53:24</p>
+									</div>
+								</td>
+								<td class="active" data-label="">
+									<div class="table__icons d-flex">
+										<a href="#" class="users__link d-flex">
+											<img src="css/img/edit.svg" alt="" class="svg">
+											<p>
+												Редактировать
+											</p>
+										</a>
+										<a href="#" class="users__link d-flex">
+											<img src="css/img/delete.svg" alt="" class="svg">
+											<p>
+												Удалить
+											</p>
+										</a>
+									</div>
+								</td>
+							</tr>
+							<tr class="profile__row">
+								<td class="active" data-label="Имя">ALEKSANDR KOZHEVNIKOV</td>
+								<td class="active" data-label="E-mail">
+									<a href="mailto:ewg.grigorjewa@mail.ru" class="table__mail">ewg.grigorjewa@mail.ru</a>
+								</td>
+								<td class="active user" data-label="Статус">
+									<p>Пользователь</p>
+								</td>
+								<td class="active" data-label="Последнее обновление">
+									<div>
+										<p class="users__time">13 минут назад</p>
+										<p class="users__info">2022-02-01 10:53:24</p>
+									</div>
+								</td>
+								<td class="active" data-label="">
+									<div class="table__icons d-flex">
+										<a href="#" class="users__link d-flex">
+											<img src="css/img/edit.svg" alt="" class="svg">
+											<p>
+												Редактировать
+											</p>
+										</a>
+										<a href="#" class="users__link d-flex">
+											<img src="css/img/delete.svg" alt="" class="svg">
+											<p>
+												Удалить
+											</p>
+										</a>
+									</div>
+								</td>
+							</tr>
+							<tr class="profile__row">
+								<td class="active" data-label="Имя">Вергазова Джамиля</td>
+								<td class="active" data-label="E-mail">
+									<a href="mailto:ewg.grigorjewa@mail.ru" class="table__mail">ewg.grigorjewa@mail.ru</a>
+								</td>
+								<td class="active user" data-label="Статус">
+									<p>Пользователь</p>
+								</td>
+								<td class="active" data-label="Последнее обновление">
+									<div>
+										<p class="users__time">13 минут назад</p>
+										<p class="users__info">2022-02-01 10:53:24</p>
+									</div>
+								</td>
+								<td class="active" data-label="">
+									<div class="table__icons d-flex">
+										<a href="#" class="users__link d-flex">
+											<img src="css/img/edit.svg" alt="" class="svg">
+											<p>
+												Редактировать
+											</p>
+										</a>
+										<a href="#" class="users__link d-flex">
+											<img src="css/img/delete.svg" alt="" class="svg">
+											<p>
+												Удалить
+											</p>
+										</a>
+									</div>
+								</td>
+							</tr>
+							<tr class="profile__row">
+								<td class="active" data-label="Имя">Вергазова Джамиля</td>
+								<td class="active" data-label="E-mail">
+									<a href="mailto:ewg.grigorjewa@mail.ru" class="table__mail">ewg.grigorjewa@mail.ru</a>
+								</td>
+								<td class="active user" data-label="Статус">
+									<p>Пользователь</p>
+								</td>
+								<td class="active" data-label="Последнее обновление">
+									<div>
+										<p class="users__time">13 минут назад</p>
+										<p class="users__info">2022-02-01 10:53:24</p>
+									</div>
+								</td>
+								<td class="active" data-label="">
+									<div class="table__icons d-flex">
+										<a href="#" class="users__link d-flex">
+											<img src="css/img/edit.svg" alt="" class="svg">
+											<p>
+												Редактировать
+											</p>
+										</a>
+										<a href="#" class="users__link d-flex">
+											<img src="css/img/delete.svg" alt="" class="svg">
+											<p>
+												Удалить
+											</p>
+										</a>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="navigation d-flex">
+						<a href="#" class="navigation__text">
+							Предыдущая
+						</a>
+						<ul class="navigation__list d-flex">
+							<li class="active"><a href="#">1</a></li>
+							<li><a href="#">2</a></li>
+							<li><a href="#">3</a></li>
+							<li><a href="#">4</a></li>
+							<li><a href="#">5</a></li>
+						</ul>
+						<a href="#" class="navigation__text">
+							Следующая
+						</a>
+					</div>
+				</div>
+			</div>
+		</section>
+		<footer class="footer footer-pages" id="footer">
+			<div class="container">
+				<div class="footer__box">
+					<div class="footer__flex d-flex">
+						<a href="#" class="footer__logo">
+							<img src="css/img/footer/logo.svg" alt="">
+						</a>
+						<div class="footer-pages__lists d-flex">
+							<ul class="nav__list">
+								<li>
+									<a href="#">
+										Главная
+									</a>
+								</li>
+								<li>
+									<a href="#">
+										Монеты
+									</a>
+								</li>
+								<li>
+									<a href="#">
+										Сигналы
+									</a>
+								</li>
+								<li class="active">
+									<a href="#">
+										Пользователи
+									</a>
+								</li>
+							</ul>
+							<ul class="nav__list">
+								<li>
+									<a href="#">
+										Профиль
+									</a>
+								</li>
+								<li>
+									<a href="#">
+										Настройки
+									</a>
+								</li>
+								<li>
+									<a href="#">
+										Войти
+									</a>
+								</li>
+								<li>
+									<a href="#">
+										Регистрация
+									</a>
+								</li>
+							</ul>
+							<ul class="nav__list">
+								<li>
+									<a href="#">
+										Условия и услуги
+									</a>
+								</li>
+								<li>
+									<a href="#">
+										Политика конфиденциальности
+									</a>
+								</li>
+								<li>
+									<a href="#">
+										Помощь
+									</a>
+								</li>
+								<li>
+									<a href="#">
+										FAQ
+									</a>
+								</li>
+							</ul>
+						</div>
+						<div class="footer__socials d-flex">
+							<a href="#" target="blank">
+								<img src="css/img/footer/1.svg" alt="" class="svg">
+							</a>
+							<a href="#" target="blank">
+								<img src="css/img/footer/2.svg" alt="" class="svg">
+							</a>
+							<a href="#" target="blank">
+								<img src="css/img/footer/3.svg" alt="" class="svg">
+							</a>
+							<a href="#" target="blank">
+								<img src="css/img/footer/4.svg" alt="" class="svg">
+							</a>
+							<a href="#" target="blank">
+								<img src="css/img/footer/5.svg" alt="" class="svg">
+							</a>
+						</div>
+					</div>
+					<div class="footer__text">
+						Simply Wall Street Pty Ltd (ACN 600 056 611) является корпоративным уполномоченным представителем
+						(номер уполномоченного представителя: 467183) Sanlam Private Wealth Pty Ltd (AFSL № 337927). Любые
+						советы, содержащиеся на этом веб-сайте, носят общий характер и были подготовлены без учета ваших
+						целей, финансового положения или потребностей. Вы не должны полагаться на какие-либо советы и/или
+						информацию, содержащуюся на этом веб-сайте, и перед принятием какого-либо инвестиционного решения мы
+						рекомендуем вам подумать, подходит ли оно для вашей ситуации, и обратиться за соответствующей
+						финансовой, налоговой и юридической консультацией. Пожалуйста, ознакомьтесь с нашим Руководством по
+						финансовым услугам, прежде чем принимать решение о получении финансовых услуг от нас.
+					</div>
+				</div>
+			</div>
+		</footer>
+	</div>
+	<!-- <script src="//yandex.st/jquery/1.9.1/jquery.min.js"></script> -->
+	<script>
+		var picker = new Pikaday({ field: document.getElementById('datepicker') });
+	</script>
+	<script src="js/all.js"></script>
+</body>
+
+</html>

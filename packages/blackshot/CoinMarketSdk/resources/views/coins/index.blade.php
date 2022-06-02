@@ -1,203 +1,184 @@
 @extends('blackshot::layouts.app')
 
 @section('content')
-
-    {{--  --}}
-    <div class="d-flex align-items-center justify-content-between px-2">
-        <div>
-            <h1>
-                <i class="fab fa-bitcoin text-secondary" aria-hidden="true"></i>
-                <strong>Coins</strong>
+    <div class="scan__flex d-flex">
+        <div class="scan__left">
+            <h1 class="pages__title">
+                Монеты
             </h1>
-            <p class="text-secondary">
-                Total of {{ $coins->total() }} {{ \Illuminate\Support\Str::plural('coin', $coins->total()) }}
-                on {{ $coins->lastPage() }} {{ \Illuminate\Support\Str::plural('page', $coins->lastPage()) }}
+            <p class="scan__search">
+                Всего {{ $coins->total() }} монет
+                на {{ $coins->lastPage() }} страницах.
             </p>
         </div>
-
-        <a href="{{ route('signals.home') }}" class="btn btn-outline-success text-nowrap">
-            <i class="fas fa-chess-queen"></i>
-            View my signals
+        <a href="{{ route('signals.home') }}" class="scan__show btn btn1">
+            Показать мои сигналы
         </a>
     </div>
 
 {{--    @dd(\Illuminate\Support\Facades\Auth::user()->trackings)--}}
 
     {{-- filter --}}
-    <form action="{{ route('coins.filter.store') }}" method="post" class="mb-4 px-2">
-        @csrf
+    <div class="scan__box">
+        <form action="{{ route('coins.filter.store') }}" method="post" class="scan-form d-flex">
+            @csrf
 
-        <div class="rounded p-3 border bg-light mb-3">
-            <div class="d-flex flex-column flex-md-row align-items-start mb-2">
-                <div class="col-12 col-md-4 mb-1 mx-1">
-                    <label for="search" class="mb-2">
-                        <strong>Search</strong>:
-                        <small class="text-secondary">Name or symbol coin</small>
-                    </label>
+            {{-- Search --}}
+            <div class="scan-form__item scan-search">
+                <label for="search_q">Поиск</label><br>
+                <input type="text"
+                       name="filter[q]"
+                       id="search_q"
+                       value="{{ $filter->q ?? null }}"
+                       placeholder="Название монеты">
 
-                    <input
-                        type="search"
-                        class="form-control"
-                        placeholder="Start the search..."
-                        name="filter[q]"
-                        value="{{ $filter->q ?? null }}"
-                        id="search">
-                </div>
-
-                <div class="col-12 col-md-4 mb-1 mx-1">
-                    <label for="category" class="mb-2">
-                        <strong>Categories</strong>:
-                    </label>
-
-                    <select name="filter[category_uuid][]" multiple id="category">
-                        @foreach($categories as $value => $label)
-                            <option
-                                @if(isset($filter->category_uuid) && in_array($value, $filter->category_uuid)) selected @endif
-                                value="{{ $value }}"
-                            >{{ $label }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div class="col-12 col-md-3 mx-1">
-                    <label for="change-picker" class="mb-2 me-2 text-nowrap">
-                        <strong>Change of rank for the period</strong>:
-                    </label>
-                    <div class="input-group">
-                        <label for="change-picker" class="input-group-text">
-                            <i class="far fa-calendar-alt"></i>
-                        </label>
-                        <input type="text"
-                               name="filter[date]"
-                               class="form-control"
-                               id="change-picker"
-                               value="{{ $change[0]->format('m/d/Y') }} - {{ $change[1]->format('m/d/Y') }}"
-                               data-type="datepicker">
-                    </div>
-                </div>
+                <a href="#" class="scan-form__link">
+                    <img src="{{ asset('css/img/search.svg') }}" alt="">
+                </a>
             </div>
 
-            <button type="submit" class="btn btn-primary mx-1">
-                <i class="fas fa-filter"></i>
-                Filter
-            </button>
-        </div>
-    </form>
+            {{-- Category --}}
+            <div class="scan-form__item">
+                <label for="category">Категория</label><br>
+                <select class="select" name="filter[category_uuid][]" multiple id="category">
+                    @foreach($categories as $value => $label)
+                        <option
+                            @if(isset($filter->category_uuid) && in_array($value, $filter->category_uuid)) selected @endif
+                        value="{{ $value }}"
+                        >{{ $label }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="scan-form__item">
+                <label for="change-picker">Изменение ранга за период:</label><br>
+                <input type="text"
+                       name="filter[date]"
+                       class="date"
+                       id="change-picker"
+                       value="{{ $change[0]->format('m/d/Y') }} - {{ $change[1]->format('m/d/Y') }}"
+                       data-type="datepicker">
+            </div>
+
+            <div>
+                <br>
+                <button type="submit" class="scan-form__btn btn btn2">
+                    Применить
+                </button>
+            </div>
+        </form>
+    </div>
 
     {{--  --}}
-    <table class="table table-hover">
-        <thead class="table-secondary">
-            <tr>
-                <th width="50"></th>
-                <th width="40">#</th>
-                <th>
-                    @include('blackshot::partials.sortable', ['column' => 'name'])
-                    Name / Last percentage change
-                </th>
-                <th>
-                    {{--                    @include('blackshot::partials.sortable', ['column' => 'price'])--}}
-                    Price
-                </th>
-                <th>
-                    @include('blackshot::partials.sortable', ['column' => 'rank'])
-                    Rank
-                </th>
-                <th>
-                    @include('blackshot::partials.sortable', ['column' => 'rank_period'])
-                    Rank
-                    <span class="ms-1 badge text-secondary bg-light">
-                        {{ $change_diff->days + 1 }}d
-                        selected in the filter
-                    </span>
-                </th>
-                <th>
-                    @include('blackshot::partials.sortable', ['column' => 'rank_30d'])
-                    Rank
-                    <span class="ms-1 badge text-secondary bg-light">30d</span></th>
-                <th>
-                    @include('blackshot::partials.sortable', ['column' => 'rank_60d'])
-                    Rank
-                    <span class="ms-1 badge text-secondary bg-light">60d</span></th>
-                <th>Last updated</th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach($coins as $coin)
-{{--            @php($current_quote = $coin->current())--}}
-            <tr>
-                <td>
-                    <p class="d-flex mb-0">
-                        <a href="javascript:void(0);" class="favorite p-2" title="Add to favorites" onclick="return favorites(this, '{{ $coin->uuid }}')">
-                            @if ($favorites->where('uuid', $coin->uuid)->count())
-                                <i class="fas fa-star"></i>
-                            @else
-                                <i class="far fa-star"></i>
-                            @endif
-                        </a>
+    <div class="scan__wrap">
+        @php($current_params = \Illuminate\Support\Facades\Request::input())
 
-                        <a href="javascript:void(0);" class="p-2" title="tracking" onclick="return tracking(this, '{{ $coin->uuid }}')">
-                            @if ($tracking->where('uuid', $coin->uuid)->count())
-                                <i class="fas fa-chart-line"></i>
-                            @else
-                                <i class="fas fa-chart-line text-secondary"></i>
-                            @endif
-                        </a>
-                    </p>
-                </td>
-                <td class="d-none d-md-table-cell">{{ ($coins->currentPage() * $coins->perPage()) - $coins->perPage() + $loop->iteration }}.</td>
-                <td>
-                    <div class="d-flex flex-nowrap align-items-center">
-                        @if(!empty($coin->info->logo))
-                            <img src="{{ $coin->info->logo }}" class="me-1" alt="" height="32">
-                        @endif
+        <table class="table profile__table scan__table adaptive-table">
+            <thead class="table-secondary">
+                <tr class="profile__row">
+{{--                    <td class="active" data-label="">#</td>--}}
+                    <td data-label="Name" class="active {{ $sortable['column'] == 'name' ? 'main' : null }}">
+                        Имя / Последнее изменение, %
+                        @include('blackshot::partials.sortable', ['column' => 'name'])
+                    </td>
+                    <td class="active">Цена</td>
+                    <td class="active {{ $sortable['column'] == 'rank' ? 'main' : null }}">
+                        Ранг
+                        @include('blackshot::partials.sortable', ['column' => 'rank'])
+                    </td>
+                    <td class="active {{ $sortable['column'] == 'rank_period' ? 'main' : null }}">
+                        Ранг
+                        <span class="ms-1 badge text-secondary bg-light">
+                            {{ $change_diff->days + 1 }}д
+                        </span>
+                        @include('blackshot::partials.sortable', ['column' => 'rank_period'])
+                    </td>
+                    <td class="active {{ $sortable['column'] == 'rank_30d' ? 'main' : null }}">
+                        Ранг
+                        <span class="ms-1 badge text-secondary bg-light">30д</span>
+                        @include('blackshot::partials.sortable', ['column' => 'rank_30d'])
+                    </td>
+                    <td class="active {{ $sortable['column'] == 'rank_60d' ? 'main' : null }}">
+                        Ранг
+                        <span class="ms-1 badge text-secondary bg-light">60д</span>
+                        @include('blackshot::partials.sortable', ['column' => 'rank_60d'])
+                    </td>
+                    <td class="active" width="50"></td>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach($coins as $coin)
+                <tr class="profile__row">
+{{--                    <td class="active pad">--}}
+{{--                        {{ ($coins->currentPage() * $coins->perPage()) - $coins->perPage() + $loop->iteration }}--}}
+{{--                    </td>--}}
+                    <td class="active {{ $coin->percent_change_1h > 0 ? 'green' : 'red' }}">
+                        <div class="table__row d-flex" style="column-gap: 1rem; justify-content: space-between;">
+                            <div class="table__flex table__flex_main d-flex">
+                                @if(!empty($coin->info->logo))
+                                    <img src="{{ $coin->info->logo }}" class="table__logo" alt="">
+                                @endif
+                                <p class="table__text">
+                                    <a href="{{ route('coins.view', $coin->uuid) }}">
+                                        <span>{{ $coin->name }}</span>
+                                    </a>
+                                    {{ $coin->symbol }}
+                                </p>
+                            </div>
 
-                        <a href="{{ route('coins.view', $coin->uuid) }}"
-                           class="ms-1 me-2 text-dark text-nowrap"><strong>{{ $coin->name }}</strong></a>
+                            <div class="table__flex d-flex" style="white-space: nowrap">
+                                @include('blackshot::coins.partials.badge-position-text', ['percent' => $coin->percent_change_1h])
+                            </div>
+                        </div>
+                    </td>
 
-                        <span class="text-secondary">{{ $coin->symbol }}</span>
+                    <td class="active">
+                        <p class="table__el">
+                            <strong>
+                                @include('blackshot::coins.partials.price', ['price' => $coin->price])
+                            </strong>
+                        </p>
+                    </td>
 
-                        @include('blackshot::coins.partials.badge-position-text', ['percent' => $coin->percent_change_1h])
-                    </div>
-                </td>
+                    <td class="active">
+                        {{ $coin->rank }}
+                    </td>
 
-                <td>
-                    <strong>
-                        @include('blackshot::coins.partials.price', ['price' => $coin->price])
-                    </strong>
-                </td>
+                    <td class="active {{ $coin->rank_period > 0 ? 'green' : 'red' }}">
+                        @include('blackshot::partials.badge-position-text', ['position' => $coin->rank_period])
+                    </td>
 
-                <td>
-                    {{ $coin->rank }}
-                </td>
+                    <td class="active {{ $coin->rank_30d > 0 ? 'green' : 'red' }}">
+                        @include('blackshot::partials.badge-position-text', ['position' => $coin->rank_30d])
+                    </td>
 
-                <td>
-{{--                    @php($changeRank = $coin->changeRankByPeriod(new DateTimeImmutable($change[0]), new DateTimeImmutable($change[1])))--}}
-{{--                    @include('blackshot::partials.badge-position-text', ['position' => $changeRank * -1])--}}
-                    @include('blackshot::partials.badge-position-text', ['position' => $coin->rank_period])
-                </td>
+                    <td class="active {{ $coin->rank_60d > 0 ? 'green' : 'red' }}">
+                        @include('blackshot::partials.badge-position-text', ['position' => $coin->rank_60d])
+                    </td>
 
-                <td>
-{{--                    @php($changeRank = $coin->changeRankByPeriod(new DateTimeImmutable('now - 30 days'), new DateTimeImmutable('now')))--}}
-{{--                    @include('blackshot::partials.badge-position-text', ['position' => $changeRank * -1])--}}
-                    @include('blackshot::partials.badge-position-text', ['position' => $coin->rank_30d])
-                </td>
+                    <td class="active" data-label="">
+                        <p class="table__el">
+                            <div class="table__icons d-flex">
+                                <a href="javascript:void(0);"
+                                   onclick="return favorites(this, '{{ $coin->uuid }}')"
+                                   class="table__star favorite {{ $favorites->where('uuid', $coin->uuid)->count() ? 'able' : '' }}">
+                                    <img src="{{ asset('css/img/table/star.svg') }}" alt="" class="svg">
+                                </a>
 
-                <td>
-{{--                    @php($changeRank = $coin->changeRankByPeriod(new DateTimeImmutable('now -60 days'), new DateTimeImmutable('now')))--}}
-{{--                    @include('blackshot::partials.badge-position-text', ['position' => $changeRank * -1])--}}
-                    @include('blackshot::partials.badge-position-text', ['position' => $coin->rank_60d])
-                </td>
+                                <a href="javascript:void(0);"
+                                   onclick="return tracking(this, '{{ $coin->uuid }}')"
+                                   class="table__icon tracking {{ $tracking->where('uuid', $coin->uuid)->count() ? 'able' : '' }}">
+                                    <img src="{{ asset('css/img/table/icon.svg') }}" alt="" class="svg">
+                                </a>
+                            </div>
 
-                <td>
-{{--                    @if($current_quote->last_updated)--}}
-{{--                        {{ \Illuminate\Support\Carbon::createFromTimeString($current_quote->last_updated)->diffForHumans() }}--}}
-{{--                    @endif--}}
-                    {{ \Illuminate\Support\Carbon::createFromTimeString($coin->updated_at)->diffForHumans() }}
-                </td>
-            </tr>
-        @endforeach
-        </tbody>
-    </table>
+                        </p>
+                    </td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
+    </div>
 
     {{ $coins->appends(request()->input())->links() }}
 
@@ -209,26 +190,17 @@
          */
         function favorites(element, uuid)
         {
-            let star = element.querySelector('.fa-star')
-
             axios.post('{{ route('users.favorite') }}', {uuid})
                 .then(response => {
                     if (response.data.data.favorite) {
-                        star.classList.remove('far')
-                        star.classList.add('fas')
+                        element.classList.add('able')
                     } else {
-                        star.classList.remove('fas')
-                        star.classList.add('far')
+                        element.classList.remove('able')
                     }
                 })
 
-            let trecking_link = element
-                .parentElement
-                .parentElement
-                .querySelector('.fa-chart-line')
-                .parentElement
-
-            return tracking(trecking_link, uuid)
+            let tracking_link = element.parentElement.querySelector('.tracking')
+            return tracking(tracking_link, uuid)
         }
 
         /**
@@ -238,14 +210,12 @@
          */
         function tracking(element, uuid)
         {
-            let icon = element.querySelector('.fa-chart-line')
-
             axios.post('{{ route('users.tracking') }}', { uuid })
                 .then(response => {
                     if (response.data.data.tracking === 'delete') {
-                        icon.classList.add('text-secondary')
+                        element.classList.remove('able')
                     } else {
-                        icon.classList.remove('text-secondary')
+                        element.classList.add('able')
                     }
                 })
         }

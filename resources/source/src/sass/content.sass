@@ -1,0 +1,932 @@
+.about
+   background: url(img/about-bg.png) no-repeat center center / cover
+   color: $white
+   padding: 88px 0 1px
+   max-height: 1163px
+   position: relative
+   z-index: 2
+   h2
+      color: $white
+   .text
+      color: $white
+.about__box
+   align-items: flex-start
+   justify-content: space-between
+   margin-top: 80px
+.about__content
+   max-width: 592px
+   flex: 1 0 auto
+   width: 100%
+.about__text
+   font-size: 14px
+   line-height: 160%
+   color: #FFFFFF
+   margin-bottom: 20px
+   &:last-child
+      margin-bottom: 0
+.about__pic
+   position: relative
+   right: 26px
+   top: 22px
+
+.adaptive-table
+   width: 100%
+   box-sizing: border-box
+   border-collapse: collapse !important
+   border-spacing: 0 15px !important
+   .opacity
+      p
+         opacity: 0.5
+   td
+      padding: 16px 5px
+      //font-size: 12.1458px
+      color: $black
+      box-sizing: border-box
+      font-weight: 600
+@media (max-width: 1199px)
+   .adaptive-table,
+   .adaptive-table .profile__operation
+      a
+         //font-size: 11px
+   .adaptive-table
+      thead, .profile__head
+         display: none
+   .adaptive-table
+     tbody, .adaptive-table
+         width: 100%
+         display: flex
+         flex-wrap: wrap
+         justify-content: center
+         border: 0 none
+         overflow: hidden !important
+         padding-top: 10px
+         padding-bottom: 10px
+   .adaptive-table
+      tr
+         margin: 5px
+         width: 300px
+         max-width: 100%
+         display: flex
+         flex-direction: column
+   .adaptive-table
+      td, .profile__row .active
+         display: flex
+         justify-content: space-between
+   .adaptive-table
+      td[data-label]
+         justify-content: space-between
+         text-align: right
+   .adaptive-table
+      td[data-label]
+         &:before
+            line-height: 120%
+            content: attr(data-label)
+            display: block
+            white-space: inherit
+            opacity: .7
+            text-align: left
+            margin-right: 20px
+/* ===================== /adaptive tables =====================  */
+.table__flex
+   align-items: center
+   //max-width: 140px
+.profile__table
+   border-collapse: collapse
+   margin-bottom: 51px
+   tr
+      border-bottom: 0.857372px solid #EFEFEF
+      box-sizing: border-box
+      &:last-child
+         border: none
+         td
+            &:first-child
+               border-radius: 0px 0px 0px 20px
+            &:last-child
+               border-radius: 0px 0px 20px 0px
+   td[data-label="Rank (2d selected in the filter)"]
+      width: 180px
+   td[data-label="Name"]
+      width: 240px
+      padding-right: 50px
+      @media ( max-width: 1200px )
+         padding-right: 1px
+         width: auto
+      a
+         font-weight: 500
+         //font-size: 14px
+         line-height: 140%
+         text-transform: uppercase
+         &:hover
+            font-size: 12px
+            margin-right: 12px
+            margin-left: 12px
+      @media ( max-width: 768px )
+         width: auto
+         margin-right: 0
+   thead
+      .sortable-link
+        padding: .2rem
+        &:hover svg
+          fill: white
+      .sortable-desc svg
+        transform: rotate(-180deg)
+      tr
+         background: transparent
+         padding: 10px 20px 10px 6px
+         border-spacing: initial
+         box-shadow: initial
+         td
+            //font-size: 10.2885px
+            font-size: 12px
+            color: $white
+            padding: 10px 20px 10px 6px
+            font-weight: normal !important
+   @media (max-width: 768px)
+      background: transparent
+      margin-top: 0
+      td
+         background: #fff
+      td[data-label="Name"]
+         padding-right: 5px
+.profile__row
+   border-collapse: separate
+   border-spacing: inherit
+   background: #FFFFFF
+   margin-bottom: 15px
+   td:nth-child(1)
+      padding-left: 20px
+      text-align: left
+      @media ( max-width: 1199px )
+         padding-left: 15px
+   a
+     color: #333
+     text-decoration: underline
+     &:hover
+       text-decoration: none
+.about__wrap
+   position: relative
+   top: 87px
+.adaptive-table
+   border-collapse: separate
+   tr
+      @media ( max-width: 991px )
+         margin: 15px
+         &:nth-child(n+7)
+            display: none
+      @media ( max-width: 767px )
+         width: 100%
+         overflow: hidden
+.table__logo
+   width: 25.72px
+   height: 25.72px
+   border-radius: 50%
+   margin-right: 8px
+.table__text
+  display: flex
+  column-gap: .5rem
+  color: #999
+  a
+    white-space: nowrap
+.table__row
+   justify-content: space-between
+.profile__table .pad
+   padding-right: 0 !important
+.red .table__flex .table__num
+   color: #F83939
+.green .table__flex .table__num
+   color: #05D27D
+.table__star
+   margin-right: 9px
+.table__icons
+   align-items: center
+   position: relative
+   top: 2px
+.table__star path
+   fill: transparent
+   stroke: #D0D0D0
+   stroke-width: 1.5px
+.table__star.able path
+   fill: $orange
+   stroke: transparent
+   stroke-width: 1.5px
+.table__icon.able path
+   fill: $blue
+.about__arr:hover path
+   fill: $blue
+thead .svg:hover path
+   fill: $blue
+.van
+   padding: 284px 0 100px
+   position: relative
+   .num
+      color: #656565
+      top: -124px
+      left: 167px
+.van__fig
+   position: absolute
+   top: 0
+   left: 0
+   width: 100%
+.van__block
+   display: flex
+   align-items: center
+   justify-content: center
+   width: 150px
+   height: 150px
+   border-radius: 50%
+   background: url(img/bg.png) no-repeat
+   padding-top: 3px
+   transition: 0.5s
+   margin: 0 auto 25px
+   background-size: 100%
+.van__icon
+   width: auto
+.van__box
+   flex-wrap: wrap
+   justify-content: center
+   margin-top: 71px
+   position: relative
+.van__item
+   width: 251px
+   margin: 40px
+   transition: 0.5s
+   &:hover
+      .van__block
+         background: url(img/bg2.png) no-repeat
+         transition: 0.5s
+         background-size: 100%
+.van__name
+   text-align: center
+   font-style: italic
+   font-weight: 900
+   font-size: 24px
+   line-height: 110%
+   margin-bottom: 26px
+   font-family: 'Merriweather', serif
+.van__text
+   font-size: 12px
+   line-height: 150%
+   margin-left: 10px
+.our .num
+   color: #656565
+   top: -131px
+   left: 121px
+.our__box
+   justify-content: space-between
+   max-width: 968px
+   margin: 45px auto 0
+.our__item
+   width: 310px
+   height: auto
+   background: #FFFFFF
+   border: 1px solid #EFEFEF
+   border-radius: 5px
+   padding: 49px 15px 43px
+   transition: 0.5s
+   &:hover
+      border: 1px solid $blue
+.our__time
+   text-align: center
+   font-weight: 300
+   font-size: 36px
+   line-height: 49px
+   margin-bottom: 5px
+.our__sum
+   font-style: italic
+   font-weight: 700
+   font-size: 72px
+   line-height: 91px
+   font-family: 'Merriweather', serif
+   margin-bottom: 6px
+   text-align: center
+.our__list
+   margin-left: 8px
+   li
+      display: flex
+      font-weight: 300
+      font-size: 14px
+      line-height: 136%
+      align-items: flex-end
+      margin-bottom: 6px
+      &:before
+         content: ""
+         display: inline
+         width: 8px
+         height: 8px
+         background: $orange
+         margin-right: 13px
+         border-radius: 50%
+         flex: 1 0 auto
+         max-width: 8px
+         position: relative
+         top: -8px
+.our__btn
+   width: 200px
+   height: 50px
+   margin: 40px auto 0
+   font-weight: 800
+   font-size: 16px
+.our
+   padding: 90px 0
+.pay
+   padding: 180px 0 185px
+   background: #101A56
+   .about__pic
+      position: relative
+      right: -42px
+      top: -30px
+.rev__box
+   justify-content: space-between
+   flex-wrap: wrap
+   max-width: 1062px
+   margin: 54px auto 0
+.rev__item
+   width: 516px
+   height: auto
+   background: #FFFFFF
+   border: 1px solid #F3F3F3
+   border-radius: 5px
+   transition: 0.5s
+   padding: 30px 40px
+   margin-bottom: 30px
+   &:hover
+      border: 1px solid $blue
+.rev__ava
+   width: 100px
+   height: 100px
+   border-radius: 50%
+   margin-right: 47px
+.rev__top
+   align-items: center
+   margin-bottom: 32px
+.rev__name
+   font-style: italic
+   font-weight: 700
+   font-size: 18px
+   line-height: 140%
+   font-family: 'Merriweather', serif
+   margin-bottom: 5px
+.rev__job
+   font-size: 14px
+   line-height: 140%
+   color: #8993AD
+.rev
+   padding: 180px 0
+.accordion-container
+   position: relative
+   height: auto
+   max-width: 846px
+   width: 100%
+   margin: 40px auto 0
+   border: 1px solid #F5F5F5
+   border-radius: 5px
+   padding: 0 40px
+.set
+   position: relative
+   width: 100%
+   height: auto
+   margin-bottom: 10px
+   &:last-child a
+      border: none
+.set>a
+   display: block
+   text-decoration: none
+   transition: all 0.2s linear
+   height: auto
+   width: 100%
+   background: url(img/up.svg) no-repeat 100% 50%
+   background-color: #FFFFFF
+   padding: 25px 0px 34px
+   border-bottom: 1px solid #F5F5F5
+   font-style: italic
+   font-weight: 700
+   font-size: 20px
+   line-height: 110%
+   color: #282828
+   font-family: 'Merriweather', serif
+   &:hover
+      color: $orange
+.set>a.active
+   padding-bottom: 25px
+   background: url(img/down.svg) no-repeat 100% 50%
+   background-color: #FFFFFF
+   border: none
+.content
+   position: relative
+   width: 100%
+   height: auto
+   display: none
+   overflow: auto
+   background-color: #FFFFFF
+   padding: 0
+   box-sizing: border-box
+   border-bottom: 1px solid #F5F5F5
+   padding-bottom: 10px
+   max-width: 727px
+   p
+      font-weight: 300
+      font-size: 14px
+      line-height: 150%
+      margin-bottom: 20px
+.ask
+   padding: 75px 0 80px
+.ask .num, .rev .num
+   left: 50%
+   margin-left: -108px
+   color: #656565
+.set:last-child .content
+   border: none
+.nav__logo img
+   width: 100%
+   object-fit: cover
+.pages__title
+   font-style: italic
+   font-weight: 700
+   font-size: 64px
+   line-height: 80px
+   font-family: 'Merriweather', serif
+.pages .container
+   max-width: 1280px
+.scan__search
+   font-weight: 300
+   font-size: 14px
+   line-height: 140%
+.scan .pages__title
+   margin-bottom: 0
+.select
+   box-sizing: border-box
+   appearance: none
+   background: url(img/arrow.svg) no-repeat right
+   background-position-x: calc(100% - 14px)
+   cursor: pointer
+   display: flex
+   align-items: center
+   overflow: visible
+   position: relative
+   width: 310px
+   //height: 50px
+   //border: 1px solid #DDDDDD
+   //border-radius: 5px
+   //padding-left: 21px
+   font-weight: 300
+   font-size: 12px
+   line-height: 140%
+   color: #282828
+.new-select
+   padding-top: 12px
+   padding-bottom: 10px
+   cursor: pointer
+   user-select: none
+   overflow: visible
+   font-weight: 300
+   font-size: 12px
+   line-height: 140%
+   color: #282828
+.new-select__list
+   position: absolute
+   top: 42px
+   left: 0
+   cursor: pointer
+   width: 100%
+   z-index: 2
+   user-select: none
+   border-top: none
+   border-radius: 0px 0px 5px 5px
+   max-height: 120px
+   overflow: scroll
+   overflow-x: visible
+   background: rgb(227, 227, 227)
+.new-select__list.on
+   display: block
+.new-select__item span
+   display: block
+   padding: 10px 18px
+   color: black
+   border-bottom: 1px solid #E8E8E8
+   font-size: 14px
+.new-select__item span:hover
+   color: $white
+   background: $orange
+.new-select:after
+   content: ''
+   display: block
+   width: 100%
+   height: 100%
+   position: absolute
+   right: 9px
+   top: 9px
+   opacity: 0.6
+   -webkit-transition: all .27s ease-in-out
+   -o-transition: all .27s ease-in-out
+   transition: all .27s ease-in-out
+   -webkit-transform: rotate(0deg)
+   -ms-transform: rotate(0deg)
+   -o-transform: rotate(0deg)
+   transform: rotate(0deg)
+.new-select.on:after
+   -webkit-transform: rotate(180deg)
+   -ms-transform: rotate(180deg)
+   -o-transform: rotate(180deg)
+   transform: rotate(180deg)
+.scan__flex
+   align-items: center
+   justify-content: space-between
+.scan__show
+   width: 200px
+   height: 50px
+   border: 1px solid $orange
+   border-radius: 50px
+   font-weight: 700
+   font-size: 14px
+   color: $orange
+   background: transparent
+   &:hover
+      background: $orange
+      border: 1px solid transparent
+      color: $white
+.scan__box
+   width: 100%
+   //height: 147px
+   border: 1px solid $orange
+   border-radius: 5px
+   //padding: 29px 46px 48px 32px
+   padding: 30px 45px
+   margin: 30px 0
+.scan-form
+   //align-items: flex-end
+   align-items: flex-start
+   justify-content: space-between
+   label
+      font-weight: 600
+      font-size: 12px
+      line-height: 140%
+      color: #282828
+      margin-bottom: 6px
+   input
+      width: 310px
+      height: 50px
+      border: 1px solid #DDDDDD
+      padding-left: 21px
+      border-radius: 5px
+      font-size: 12px
+   &__row
+     display: flex
+     align-items: flex-start
+     column-gap: 1rem
+.scan-search
+   position: relative
+.scan-form__link
+   position: absolute
+   width: 30px
+   height: 30px
+   transition: 0.5s
+   background: $orange
+   border-radius: 50%
+   display: flex
+   align-items: center
+   justify-content: center
+   padding: 3px
+   box-sizing: border-box
+   right: 15px
+   top: 32px
+   transition: 0.5s
+   &:hover
+      background: $blue
+   img
+      width: auto
+input
+   transition: 0.5s
+   &:focus
+      border: 1px solid #213CC0
+html * /* override x.xhtml.ru style */
+   scrollbar-width: thin
+   scrollbar-color: blue orange
+*::-webkit-scrollbar, html *::-webkit-scrollbar
+   height: 7px
+   width: 7px
+*::-webkit-scrollbar-track, html *::-webkit-scrollbar-track
+   background: #E7E7E7
+   border-radius: 3px
+*::-webkit-scrollbar-thumb, html *::-webkit-scrollbar-thumb
+   background-color: $orange
+   border-radius: 6px
+.scan-form__btn
+   position: relative
+   top: -1px
+.scan__table thead tr
+   background: #30366E
+.scan__table tbody tr:first-child td:nth-child(2)
+   width: 280px
+.scan__table tbody tr td:first-child
+   border-left: 0.5px solid #EFEFEF
+.scan__table tbody tr td:last-child
+   border-right: 0.5px solid #EFEFEF
+.scan__table
+   border-collapse: separate !important
+   border-spacing: 0px !important
+   thead
+      td
+         border: none
+         &:first-child
+            border-radius: 10px 0 0 0px !important
+         &:last-child
+            border-radius: 00px 10px 0 0px !important
+   tbody tr:last-child
+      background: #fff
+      td:first-child
+         border-radius: 0px 0 0 10px
+         border: 0.5px solid #EFEFEF
+         border-right: none
+         border-top: none
+      td:last-child
+         border-radius: 0px 0px 10px 0px
+         border: 0.5px solid #EFEFEF
+         border-left: none
+         border-top: none
+   td
+      border: none
+      border-bottom: 0.5px solid #EFEFEF
+   .table__row
+      justify-content: flex-start
+      .table__num
+         margin-left: 5px
+      .table__flex_main
+         min-width: 170px
+.profile__table .red .table__num:after
+   content: ""
+   display: inline-flex
+   background: url(img/table/arr-red.svg) no-repeat
+   width: 12px
+   height: 13px
+   top: 0
+   margin-left: 3px
+   position: relative
+.profile__table .green .table__num:after
+   content: ""
+   display: inline-flex
+   background: url(img/table/arr-green.svg) no-repeat
+   width: 12px
+   height: 13px
+   top: 0px
+   margin-left: 3px
+   position: relative
+   top: 3px
+.scan__table .red .table__num:after
+   content: ""
+   display: inline-flex
+   background: url(img/table/arr-red2.svg) no-repeat
+   width: 10px
+   height: 7px
+   position: relative
+   top: 0px
+   margin-left: 3px
+.scan__table .green .table__num:after
+   content: ""
+   display: inline-flex
+   background: url(img/table/arr-green2.svg) no-repeat
+   width: 10px
+   height: 7px
+   position: relative
+   top: 0px
+   margin-left: 3px
+
+.green .table__num, .green .table__el
+   color: #05D27D
+.red .table__num, .red .table__el
+   color: #E3392C
+.yellow .table__num, .yellow .table__el
+   color: #F3BC00
+.main
+   text-align: center
+   background: #FFF9F7
+   width: 125px
+.main .table__el, .main .table__num
+   font-weight: 800
+   font-size: 16px
+section table thead .main
+   background: #23295C
+   padding: 10px 6px !important
+   font-weight: 800 !important
+.pagination
+  display: flex
+  flex-wrap: wrap
+  align-items: center
+  column-gap: .2rem
+  .page-item
+    border-radius: .2rem
+    &.active
+      background-color: $blue
+      .page-link
+        color: white
+    .page-link
+      color: $blue
+      display: flex
+      align-items: center
+      justify-content: center
+      width: 30px
+      height: 30px
+      line-height: 100%
+      &:hover
+        color: $orange
+.navigation, .pagination
+   justify-content: center
+   align-items: center
+.navigation__text
+   font-size: 14px
+   line-height: 100%
+   color: #343434
+.navigation__list
+   margin: 0 22px
+   li
+      display: flex
+      align-items: center
+      background: transparent
+      border-radius: 5px
+      justify-content: center
+      margin: 0 10px
+      a
+         color: #343434
+         &:hover
+            color: $orange
+      &.active
+         background: #213CC0
+         width: 30px
+         height: 30px
+         a
+            color: #fff
+.scan
+   padding-bottom: 120px
+.nav__list li.active a
+   color: $orange
+.signal
+   padding-top: 83px
+   .scan__box
+      height: auto
+      padding: 29px 46px 21px 32px
+   .pages__title
+      margin-top: 0
+.signal__block
+   width: 50px
+   height: 50px
+   background: #FF7442
+   border-radius: 0px 5px 5px 0px
+   display: flex
+   align-items: center
+   justify-content: center
+   font-weight: 500
+   font-size: 12px
+   line-height: 140%
+   color: #FFFFFF
+   position: absolute
+   right: 0
+   bottom: 0
+.scan-form__item
+   position: relative
+.opt
+   margin-right: 20px
+   label
+      text-align: left
+      display: flex
+      align-items: center
+      cursor: pointer
+      p
+         font-weight: 300
+         font-size: 12px
+         line-height: 140%
+         color: #282828
+   &:last-child
+      margin-right: 0
+input#agree
+   margin-right: 14px
+   width: 20px
+   height: 20px
+   border: 1px solid #DDDDDD
+   border-radius: 3px
+   flex: 1 0 auto
+   max-width: 20px
+   box-sizing: border-box
+input[type=checkbox]
+   display: none
+input[type=checkbox]+label:before
+   content: "\2713"
+   color: transparent
+   display: inline-block
+   border: 1px solid #DDDDDD
+   border-radius: 3px
+   font-size: 16px
+   line-height: 19px
+   margin: -2px 5px 0 0
+   height: 20px
+   width: 20px
+   text-align: center
+   vertical-align: middle
+   transition: color ease .3s
+   box-sizing: border-box
+   flex: 1 0 auto
+   max-width: 20px
+input[type=checkbox]:checked+label:before
+   color: $orange
+.signal__bottom
+   margin-top: 13px
+   align-items: center
+.signal__text
+   font-weight: 600
+   font-size: 12px
+   line-height: 140%
+   margin-right: 4px
+.table__buy, .table__sell
+   width: 120px
+   height: 30px
+   border: 1px solid #FF7442
+   border-radius: 50px
+   font-weight: 700
+   font-size: 12px
+   color: #FF7442 !important
+   text-decoration: none !important
+   &:hover
+      background: #FF7442
+      color: $white !important
+.scan__table .signal-body tr td:last-child
+   display: flex
+   justify-content: center
+.scan__table .signal-body td[data-label="Текущий Ранг"]  .table__num
+   color: #282828 !important
+#users .users__box
+   padding: 29px 32px 48px
+   height: auto
+   .scan-form
+      justify-content: flex-start
+   .scan-form__item
+      margin-right: 20px
+      &:last-child
+         margin-right: 0
+.mail
+   background: url(img/1.svg) no-repeat 95% 10px
+.name
+   background: url(img/2.svg) no-repeat 95% 10px
+.scan__table .signal-body td[data-label="Имя"]
+   font-weight: 700
+   font-size: 13px
+.users__table td
+   padding: 12px 5px
+.table__mail
+   font-weight: 600
+   font-size: 13px
+   line-height: 100%
+   color: #282828
+   transition: 0.5s
+   &:hover
+      color: $orange
+.users__table .user p
+   font-weight: 600
+   font-size: 13px
+   line-height: 100%
+   color: #57DC13
+.users__table .admin p
+   font-weight: 600
+   font-size: 13px
+   line-height: 100%
+   color: #F94545
+.users__time
+   line-height: 120%
+   font-weight: 600
+   font-size: 13px
+   color: #282828
+   margin-bottom: 2px
+.users__info
+   font-weight: 300
+   font-size: 13px
+   line-height: 100%
+.users__link
+   background: transparent
+   align-items: center
+   border-width: 0
+   box-shadow: none
+   &:hover
+      p
+         color: $orange
+   .svg
+      transition: 0.5s
+   &:nth-child(1)
+      margin-right: 10px
+      &:hover path
+         fill: $orange
+   &:nth-child(2)
+      &:hover
+         path
+            fill: $blue
+         p
+            color: $blue
+   p
+      font-weight: 600
+      font-size: 13px
+      color: #282828
+      margin-left: 6px
+      transition: 0.5s
+::selection
+   background: $orange
+::-moz-selection
+   background: $orange
+@media (min-width: 480px)
+  .nowrap-desktop
+    white-space: nowrap

@@ -1,74 +1,63 @@
-<table class="table table-hover">
+<table class="table profile__table scan__table adaptive-table">
     <thead class="table-secondary">
-    <tr>
-        <th>Name</th>
-        <th>
+    <tr class="profile__row">
+        <td class="active pad">Название</td>
+        <td class="active {{ $sortable[$table_name]->column == 'rank' ? 'main' : null }}">
+            Текущий ранг
             @include('blackshot::partials.sortable-signals', ['column' => 'rank', 'sortable' => $sortable[$table_name]])
-            Current Rank
-        </th>
-        <th>
-            @include('blackshot::partials.sortable-signals', ['column' => 'diff', 'sortable' => $sortable[$table_name]])
-            Diff Rank
+        </td>
+        <td class="nowrap-desktop active {{ $sortable[$table_name]->column == 'diff' ? 'main' : null }}">
+            Изменение ранга за
             <span class="badge bg-light text-secondary ms-1">
                 {{ $filter->days }} {{ \Illuminate\Support\Str::plural('day', $filter->days) }}
             </span>
-        </th>
-        <th>Last updated</th>
-        <th></th>
+            @include('blackshot::partials.sortable-signals', ['column' => 'diff', 'sortable' => $sortable[$table_name]])
+        </td>
+        <td class="active">Цена токена</td>
+        <td class="active"></td>
     </tr>
     </thead>
-    <tbody>
+    <tbody class="signal-body">
     @foreach($coins as $coin)
-        <tr>
-            <td>
-                <div class="d-flex flex-nowrap align-items-center">
-                    @if(!empty($coin->info->logo))
-                        <img src="{{ $coin->info->logo }}" class="me-1" alt="" height="32">
-                    @endif
-
-                    <a href="{{ route('coins.view', $coin->uuid) }}"
-                       class="ms-1 me-2 text-dark text-nowrap"><strong>{{ $coin->name }}</strong></a>
-
-                    <span class="text-secondary">{{ $coin->symbol }}</span>
-
-                    <span class="ms-2">
-                        @if($coin->signal_max_diff)
-                            <span class="badge bg-primary rounded-circle d-inline-block p-1 ms-1"></span>
+        <tr class="profile__row">
+            <td class="active pad" data-label="Название">
+                <div class="table__row d-flex">
+                    <div class="table__flex table__flex_main d-flex">
+                        @if(!empty($coin->info->logo))
+                            <img src="{{ $coin->info->logo }}" class="table__logo" alt="" height="32">
                         @endif
-
-                        @if($coin->signal_max_period)
-                            <span class="badge bg-warning rounded-circle d-inline-block p-1 ms-1"></span>
-                        @endif
-
-                        @if($coin->signal_more_change_rank)
-                            <span class="badge bg-success rounded-circle d-inline-block p-1 ms-1"></span>
-                        @endif
-                    </span>
+                        <p class="table__text">
+                            <a href="{{ route('coins.view', $coin->uuid) }}">
+                                <span>{{ $coin->name }}</span>
+                            </a>
+                            {{ $coin->symbol }}
+                        </p>
+                    </div>
                 </div>
             </td>
 
-            <td>
+            <td class="active">
                 {{ $coin->rank }}
             </td>
 
-            <td>
+            <td class="active {{ $coin->diff > 0 ? 'green' : 'red' }}">
                 @include('blackshot::partials.badge-position-text', ['position' => $coin->diff])
             </td>
 
-            <td>
+            <td class="active">
                 @if($coin->first_historical_data)
-                    {{ \Illuminate\Support\Carbon::createFromTimeString($coin->updated_at)->diffForHumans() }}
+                    @include('blackshot::coins.partials.price', ['price' => $coin->price])
                 @endif
             </td>
 
-            <td>
+            <td class="active">
                 @if ($coins_buying_me->where('uuid', $coin->uuid)->count())
-                    <a href="#" class="btn btn-sm btn-outline-danger" data-uuid="{{ $coin->uuid }}" data-buying>
-                        Cancel
+                    <a href="javascript:void(0);" class="table__sell btn" data-uuid="{{ $coin->uuid }}" data-buying>
+                        Не покупаю
                     </a>
                 @else
-                    <a href="#" class="btn btn-sm btn-outline-success" data-uuid="{{ $coin->uuid }}" data-buying>
-                        Purchasing
+                    <a href="javascript:void(0);" class="table__buy btn" data-uuid="{{ $coin->uuid }}" data-buying>
+                        Покупаю
                     </a>
                 @endif
             </td>

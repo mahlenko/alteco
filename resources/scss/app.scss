@@ -1,55 +1,27 @@
-@import '~bootstrap/scss/bootstrap';
-@import 'dropdown';
-@import 'navbar-blackshot';
-@import 'table';
-@import 'colors-checkbox';
+.selectize-input {
+    background-color: transparent !important;
+    border: 1px solid #DDDDDD;
+    border-radius: 5px;
+    padding-right: 50px !important;
+    height: 50px;
+    min-height: 50px !important;
+    box-shadow: none !important;
 
-.breadcrumb {
-    margin-top: -1.5rem;
-    margin-bottom: 0;
-    padding: 1rem 0;
-    font-size: .9rem;
-}
-
-small {
-    font-size: 86%;
-}
-
-.badge {
-    font-weight: 300;
-    strong { font-weight: 600; }
-}
-
-strong.badge {
-    font-weight: 600;
-}
-
-.favorite {
-    .far, .fas {
-        transition: color .2s;
+    &.focus {
+        border-color: #213CC0 !important;
     }
 
-    .far {
-        color: $secondary;
-
-        &:hover {
-            color: $warning;
-        }
-    }
-
-    .fas {
-        color: $warning;
-        &:hover {
-            color: $secondary;
-        }
-    }
-}
-
-.selectize-dropdown-content {
-    .option {
+    & .item {
         &.active {
-            background-color: $primary;
-            color: white;
+            background-color: #213CC0 !important;
         }
     }
+}
+
+.daterangepicker {
+    .active { background-color: #213CC0 !important; }
+}
+
+.selectize-input [type="select-multiple"] {
+    height: 24px;
 }

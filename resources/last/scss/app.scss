@@ -1,0 +1,55 @@
+@import '../../../node_modules/bootstrap/scss/bootstrap';
+@import 'dropdown';
+@import 'navbar-blackshot';
+@import 'table';
+@import 'colors-checkbox';
+
+.breadcrumb {
+    margin-top: -1.5rem;
+    margin-bottom: 0;
+    padding: 1rem 0;
+    font-size: .9rem;
+}
+
+small {
+    font-size: 86%;
+}
+
+.badge {
+    font-weight: 300;
+    strong { font-weight: 600; }
+}
+
+strong.badge {
+    font-weight: 600;
+}
+
+.favorite {
+    .far, .fas {
+        transition: color .2s;
+    }
+
+    .far {
+        color: $secondary;
+
+        &:hover {
+            color: $warning;
+        }
+    }
+
+    .fas {
+        color: $warning;
+        &:hover {
+            color: $secondary;
+        }
+    }
+}
+
+.selectize-dropdown-content {
+    .option {
+        &.active {
+            background-color: $primary;
+            color: white;
+        }
+    }
+}

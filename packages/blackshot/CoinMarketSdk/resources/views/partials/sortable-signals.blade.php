@@ -1,15 +1,12 @@
+@php($data = ['sortable' => [$table_name => $column.':'. ($sortable->direction == 'asc' ? 'desc' : 'asc') ]])
+
 @if ($sortable->column == $column)
-    @if($sortable->direction == 'asc')
-        <a href="{{ \Illuminate\Support\Facades\URL::route('signals.home', ['sortable' => [$table_name => $column.':desc' ]]) }}" class="text-decoration-none">
-            <i class="fas fa-sort-down text-primary"></i>
-        </a>
-    @elseif($sortable->direction == 'desc')
-        <a href="{{ \Illuminate\Support\Facades\URL::route('signals.home', ['sortable' => [$table_name => $column.':asc' ]]) }}" class="text-decoration-none">
-            <i class="fas fa-sort-up text-primary"></i>
-        </a>
-    @endif
+    <a href="{{ \Illuminate\Support\Facades\URL::route('signals.home', $data) }}"
+       class="sortable-link {{ $sortable->direction == 'desc' ? 'sortable-desc' : null }}">
+        <img src="{{ asset('css/img/table/arr1.svg') }}" alt="" class="about__arr svg">
+    </a>
 @else
-    <a href="{{ \Illuminate\Support\Facades\URL::route('signals.home', ['sortable' => [$table_name => $column.':asc' ]]) }}" class="text-decoration-none">
-        <i class="fas fa-sort text-secondary"></i>
+    <a href="{{ \Illuminate\Support\Facades\URL::route('signals.home', $data) }}" class="sortable-link">
+        <img src="{{ asset('css/img/table/arr1.svg') }}" alt="" class="about__arr svg">
     </a>
 @endif

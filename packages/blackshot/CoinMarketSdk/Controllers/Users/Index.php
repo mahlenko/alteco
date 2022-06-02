@@ -21,16 +21,26 @@ class Index extends \App\Http\Controllers\Controller
             return redirect()->route('users.edit', Auth::id());
         }
 
-        if (key_exists('email', $filter) && $filter['email']) {
-            $users = User::where('email', 'like', '%'. $filter['email'] .'%')
-                ->paginate(self::PAGINATE_PER_PAGE);
-        } else {
-            $users = User::paginate(self::PAGINATE_PER_PAGE);
-        }
-
         return view('blackshot::users.index', [
-            'users' => $users,
+            'users' => self::getFilterUsers($filter),
             'filter' => $filter
         ]);
+    }
+
+    public static function getFilterUsers(array $filter)
+    {
+        if (!$filter) return User::paginate(self::PAGINATE_PER_PAGE);
+
+        $users = User::with([]);
+
+        if (key_exists('email', $filter) && !empty(trim($filter['email']))) {
+            $users->where('email', 'like', '%'. $filter['email'] .'%');
+        }
+
+        if (key_exists('name', $filter) && !empty(trim($filter['name']))) {
+            $users->where('name', 'like', '%'. $filter['name'] .'%');
+        }
+
+        return $users->paginate(self::PAGINATE_PER_PAGE);
     }
 }

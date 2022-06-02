@@ -4,13 +4,13 @@ use DaveJamesMiller\Breadcrumbs\Facades\Breadcrumbs;
 
 // Home
 Breadcrumbs::for('home', function ($trail) {
-    $trail->push('Home', route('home'));
+    $trail->push('Главная', route('home'));
 });
 
 // Home > Coins
 Breadcrumbs::for('coins.home', function ($trail) {
     $trail->parent('home');
-    $trail->push('Coins', route('coins.home'));
+    $trail->push('Монеты', route('coins.home'));
 });
 
 // Home > Coins > {Coin}
@@ -22,17 +22,17 @@ Breadcrumbs::for('coins.view', function ($trail, $data = []) {
 // Home > Signals
 Breadcrumbs::for('signals.home', function ($trail, $data = []) {
     $trail->parent('coins.home');
-    $trail->push('Signals', route('signals.home'));
+    $trail->push('Сигналы', route('signals.home'));
 });
 
 
 // Home > Users
 Breadcrumbs::for('users.home', function ($trail) {
     $trail->parent('home');
-    $trail->push('Users', route('users.home'));
+    $trail->push('Пользователи', route('users.home'));
 });
 
 Breadcrumbs::for('users.edit', function ($trail) {
     $trail->parent('users.home');
-    $trail->push('Edit user', route('users.edit'));
+    $trail->push('Редактировать пользователя', route('users.edit'));
 });

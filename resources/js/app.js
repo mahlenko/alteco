@@ -20,8 +20,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
         })
     }
 
-    $("select").selectize({});
-
     // мобильный просмотр таблиц
     let tables = document.querySelectorAll('table.table')
     if (tables.length) {
@@ -31,6 +29,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
             }
         })
     }
+
+    $('select[multiple]').selectize({});
 
 });
 
@@ -42,15 +42,22 @@ function mobileTable(table)
 {
     let header = table.querySelector('thead')
     let body = table.querySelector('tbody')
+    let main_index = null
     let columns = []
 
-    header.querySelectorAll('th').forEach(column => {
+    header.querySelectorAll('td').forEach((column, index) => {
         columns.push(column.innerText.trim())
+        if (!main_index && column.classList.contains('main')) {
+            main_index = index
+        }
     })
 
     body.querySelectorAll('tr').forEach(row => {
         row.querySelectorAll('td').forEach((column, index) => {
-            column.dataset.label = columns[index]
+            if (!column.dataset.label) {
+                column.dataset.label = columns[index]
+            }
+            if (index === main_index) column.classList.add('main')
         })
     })
 }

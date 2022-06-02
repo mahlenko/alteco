@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+	<meta charset="UTF-8">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="format-detection" content="telephone=no">
+	<meta name="format-detection" content="date=no">
+	<meta name="format-detection" content="address=no">
+	<meta name="format-detection" content="email=no">
+	<meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+	<title>AltEco</title>
+	<meta name="keywords" content="">
+	<meta name="description" content="">
+
+	<meta property="og:locale" content="ru-Ru">
+	<meta property="og:type" content="website">
+	<meta property="og:title" content="">
+	<meta property="og:description" content="">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link
+		href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Red+Hat+Display:wght@500;900&family=Sora:wght@400;600;700&display=swap"
+		rel="stylesheet">
+
+	<link rel="stylesheet" href="css/jquery.arcticmodal-0.3.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+
+</head>
+
+<body>
+	<h1 style="text-align: center; margin: 40px auto;">
+		Pages
+	</h1>
+	<ul style="display: flex; max-width: 800px; margin: 0 auto 50px; flex-wrap: wrap;">
+		<li style="width: 25%; margin: 0 auto;">
+			<a href="main.html" style="font-weight: bold; font-size: 25px; display: block; text-align: center;">Landing</a>
+		</li>
+		<li style="width: 25%; margin: 0 auto;">
+			<a href="scanner.html"
+				style="font-weight: bold; font-size: 25px; display: block; text-align: center;">Scanner</a>
+		</li>
+		<li style="width: 25%; margin: 0 auto;">
+			<a href="signal.html"
+				style="font-weight: bold; font-size: 25px; display: block; text-align: center;">Signal</a>
+		</li>
+		<li style="width: 25%; margin: 0 auto;">
+			<a href="users.html" style="font-weight: bold; font-size: 25px; display: block; text-align: center;">Users</a>
+		</li>
+		<li style="width: 25%; margin: 40px auto;">
+			<a href="settings.html"
+				style="font-weight: bold; font-size: 25px; display: block; text-align: center;">Settings</a>
+		</li>
+	</ul>
+	<div class="d-flex"
+		style="justify-content: space-between; margin-top: 80px; max-width: 1000px; margin: 0 auto; flex-wrap: wrap;">
+		<a href="#" class="btn btn1 calc" style="margin: 20px;">
+			Calculator ROI
+		</a>
+		<a href="#" class="btn btn2 p1" style="margin: 20px;">
+			Stake
+		</a>
+	</div>
+
+	<div style="display:none;">
+		<div class="box-modal pop1" id="pop6">
+			<div class="popup">
+				<div class="popup-call__box">
+					<div class="box-modal__close articmodal-close">
+						<img src="css/img/close.svg" alt="" class="svg">
+					</div>
+					<div class="popup__flex d-flex">
+						<div class="popup__left">
+							<img src="css/img/token.svg" alt="">
+						</div>
+						<div class="popup__right">
+							<p class="popup__title">
+								Sell BULL
+							</p>
+							<div class="popup-links d-flex">
+								<a href="#" class="active">
+									Limit price
+								</a>
+								<a href="#">
+									Best price
+								</a>
+							</div>
+							<form action="" class="popup-form market-form item-form">
+								<div class="pop1__item">
+									<label>
+										Enter BULL Sum
+									</label>
+									<input type="number" name="usd" maxlength="8" placeholder="100.00" class="bull">
+									<p class="max">
+										Max: 65 BULL
+									</p>
+								</div>
+								<div class="pop1__item">
+									<label>
+										Price
+									</label>
+									<input type="number" name="usd" maxlength="8" placeholder="100.00" class="bull">
+								</div>
+								<div class="pop1__item">
+									<label>
+										You get USDT
+									</label>
+									<input type="number" name="usd" maxlength="8" placeholder="100.00" class="bull">
+								</div>
+
+								<a href="#" class="pop-btn btn btn3">
+									Buy
+								</a>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="js/all.js"></script>
+</body>
+
+</html>

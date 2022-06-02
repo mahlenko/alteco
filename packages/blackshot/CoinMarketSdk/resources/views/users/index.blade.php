@@ -1,92 +1,114 @@
 @extends('blackshot::layouts.app')
 
 @section('content')
-    <div class="d-flex align-items-center justify-content-between px-2">
-        <div>
-            <h1>
-                <i class="fas fa-users text-secondary" aria-hidden="true"></i>
-                <strong>Users</strong>
+    <div class="scan__flex d-flex">
+        <div class="scan__left">
+            <h1 class="pages__title">
+                Пользователи
             </h1>
-            <p class="text-secondary">
-                Total of {{ $users->total() }} {{ \Illuminate\Support\Str::plural('user', $users->total()) }}
-                on {{ $users->lastPage() }} {{ \Illuminate\Support\Str::plural('page', $users->lastPage()) }}
-            </p>
         </div>
-
-        <a href="{{ route('users.edit') }}" class="btn btn-outline-success">
-            <i class="fas fa-user-plus"></i>
-            Add user
+        <a href="{{ route('users.edit') }}" class="scan__show btn btn1">
+            Добавить пользователя
         </a>
     </div>
 
-    <div class="mb-4">
-        <form action="{{ route('users.home') }}" method="POST" id="filter_form">
+    {{-- Filter form --}}
+    <div class="scan__box users__box">
+        <form action="{{ route('users.home') }}"
+              method="POST"
+              class="scan-form d-flex"
+              id="filter_form"
+              style="justify-content: flex-start; column-gap: 1rem"
+        >
             @csrf
-            <div class="rounded p-3 border bg-light">
-                <div class="d-flex flex-column flex-md-row">
-                    {{--  --}}
-                    <div class="col-12 col-md-3">
-                        <label class="mb-2" for="positions">
-                            <strong>User email</strong>
-                        </label>
-
-                        <div class="input-group">
-                            <input
-                                id="positions"
-                                name="filter[email]"
-                                type="text"
-                                value="{{ $filter['email'] ?? null }}"
-                                onchange="return document.getElementById('filter_form').submit()"
-                                class="form-control d-inline-block">
-                        </div>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-primary mt-2">
-                    <i class="fas fa-filter"></i>
-                    Filter
+            <div class="scan-form__item">
+                <label for="email">Email пользователя</label> <br>
+                <input type="email"
+                       id="email"
+                       name="filter[email]"
+                       value="{{ $filter['email'] ?? null }}"
+                       onchange="return document.getElementById('filter_form').submit()"
+                       inputmode="email"
+                       placeholder="johnjohnson@gmail.com" class="mail">
+            </div>
+            <div class="scan-form__item">
+                <label for="name">Имя пользователя</label><br>
+                <input type="text"
+                       id="name"
+                       name="filter[name]"
+                       value="{{ $filter['name'] ?? null }}"
+                       onchange="return document.getElementById('filter_form').submit()"
+                       placeholder="John Johnson"
+                       class="name">
+            </div>
+            <div>
+                <br>
+                <button class="scan-form__btn btn btn2">
+                    Фильтровать
                 </button>
             </div>
         </form>
     </div>
 
-    <table class="table">
-        <tbody>
-            @foreach($users as $user)
-            <tr>
-                <td>
-                    <strong>{{ $user->name }}</strong>
-                    <span class="badge bg-light text-{{ $user->isAdmin() ? 'success' : 'secondary' }}">
-                        {{ $user->role }}
-                    </span>
-                    <br>
-                    {{ $user->email }}
-                </td>
+    <div class="scan__wrap">
+        <table class="profile__table scan__table users__table adaptive-table">
+            <thead>
+                <tr class="profile__row">
+                    <td class="active pad">Имя</td>
+                    <td class="active">E-mail</td>
+                    <td class="active">Роль</td>
+                    <td class="active">Подписка</td>
+                    <td class="active">Последнее обновление</td>
+                    <td class="active"></td>
+                </tr>
+            </thead>
 
-                <td>
-                    <strong>{{ \Carbon\Carbon::createFromTimeString($user->created_at)->diffForHumans() }}</strong><br>
-                    {{ \Carbon\Carbon::createFromTimeString($user->created_at) }}
-                </td>
+            <tbody class="signal-body">
+                @foreach($users as $user)
+                <tr class="profile__row">
+                    <td class="active">
+                        {{ $user->name }}
+                    </td>
 
-                <td width="230" class="text-end">
-                    <ul class="btn-group btn-group-sm">
-                        <a href="{{ route('users.edit', $user->id) }}" class="btn btn-light">
-                            <i class="far fa-edit me-1"></i>Edit
-                        </a>
+                    <td class="active">
+                        {{ $user->email }}
+                    </td>
 
-                        <form action="{{ route('users.delete') }}" method="post" onsubmit="return confirm('Confirm the deletion of the user.')">
-                            @csrf
-                            <input type="hidden" name="id" value="{{ $user->id }}">
-                            <button type="submit" class="btn btn-sm btn-light">
-                                <i class="far fa-trash-alt me-1 text-danger"></i>Delete
-                            </button>
-                        </form>
-                    </ul>
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+                    <td class="active {{ $user->role }}">
+                        <p>{{ $user->role == 'user' ? 'Пользователь' : 'Администратор' }}</p>
+                    </td>
+
+                    <td class="active">
+                        {{ $user->expired_at ? 'до ' .  \Illuminate\Support\Carbon::make($user->expired_at)->isoFormat('D MMMM YYYY') : 'Бесплатная' }}
+                    </td>
+
+                    <td class="active">
+                        <strong>{{ \Carbon\Carbon::createFromTimeString($user->created_at)->diffForHumans() }}</strong><br>
+                        {{ \Carbon\Carbon::createFromTimeString($user->created_at) }}
+                    </td>
+
+                    <td class="active">
+                        <div class="table__icons d-flex">
+                            <a href="{{ route('users.edit', $user->id) }}" class="users__link d-flex">
+                                <img src="{{ asset('css/img/edit.svg') }}" alt="" class="svg">
+                                <p>Редактировать</p>
+                            </a>
+
+                            <form action="{{ route('users.delete') }}" method="post" class="users__link d-flex" onsubmit="return confirm('Подтердите удаление пользователя {{ $user->name }}.')">
+                                @csrf
+                                <input type="hidden" name="id" value="{{ $user->id }}">
+                                <button type="submit" class="users__link d-flex">
+                                    <img src="{{ asset('css/img/delete.svg') }}" alt="" class="svg">
+                                    <p>Удалить</p>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
 
     {{ $users->links() }}
 @endsection

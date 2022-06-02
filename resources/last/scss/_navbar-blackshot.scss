@@ -1,0 +1,26 @@
+.navbar-blackshot {
+    padding: 0;
+
+    .nav-item {
+        margin: 0 .25rem;
+
+        .nav-link {
+            color: $dark;
+            //color: white;
+            display: flex;
+            font-size: .8rem;
+            flex-direction: column;
+            align-items: center;
+
+            .fab, .fas, .far {
+                font-size: 1.3rem;
+            }
+
+            &.no-after {
+                &:after {
+                    display: none;
+                }
+            }
+        }
+    }
+}
