@@ -159,8 +159,8 @@ function createGraph(container) {
         yAxis: yAxis,
         valueYField: 'value',
         valueXField: 'date',
-        fill: am5.color(0x0d6efd),
-        stroke: am5.color(0x0d6efd),
+        fill: am5.color(0xf52e2e),
+        stroke: am5.color(0xf52e2e),
         tooltip: am5.Tooltip.new(root, {
             // pointerOrientation: "horizontal",
             labelText: "{default_value}",
@@ -168,8 +168,9 @@ function createGraph(container) {
     }));
 
     series.fills.template.setAll({
-        fillOpacity: 0.2,
-        visible: false
+        // fill: am5.color(0xf52e2e),
+        // fillOpacity: 0.2,
+        visible: false,
     });
 
     series.strokes.template.setAll({
@@ -192,6 +193,7 @@ function createGraph(container) {
         })
 
         return am5.Bullet.new(root, {
+            fill: root.interfaceColors.get("background"),
             sprite: circle
         })
     });

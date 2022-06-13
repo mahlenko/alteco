@@ -1,6 +1,10 @@
 @if ($percent)
-    <span class="badge {{ $percent < 0 ? 'bg-danger' : 'bg-success' }} ms-3">
-        {!! $percent < 0 ? '<i class="fas fa-arrow-down"></i>' : '<i class="fas fa-arrow-up"></i>' !!}
-        {{ number_format(abs($percent), 2) }}
-    </span>
+    <div class="item-content__block item-content__block_{{ $percent > 0 ? 'green' : 'red' }}">
+        <p>{{ number_format(abs($percent), 2) }}</p>
+        @if ($percent < 0)
+            <img src="{{ asset('images/arr.svg') }}" class="arrow-icon" alt="">
+        @else
+            <img src="{{ asset('images/arr.svg') }}" class="arrow-icon" alt="">
+        @endif
+    </div>
 @endif

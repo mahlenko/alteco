@@ -1,19 +1,17 @@
 @extends('blackshot::layouts.app')
 
 @section('content')
-
-    <div class="d-flex align-items-center justify-content-between px-2 mb-3">
-        <div>
-            <h1>
-                <i class="fas fa-cog text-secondary" aria-hidden="true"></i>
-                <strong>Settings</strong>
+    <div class="scan__flex d-flex">
+        <div class="scan__left">
+            <h1 class="pages__title">
+                Настройки системы
             </h1>
         </div>
     </div>
 
     <form action="{{ route('settings.store') }}" method="post">
         @csrf
-        <table class="table">
+        <table class="table-setting">
             <thead class="table-secondary">
                 <tr>
                     <th>Key</th>
@@ -31,7 +29,7 @@
                                value="{{ old('api_key', $settings['api_key'] ?? null) }}"
                                name="api_key"
                                id="api_key"
-                               class="form-control"
+                               size="40"
                                placeholder="********-****-****-****-************">
                     </td>
                 </tr>
@@ -45,7 +43,7 @@
                                value="{{ old('loading_coins_position', $settings['loading_coins_position'] ?? null) }}"
                                name="loading_coins_position"
                                id="loading_coins_position"
-                               class="form-control"
+                               size="40"
                                placeholder="100">
                     </td>
                 </tr>
@@ -53,10 +51,7 @@
         </table>
 
         <p>
-            <button type="submit" class="btn btn-outline-success">
-                <i class="far fa-save"></i>
-                Save settings
-            </button>
+            <button type="submit" class="btn btn2">Сохранить</button>
         </p>
     </form>
 @endsection

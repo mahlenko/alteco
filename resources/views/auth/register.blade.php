@@ -1,96 +1,80 @@
-@extends('blackshot::layouts.app')
+@extends('blackshot::layouts.auth')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Register') }}</div>
+    <div class="auth-container">
+        <div class="login-container">
+            <h1>Регистрация</h1>
 
-                <div class="card-body">
-                    <form method="POST" action="{{ route('register') }}">
-                        @csrf
-
-                        <div class="form-group row">
-                            <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Name') }}</label>
-
-                            <div class="col-md-6 mb-2">
-                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
-
-                                @error('name')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
-
-                            <div class="col-md-6 mb-2">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
-
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
-
-                            <div class="col-md-6 mb-2">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
-
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ __('Confirm Password') }}</label>
-
-                            <div class="col-md-6 mb-2">
-                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="password-confirm" class="col-md-4 col-form-label text-md-right">
-                            </label>
-
-                            <div class="col-md-6 mb-4">
-                                <div class="d-flex">
-                                    <span class="me-2">
-                                        <input type="checkbox" required class="form-check-input" name="agreement" id="agreement">
-                                    </span>
-
-                                    <label for="agreement" class="form-check-label">
-                                        I am familiar with the <a href="/files/user-agreement.pdf" target="_blank">user agreement</a>
-                                        and give my consent to the processing of personal data.
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div class="form-group row mb-0">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Register') }}
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+            @include('flash::message')
+            @if ($errors->count())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
                 </div>
-            </div>
+            @endif
+
+            <form method="POST" action="{{ route('register') }}">
+                @csrf
+
+                <div class="form-control-row">
+                    <label for="name">{{ __('Имя') }}</label>
+                    <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus>
+                    @error('email')
+                    <p class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </p>
+                    @enderror
+                </div>
+
+                <div class="form-control-row">
+                    <label for="email">{{ __('E-Mail') }}</label>
+                    <input id="email" type="email" name="email" value="{{ old('email') }}" required autocomplete="email">
+                    @error('email')
+                    <p class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </p>
+                    @enderror
+                </div>
+
+                <div class="form-control-row">
+                    <label for="password">{{ __('Пароль') }}</label>
+                    <input id="password" type="password" name="password" value="{{ old('password') }}" required>
+                    @error('password')
+                    <p class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </p>
+                    @enderror
+                </div>
+
+                <div class="form-control-row">
+                    <label for="password_confirmation">{{ __('Повторите пароль') }}</label>
+                    <input id="password_confirmation" type="password" name="password_confirmation" value="{{ old('password_confirmation') }}" required>
+                    @error('password_confirmation')
+                    <p class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </p>
+                    @enderror
+                </div>
+
+                <div>
+                    <input class="form-check-input" type="checkbox" required name="agreement" id="agreement" {{ old('agreement') ? 'checked' : '' }}>
+                    <label class="form-check-label" for="agreement">
+                        Я ознакомлен с <a href="/files/user-agreement.pdf" target="_blank">пользовательским соглашением</a>
+                        и даю свое согласие на обработку персональных данных.
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn1" style="width: 100%; margin-top: 1rem;">
+                    {{ __('Зарегистрироваться') }}
+                </button>
+
+                <p style="text-align: center; margin-top: 1rem; margin-bottom: 1rem;">
+                    <a href="{{ route('login')  }}">У меня есть аккаунт</a>
+                </p>
+            </form>
         </div>
     </div>
-</div>
 @endsection

@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+	<meta charset="UTF-8">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="format-detection" content="telephone=no">
+	<meta name="format-detection" content="date=no">
+	<meta name="format-detection" content="address=no">
+	<meta name="format-detection" content="email=no">
+	<meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+	<title>AltEco</title>
+	<meta name="keywords" content="">
+	<meta name="description" content="">
+
+	<meta property="og:locale" content="ru-Ru">
+	<meta property="og:type" content="website">
+	<meta property="og:title" content="">
+	<meta property="og:description" content="">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link
+		href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700;800&family=Merriweather:ital,wght@1,300;1,700;1,900&display=swap"
+		rel="stylesheet">
+
+
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css"></script>
+
+
+	<link rel="stylesheet" href="css/jquery.arcticmodal-0.3.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+
+</head>
+
+<body>
+	<div class="body-wrap pages">
+		<header class="header header-pages" id="header-pages">
+			<nav>
+				<div class="container">
+					<div class="nav__box d-flex">
+						<a href="#" class="nav__logo">
+							<img src="css/img/logo2.svg" alt="">
+						</a>
+						<ul class="nav__list d-flex">
+							<li>
+								<a href="#">
+									Монеты
+								</a>
+							</li>
+							<li>
+								<a href="#">
+									Сигналы
+								</a>
+							</li>
+							<li>
+								<a href="#">
+									Пользователи
+								</a>
+							</li>
+							<li class="active">
+								<a href="#">
+									Настройки
+								</a>
+							</li>
+						</ul>
+						<div class="nav__right d-flex">
+							<p class="header-pages__text">
+								У вас есть <span> 3 дня</span> бесплатного доступа
+							</p>
+							<a href="#" class="nav__btn btn btn1">
+								Улучшить тариф
+							</a>
+						</div>
+						<div class="header-pages__info d-flex">
+							<img src="css/img/ava.png" alt="" class="header-pages__ava">
+							<p class="header-pages__name">
+								Dmitry Dovgal
+							</p>
+							<a href="#" class="header-pages__btn">
+								<img src="css/img/arr-icon.svg" alt="">
+							</a>
+						</div>
+						<div class="menu">
+							<a href="#" class="button"><span></span></a>
+						</div>
+						<div class="burger">
+							<div class="nav__right d-flex">
+								<p class="header-pages__text">
+									У вас есть <span> 3 дня</span> бесплатного доступа
+								</p>
+								<a href="#" class="nav__btn btn btn1">
+									Улучшить тариф
+								</a>
+							</div>
+							<div class="header-pages__info d-flex">
+								<img src="css/img/ava.png" alt="" class="header-pages__ava">
+								<p class="header-pages__name">
+									Dmitry Dovgal
+								</p>
+								<a href="#" class="header-pages__btn">
+									<img src="css/img/arr-icon.svg" alt="">
+								</a>
+							</div>
+							<ul class="nav__list">
+								<li>
+									<a href="#">
+										Монеты
+									</a>
+								</li>
+								<li>
+									<a href="#">
+										Сигналы
+									</a>
+								</li>
+								<li>
+									<a href="#">
+										Пользователи
+									</a>
+								</li>
+								<li class="active">
+									<a href="#">
+										Настройки
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</nav>
+		</header>
+		<section class="bread" id="bread">
+			<div class="container">
+				<div class="bread__block d-flex">
+					<a href="#">
+						Главная
+					</a>
+					<p>
+						Монеты
+					</p>
+				</div>
+			</div>
+		</section>
+
+
+
+		<section class="item" id="item">
+			<div class="container">
+				<div class="item__box d-flex">
+					<div class="item-info">
+						<div class="item-info__top d-flex">
+							<img src="css/img/bit.png" alt="" class="item-info__pic">
+							<h1 class="item-info__name">
+								Bitcoin
+							</h1>
+							<div class="item-info__el">
+								BTC
+							</div>
+						</div>
+						<div class="item-info__flex d-flex">
+							<div class="item-info__block active">
+								Rank #1
+							</div>
+							<div class="item-info__block">
+								Coin
+							</div>
+						</div>
+						<a href="#" class="item-info__site" target="blank">
+							https://coinmarketcap.com/
+						</a>
+						<div class="item-info__links d-flex">
+							<a href="#" class="item-info__one">
+								WebSite <img src="css/img/add.svg" alt="" class="svg">
+							</a>
+							<a href="#" class="item-info__one">
+								Message Board <img src="css/img/add.svg" alt="" class="svg">
+							</a>
+							<a href="#" class="item-info__one">
+								Explorer <img src="css/img/arr-black.svg" alt="" class="svg">
+							</a>
+							<a href="#" class="item-info__one">
+								Reddit <img src="css/img/add.svg" alt="" class="svg">
+							</a>
+							<a href="#" class="item-info__one">
+								Technical Doc <img src="css/img/add.svg" alt="" class="svg">
+							</a>
+							<a href="#" class="item-info__one">
+								Source Code <img src="css/img/arr-black.svg" alt="" class="svg">
+							</a>
+						</div>
+						<p class="item-info__text">
+							We have been tracking since 22.10.2021
+						</p>
+					</div>
+					<div class="item-content">
+						<div class="item-content__top d-flex">
+							<div class="item-content__el">
+								<p class="item-content__label">
+									Bitcoin Price (BTC)
+								</p>
+								<div class="item-content__flex d-flex">
+									<p class="item-content__main">
+										$31,617.18
+									</p>
+									<div class="item-content__block item-content__block_red">
+										<p>0.48</p> <img src="css/img/arr.svg" alt="">
+									</div>
+								</div>
+							</div>
+							<div class="item-content__el">
+								<p class="item-content__label">
+									Индекс AltEco
+								</p>
+								<p class="item-content__info item-content__info_green">
+									97
+								</p>
+							</div>
+							<div class="item-content__el">
+								<p class="item-content__label">
+									Коэф. Alpha
+								</p>
+								<p class="item-content__info item-content__info_red">
+									24.16%
+								</p>
+							</div>
+							<div class="item-content__el">
+								<p class="item-content__label">
+									Индекс AltEco
+								</p>
+								<p class="item-content__info item-content__info_green">
+									3.97
+								</p>
+							</div>
+							<div class="item-content__el">
+								<p class="item-content__label">
+									Индекс AltEco
+								</p>
+								<p class="item-content__info item-content__info_green">
+									1
+								</p>
+							</div>
+							<div class="table__icons d-flex">
+								<a href="#" class="table__star able">
+									<img src="css/img/star-big.svg" alt="" class="svg">
+								</a>
+								<a href="#" class="table__icon able">
+									<img src="css/img/fig-big.svg" alt="" class="svg">
+								</a>
+							</div>
+						</div>
+						<div class="item-content__bottom d-flex">
+							<div class="item-content__one">
+								<p class="item-content__label">
+									Market Cap
+								</p>
+								<p class="item-content__sum">
+									$602,473,965,568
+								</p>
+								<p class="item-content__num item-content__num_red">
+									0.48
+								</p>
+							</div>
+							<div class="item-content__one">
+								<p class="item-content__label">
+									Fully Diluted Market Cap
+								</p>
+								<p class="item-content__sum">
+									$663,960,676,344
+								</p>
+								<p class="item-content__num item-content__num_green">
+									0.11
+								</p>
+							</div>
+							<div class="item-content__one">
+								<div class="item-content__label">
+									Volume
+									<div class="item-content__time">24h</div>
+								</div>
+								<p class="item-content__sum">
+									$663,960,676,344
+								</p>
+								<p class="item-content__num item-content__num_red">
+									11,28
+								</p>
+								<p class="item-content__label item-content__label_last">
+									Volume / Market Cap
+								</p>
+								<p class="item-content__sum">
+									$98,383,703,636.79 / $602,034,335,587.44
+								</p>
+							</div>
+							<div class="item-content__one">
+								<p class="item-content__label">
+									Circulating Supply
+								</p>
+								<div class="item-content__line d-flex">
+									<p class="item-content__sum">
+										$663,960,676,344
+									</p>
+									<p class="item-content__proc">
+										91%
+									</p>
+								</div>
+								<div class="item-content__load">
+									<div class="item-content__progress"></div>
+								</div>
+								<div class="item-content__row d-flex">
+									<p class="item-content__label">
+										Max Supply
+									</p>
+									<p class="item-content__sum">
+										21,000,000
+									</p>
+								</div>
+								<div class="item-content__row d-flex">
+									<p class="item-content__label">
+										Total Supply
+									</p>
+									<p class="item-content__sum">
+										19,055,275
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="item-wrap">
+					<p class="item-wrap__title">
+						Инвестиционные Фонды:
+					</p>
+					<div class="item-wrap__links d-flex">
+						<a href="#">
+							Coinbase Ventures Portfolio
+						</a>
+						<a href="#">
+							Fabric Ventures Portfolio
+						</a>
+						<a href="#">
+							CMS Holdings Portfolio
+						</a>
+						<a href="#">
+							Galaxy Digital Portfolio
+						</a>
+						<a href="#">
+							Alameda Research Portfolio
+						</a>
+						<a href="#">
+							USV Portfolio
+						</a>
+						<a href="#">
+							Winklevoss Capital Portfolio
+						</a>
+						<a href="#">
+							Binance Labs Portfolio
+						</a>
+					</div>
+				</div>
+
+                <div class="item-graph">
+					<h2 class="item-graph__title">
+						Bitcoin (BTC)
+					</h2>
+					<p class="item-graph__name">
+						Rank changes
+					</p>
+					<div class="m-big-chart">
+						<canvas id="myChart"></canvas>
+					</div>
+					<script>
+						let ctx = document.getElementById('myChart').getContext('2d');
+						ctx.canvas.width = 200;
+						ctx.canvas.height = 54;
+						let chart = new Chart(ctx, {
+							// Тип графика
+							type: 'line',
+
+							// Создание графиков
+							data: {
+								// Точки графиков
+								labels: ['3:04 PM', '6:04 PM', '9:04 PM', '12:04 AM', '12:04 PM', '3:04 PM', '6:04 PM', '9:04 PM'],
+								// График
+								datasets: [{
+									backgroundColor: 'rgba(245, 46, 46, 0.1)', // Цвет закраски
+									borderColor: '#FF7442', // Цвет линии
+									data: [31.20, 31.30, 31.40, 31.10, 31.60, 31.70, 31.80, 31.90, 31.00, 32.10, 32.20], // Данные каждой точки графика
+									legend: {
+										display: false
+									},
+									scales: {
+										yAxes: [{ display: false }],
+										xAxes: [{ display: false }]
+									},
+									offsetGridLines: false,
+									responsive: true
+								}]
+							},
+
+							// Настройки графиков
+							options: {
+								legend: {
+									display: false
+								},
+								tooltips: {
+									enabled: false
+								}
+							}
+						});
+					</script>
+
+					<p class="item-graph__text">
+						Bitcoin (BTC) is a cryptocurrency . Users are able to generate BTC through the process of mining.
+						Bitcoin has a current supply of 18,850,912. The last known price of Bitcoin is 63,310.54742002 USD and
+						is down -2.03 over the last 24 hours. It is currently trading on 8382 active market(s) with
+						$39,741,608,940.00 traded over the last 24 hours. More information can be found at
+						https://bitcoin.org/.
+					</p>
+				</div>
+			</div>
+		</section>
+
+
+
+        <footer class="footer footer-pages" id="footer">
+			<div class="container">
+				<div class="footer__box">
+					<div class="footer__flex d-flex">
+						<a href="#" class="footer__logo">
+							<img src="css/img/footer/logo.svg" alt="">
+						</a>
+						<div class="footer-pages__lists d-flex">
+							<ul class="nav__list">
+								<li>
+									<a href="#">
+										Главная
+									</a>
+								</li>
+								<li>
+									<a href="#">
+										Монеты
+									</a>
+								</li>
+								<li>
+									<a href="#">
+										Сигналы
+									</a>
+								</li>
+								<li>
+									<a href="#">
+										Пользователи
+									</a>
+								</li>
+							</ul>
+							<ul class="nav__list">
+								<li>
+									<a href="#">
+										Профиль
+									</a>
+								</li>
+								<li class="active">
+									<a href="#">
+										Настройки
+									</a>
+								</li>
+								<li>
+									<a href="#">
+										Войти
+									</a>
+								</li>
+								<li>
+									<a href="#">
+										Регистрация
+									</a>
+								</li>
+							</ul>
+							<ul class="nav__list">
+								<li>
+									<a href="#">
+										Условия и услуги
+									</a>
+								</li>
+								<li>
+									<a href="#">
+										Политика конфиденциальности
+									</a>
+								</li>
+								<li>
+									<a href="#">
+										Помощь
+									</a>
+								</li>
+								<li>
+									<a href="#">
+										FAQ
+									</a>
+								</li>
+							</ul>
+						</div>
+						<div class="footer__socials d-flex">
+							<a href="#" target="blank">
+								<img src="css/img/footer/1.svg" alt="" class="svg">
+							</a>
+							<a href="#" target="blank">
+								<img src="css/img/footer/2.svg" alt="" class="svg">
+							</a>
+							<a href="#" target="blank">
+								<img src="css/img/footer/3.svg" alt="" class="svg">
+							</a>
+							<a href="#" target="blank">
+								<img src="css/img/footer/4.svg" alt="" class="svg">
+							</a>
+							<a href="#" target="blank">
+								<img src="css/img/footer/5.svg" alt="" class="svg">
+							</a>
+						</div>
+					</div>
+					<div class="footer__text">
+						Simply Wall Street Pty Ltd (ACN 600 056 611) является корпоративным уполномоченным представителем
+						(номер уполномоченного представителя: 467183) Sanlam Private Wealth Pty Ltd (AFSL № 337927). Любые
+						советы, содержащиеся на этом веб-сайте, носят общий характер и были подготовлены без учета ваших
+						целей, финансового положения или потребностей. Вы не должны полагаться на какие-либо советы и/или
+						информацию, содержащуюся на этом веб-сайте, и перед принятием какого-либо инвестиционного решения мы
+						рекомендуем вам подумать, подходит ли оно для вашей ситуации, и обратиться за соответствующей
+						финансовой, налоговой и юридической консультацией. Пожалуйста, ознакомьтесь с нашим Руководством по
+						финансовым услугам, прежде чем принимать решение о получении финансовых услуг от нас.
+					</div>
+				</div>
+			</div>
+		</footer>
+	</div>
+	<!-- <script src="//yandex.st/jquery/1.9.1/jquery.min.js"></script> -->
+	<script src="js/all.js"></script>
+</body>
+
+</html>

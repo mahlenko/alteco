@@ -111,6 +111,6 @@
         </main>
     </div>
 
-    <script src="https://kit.fontawesome.com/abad78b0dd.js" crossorigin="anonymous"></script>
+{{--    <script src="https://kit.fontawesome.com/abad78b0dd.js" crossorigin="anonymous"></script>--}}
 </body>
 </html>

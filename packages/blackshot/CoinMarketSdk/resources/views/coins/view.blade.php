@@ -3,307 +3,234 @@
 @section('content')
     @php($current = $coin->current())
 
-    <div class="d-flex flex-column flex-md-row">
-        {{-- --}}
-        <div class="col-md-4 mb-3">
-            <div class="d-flex align-items-center mb-2">
-                @if ($coin->info)
-                <img src="{{ $coin->info->logo }}" alt="" height="32">
-                @endif
-                <h1 class="h2 mb-0 mx-3"><strong>{{ $coin->name }}</strong></h1>
-                <strong class="badge bg-light text-secondary">{{ $coin->symbol }}</strong>
-            </div>
-
-            <span class="badge bg-secondary">
-                Rank #{{ $coin->rank }}
-            </span>
-
-            <span class="badge bg-light text-secondary">
-                @if ($coin->info)
-                {{ \Illuminate\Support\Str::ucfirst($coin->info->category) }}
-                @endif
-            </span>
-
-            <p class="mt-3">
-                <a href="https://coinmarketcap.com/currencies/{{ $coin->slug }}/" class="btn btn-sm btn-warning" style="color: white; background: #fa7650; border-color: #fa7650" target="_blank">
-                    <small class="me-1">
-                        <i class="fas fa-external-link-alt"></i>
-                    </small>
-                    <small>https://coinmarketcap.com</small>
-                </a>
-            </p>
-
-            @if ($coin->info && $coin->info->urls)
-            <div class="d-flex flex-wrap align-items-start mt-3">
-                @foreach($coin->info->urls->groupBy('type') as $group => $links)
-                    @if ($links->count() > 1)
-                    <div class="dropdown m-1">
-                        <button class="btn btn-light btn-sm border dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                            <strong>
-                                <small>{{ \Illuminate\Support\Str::headline($group) }}</small>
-                            </strong>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-macos dropdown-menu-dark" aria-labelledby="dropdownMenuButton1">
-                            @foreach($links as $link)
-                            <li>
-                                <a class="dropdown-item" href="{{ $link->url }}" target="_blank">
-                                    <small>
-                                        <strong>{{ parse_url($link->url, PHP_URL_HOST) }}</strong>
-                                        <i class="fas fa-external-link-alt text-secondary ms-1"></i>
-                                    </small>
-                                </a>
-                            </li>
-                            @endforeach
-                        </ul>
+    <section class="item" id="item">
+        <div class="container">
+            {{-- Info --}}
+            <div class="item__box d-flex">
+                {{-- token --}}
+                <div class="item-info">
+                    <div class="item-info__top d-flex">
+                        @if ($coin->info)
+                            <img src="{{ $coin->info->logo }}" class="item-info__pic" alt="" height="32">
+                        @endif
+                        <h1 class="item-info__name">
+                            {{ $coin->name }}
+                        </h1>
+                        <div class="item-info__el">
+                            {{ $coin->symbol }}
+                        </div>
                     </div>
-                    @else
-                    <a href="{{ $links->first()->url }}"
-                       class="btn btn-light btn-sm m-1 border"
-                       target="_blank">
-                        <strong>
-                            <small>
-                                {{ \Illuminate\Support\Str::headline($group) }}
-                                <i class="fas fa-external-link-alt text-secondary ms-1"></i>
-                            </small>
-                        </strong>
+
+                    <div class="item-info__flex d-flex">
+                        <div class="item-info__block active">
+                            Rank #{{ $coin->rank }}
+                        </div>
+                        @if ($coin->info)
+                        <div class="item-info__block">
+                            {{ \Illuminate\Support\Str::ucfirst($coin->info->category) }}
+                        </div>
+                        @endif
+                    </div>
+
+                    <a href="https://coinmarketcap.com/currencies/{{ $coin->slug }}/" class="item-info__site" target="blank">
+                        https://coinmarketcap.com/
                     </a>
-                    @endif
-                @endforeach
-            </div>
-            @endif
 
-            <p class="mt-2 small">
-                <span class="text-secondary">We have been tracking since</span>
-                {{ $coin->created_at->format('d.m.Y') }}
-            </p>
-        </div>
+                    <div class="item-info__links d-flex">
+                        @foreach($coin->info->urls->groupBy('type') as $group => $links)
+                            @if ($links->count() > 1)
+                                <div class="dropdown m-1">
+                                    <button class="dropdown item-info__one" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                        {{ \Illuminate\Support\Str::headline($group) }}
+                                        <img src="{{ asset('images/arr-black.svg') }}" alt="" class="svg">
+                                    </button>
 
-        {{--  --}}
-        <div class="col-md-8 ps-md-3">
-            <div class="d-flex justify-content-between align-items-start">
-                {{--  --}}
-                <div>
-                    <small class="text-secondary">
-                        {{ $coin->name }} ({{ $coin->symbol }})
-                    </small>
-
-                    <p class="d-flex align-items-center">
-                        <strong class="h3">
-                            @include('blackshot::coins.partials.price', ['price' => $coin->price])
-                        </strong>
-                        @include('blackshot::coins.partials.badge-position', ['percent' => $coin->percent_change_1h])
-                    </p>
-                </div>
-
-                {{--  --}}
-                <ul class="list-inline mb-0 ms-3">
-                    {{-- favorite --}}
-                    <li class="list-inline-item">
-                        <a href="javascript:void(0);" class="favorite text-decoration-none p-2" title="Add to favorites" onclick="return favorites(this, '{{ $coin->uuid }}')">
-                            @if (\Illuminate\Support\Facades\Auth::user()->favorites->where('uuid', $coin->uuid)->count())
-                                <i class="fas fa-star me-1"></i><small class="text-secondary">favorite</small>
+                                    <ul class="dropdown-menu dropdown-menu-macos dropdown-menu-dark" aria-labelledby="dropdownMenuButton1">
+                                        @foreach($links as $link)
+                                            <li>
+                                                <a class="dropdown-item" href="{{ $link->url }}" target="_blank">
+                                                    {{ parse_url($link->url, PHP_URL_HOST) }}
+                                                </a>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
                             @else
-                                <i class="far fa-star me-1"></i><small class="text-secondary">favorite</small>
+                                <a href="{{ $links->first()->url }}" class="item-info__one">
+                                    {{ \Illuminate\Support\Str::headline($group) }}
+                                    <img src="{{ asset('images/add.svg') }}" alt="" class="svg">
+                                </a>
                             @endif
-                        </a>
-                    </li>
+                        @endforeach
+                    </div>
+                    <p class="item-info__text">
+                        Мы отслеживаем с {{ $coin->created_at->format('d.m.Y') }}
+                    </p>
+                </div>
 
-                    {{-- tracking --}}
-                    <li class="list-inline-item">
-                        <a href="javascript:void(0);" class="text-decoration-none p-2" title="tracking" onclick="return tracking(this, '{{ $coin->uuid }}')">
-                            @if (\Illuminate\Support\Facades\Auth::user()->trackings->where('uuid', $coin->uuid)->count())
-                                <i class="fas fa-chart-line me-1"></i><small class="text-secondary">tracking</small>
-                            @else
-                                <i class="fas fa-chart-line me-1 text-secondary"></i><small class="text-secondary">tracking</small>
-                            @endif
-                        </a>
-                    </li>
-                </ul>
+                {{-- extend info --}}
+                <div class="item-content">
+                    <div class="item-content__top d-flex">
+                        <div class="item-content__el">
+                            <p class="item-content__label">
+                                {{ $coin->name }} Price ({{ $coin->symbol }})
+                            </p>
+                            <div class="item-content__flex d-flex">
+                                <p class="item-content__main">
+                                    @include('blackshot::coins.partials.price', ['price' => $coin->price])
+                                </p>
+
+                                @include('blackshot::coins.partials.badge-position', ['percent' => $coin->percent_change_1h])
+                            </div>
+                        </div>
+{{--                        <div class="item-content__el">--}}
+{{--                            <p class="item-content__label">--}}
+{{--                                Индекс AltEco--}}
+{{--                            </p>--}}
+{{--                            <p class="item-content__info item-content__info_green">--}}
+{{--                                97--}}
+{{--                            </p>--}}
+{{--                        </div>--}}
+{{--                        <div class="item-content__el">--}}
+{{--                            <p class="item-content__label">--}}
+{{--                                Коэф. Alpha--}}
+{{--                            </p>--}}
+{{--                            <p class="item-content__info item-content__info_red">--}}
+{{--                                24.16%--}}
+{{--                            </p>--}}
+{{--                        </div>--}}
+{{--                        <div class="item-content__el">--}}
+{{--                            <p class="item-content__label">--}}
+{{--                                Индекс AltEco--}}
+{{--                            </p>--}}
+{{--                            <p class="item-content__info item-content__info_green">--}}
+{{--                                3.97--}}
+{{--                            </p>--}}
+{{--                        </div>--}}
+{{--                        <div class="item-content__el">--}}
+{{--                            <p class="item-content__label">--}}
+{{--                                Индекс AltEco--}}
+{{--                            </p>--}}
+{{--                            <p class="item-content__info item-content__info_green">--}}
+{{--                                1--}}
+{{--                            </p>--}}
+{{--                        </div>--}}
+                        <div class="table__icons d-flex">
+                            @php($favorite = \Illuminate\Support\Facades\Auth::user()->favorites->where('uuid', $coin->uuid)->count())
+                            <a href="javascript:void(0);" class="table__star {{ $favorite ? 'able' : null }}" title="Add to favorites" onclick="return favorites(this, '{{ $coin->uuid }}')">
+                                <img src="{{ asset('images/star-big.svg') }}" alt="" class="svg">
+                            </a>
+
+                            @php($tracking = \Illuminate\Support\Facades\Auth::user()->trackings->where('uuid', $coin->uuid)->count())
+                            <a href="javascript:void(0);" class="table__icon {{ $tracking ? 'able' : null }}" title="tracking" onclick="return tracking(this, '{{ $coin->uuid }}')">
+                                <img src="{{ asset('images/fig-big.svg') }}" alt="" class="svg">
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="item-content__bottom d-flex">
+                        <div class="item-content__one">
+                            <p class="item-content__label">
+                                Market Cap
+                            </p>
+                            <p class="item-content__sum">
+                                ${{ number_format($current->market_cap) }}
+                            </p>
+{{--                            <p class="item-content__num item-content__num_red">0.48</p>--}}
+                        </div>
+                        <div class="item-content__one">
+                            <p class="item-content__label">
+                                Fully Diluted Market Cap
+                            </p>
+                            <p class="item-content__sum">
+                                ${{ number_format($current->fully_diluted_market_cap) }}
+                            </p>
+{{--                            <p class="item-content__num item-content__num_green">0.11</p>--}}
+                        </div>
+                        <div class="item-content__one">
+                            <div class="item-content__label">
+                                Volume
+                                <div class="item-content__time">24h</div>
+                            </div>
+                            <p class="item-content__sum">
+                                ${{ number_format($current->volume_24h_reported ?? $current->volume_24h) }}
+                            </p>
+{{--                            <p class="item-content__num item-content__num_red">11,28</p>--}}
+
+                            <p class="item-content__label item-content__label_last">
+                                Volume / Market Cap
+                            </p>
+                            <p class="item-content__sum">
+                                @include('blackshot::coins.partials.price', ['price' => ($current->volume_24h_reported ?? $current->volume_24h)])
+                                / @include('blackshot::coins.partials.price', ['price' => $current->market_cap])
+                            </p>
+                        </div>
+                        <div class="item-content__one">
+                            <p class="item-content__label">
+                                Circulating Supply
+                            </p>
+                            <div class="item-content__line d-flex">
+                                <p class="item-content__sum">
+                                    ${{ number_format($current->circulating_supply) }}
+                                </p>
+                                <p class="item-content__proc">
+                                    @php($percent_supply = intval($current->circulating_supply / $current->total_supply  * 100))
+                                    {{ $percent_supply }}%
+                                </p>
+                            </div>
+
+                            <div class="item-content__load">
+                                <div class="item-content__progress" style="width: {{ $percent_supply }}%"></div>
+                            </div>
+
+                            <div class="item-content__row d-flex">
+                                <p class="item-content__label">
+                                    Max Supply
+                                </p>
+                                <p class="item-content__sum">
+                                    {{ number_format($current->max_supply) }}
+                                </p>
+                            </div>
+                            <div class="item-content__row d-flex">
+                                <p class="item-content__label">
+                                    Total Supply
+                                </p>
+                                <p class="item-content__sum">
+                                    {{ number_format($current->total_supply) }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <hr>
-
-            <div class="d-flex flex-column flex-md-row">
-                {{--  --}}
-                <div class="col-md-3">
-                    <p>
-                        <small class="text-secondary">
-                            Market Cap
-                        </small>
-                        <br>
-                        <small>
-                            <strong>
-                                <small>${{ number_format($current->market_cap) }}</small>
-                            </strong>
-                        </small>
-                    </p>
-                </div>
-
-                {{--  --}}
-                <div class="col-md-3">
-                    <p>
-                        <small class="text-secondary">
-                            Fully Diluted Market Cap
-                        </small>
-                        <br>
-                        <small>
-                            <strong>
-                                <small>${{ number_format($current->fully_diluted_market_cap) }}</small>
-                            </strong>
-                        </small>
-                    </p>
-                </div>
-
-                {{--  --}}
-                <div class="col-md-3">
-                    <p>
-                        <small class="text-secondary">
-                            Volume <span class="badge bg-light text-secondary">24h</span>
-                        </small>
-                        <br>
-                        <small>
-                            <strong>
-                                <small>${{ number_format($current->volume_24h_reported ?? $current->volume_24h) }}</small>
-                            </strong>
-                        </small>
-                    </p>
-
-                    <p>
-                        <small class="text-secondary">
-                            Volume / Market Cap
-                        </small>
-                        <br>
-                        <small>
-                            <strong>
-                                <small>
-                                    @include('blackshot::coins.partials.price', ['price' => ($current->volume_24h_reported ?? $current->volume_24h)])
-                                    / @include('blackshot::coins.partials.price', ['price' => $current->market_cap])
-                                </small>
-                            </strong>
-                        </small>
-                    </p>
-                </div>
-
-                {{--  --}}
-                <div class="col-md-3">
-                    <p>
-                        <small class="text-secondary">
-                            Circulating Supply
-                        </small>
-                        <br>
-                        <small>
-                            <strong>
-                                <small>${{ number_format($current->circulating_supply) }}</small>
-                            </strong>
-                        </small>
-                    </p>
-
-                    <p class="d-flex justify-content-between mb-1">
-                        <small class="text-secondary">
-                            Max Supply
-                        </small>
-                        <small>
-                            <strong>{{ number_format($current->max_supply) }}</strong>
-                        </small>
-                    </p>
-
-                    <p class="d-flex justify-content-between">
-                        <small class="text-secondary">
-                            Total Supply
-                        </small>
-                        <small>
-                            <strong>{{ number_format($current->total_supply) }}</strong>
-                        </small>
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="d-flex flex-column flex-md-row">
-        @if ($coin->info && $coin->info->tags)
-            <div class="col-md-4 pe-md-3">
-                <p class="mt-3 mb-2">
-                    <small class="text-secondary">Tags ({{ $coin->info->tags->count() }}):</small>
+            {{-- founds --}}
+            <div class="item-wrap">
+                <p class="item-wrap__title">
+                    Инвестиционные Фонды:
                 </p>
 
-                <p id="tags">
-                    @foreach($coin->info->tags as $tag)
-                        <small class="badge text-secondary bg-light" @if($loop->index > 7)hidden @endif>
-                            {{ $tag->name }}
-                        </small>
-                    @endforeach
-
-                    @if($coin->info->tags->count() > 8)
-                        <a href="javascript:void(0)"
-                           class="badge text-primary text-decoration-none"
-                           style="background-color: #e0ecff"
-                           onclick="return toggle('#tags .badge', this)"
-                        >
-                            View all
-                        </a>
-                    @endif
-                </p>
-            </div>
-        @endif
-
-        @if ($coin->categories)
-            <div class="col-md-4 ps-md-3">
-                <p class="mt-3 mb-2">
-                    <small class="text-secondary">Categories ({{ $coin->categories->count() }}):</small>
-                </p>
-
-                <p id="categories">
+                <div class="item-wrap__links d-flex">
                     @foreach($coin->categories as $category)
-                        <small class="badge text-secondary bg-light" @if($loop->index > 7)hidden @endif>
-                            {{ $category->name }}
-                        </small>
+                        <span class="portfolio-item">{{ $category->name }}</span>
                     @endforeach
-
-                    @if($coin->categories->count() > 8)
-                        <a href="javascript:void(0)"
-                           class="badge text-primary text-decoration-none"
-                           style="background-color: #e0ecff"
-                           onclick="return toggle('#categories .badge', this)"
-                        >
-                            View all
-                        </a>
-                    @endif
-                </p>
+                </div>
             </div>
-        @endif
-    </div>
 
-    <hr>
+            {{-- Rating graph --}}
+            <div class="item-graph">
+                <h2 class="item-graph__title">{{ $coin->name }} ({{ $coin->symbol }})</h2>
+                <p class="item-graph__name">История рейтинга</p>
+            </div>
 
-    <h2>
-        <strong>
-            {{ $coin->name }} ({{ $coin->symbol }})
-        </strong>
-    </h2>
+            <style>#coin_chart{width: 100%;height: 500px;}</style>
+            <div id="coin_chart" data-json='@json($charts)'></div>
 
-    <p>{{ $coin->info->description ?? '' }}</p>
-
-    {{-- Chart --}}
-    <h2>Rank changes</h2>
-    <style>#coin_chart{width: 100%;height: 500px;}</style>
-    <div id="coin_chart" data-json='@json($charts)'></div>
+            <p class="item-graph__text">{{ $coin->info->description ?? '' }}</p>
+        </div>
+    </section>
 
     <script>
-        function toggle(selector, removeElement)
-        {
-            let selectors = document.querySelectorAll(selector)
-            if (selectors.length) {
-                selectors.forEach(item => {
-                    if (item.getAttribute('hidden') !== null) {
-                        item.removeAttribute('hidden')
-                    }
-                })
-
-                removeElement.remove()
-            }
-        }
-
         /**
          * Добавит монету в избранные
          * @param element
@@ -311,24 +238,16 @@
          */
         function favorites(element, uuid)
         {
-            let star = element.querySelector('.fa-star')
+            // let star = element.querySelector('.fa-star')
 
             axios.post('{{ route('users.favorite') }}', {uuid})
                 .then(response => {
                     if (response.data.data.favorite) {
-                        star.classList.remove('far')
-                        star.classList.add('fas')
+                        element.classList.add('able')
                     } else {
-                        star.classList.remove('fas')
-                        star.classList.add('far')
+                        element.classList.remove('able')
                     }
                 })
-
-            let trecking_link = element
-                .parentElement
-                .parentElement
-                .querySelector('.fa-chart-line')
-                .parentElement
 
             return tracking(trecking_link, uuid)
         }
@@ -340,14 +259,12 @@
          */
         function tracking(element, uuid)
         {
-            let icon = element.querySelector('.fa-chart-line')
-
             axios.post('{{ route('users.tracking') }}', { uuid })
                 .then(response => {
                     if (response.data.data.tracking === 'delete') {
-                        icon.classList.add('text-secondary')
+                        element.classList.remove('able')
                     } else {
-                        icon.classList.remove('text-secondary')
+                        element.classList.add('able')
                     }
                 })
         }
