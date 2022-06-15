@@ -35,7 +35,7 @@ class SignalRepository
 
         $hash = md5(http_build_query(array_merge($hash_filter, (array)$sortable, $except_uuid->toArray())));
 
-        return Cache::remember($hash, time() + 600, function() use ($filter, $sortable, $except_uuid) {
+        return Cache::remember($hash, time() + (30 * 60), function() use ($filter, $sortable, $except_uuid) {
             $builder = self::queryBuilder();
 
             $end_date = new DateTimeImmutable(Signal::max('date'));
