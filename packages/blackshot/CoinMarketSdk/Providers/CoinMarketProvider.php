@@ -3,11 +3,11 @@
 namespace Blackshot\CoinMarketSdk\Providers;
 
 use Blackshot\CoinMarketSdk\Commands\CategoryCommand;
-use Blackshot\CoinMarketSdk\Commands\CoinCategoryCommand;
 use Blackshot\CoinMarketSdk\Commands\InfoCommand;
 use Blackshot\CoinMarketSdk\Commands\MapCommand;
 use Blackshot\CoinMarketSdk\Commands\QuotesFollowingCommand;
 use Blackshot\CoinMarketSdk\Commands\RankChangeCommand;
+use Blackshot\CoinMarketSdk\Commands\SetCategoryTypesCommand;
 use Blackshot\CoinMarketSdk\Commands\SignalsCommand;
 use Blackshot\CoinMarketSdk\Commands\TestMailCommand;
 use Blackshot\CoinMarketSdk\Commands\UpdateCategoriesCommand;
@@ -56,10 +56,10 @@ class CoinMarketProvider extends ServiceProvider
             $this->commands([
                 UpdateCategoriesCommand::class,
                 CategoryCommand::class,
+                SetCategoryTypesCommand::class,
                 InfoCommand::class,
                 MapCommand::class,
                 QuotesFollowingCommand::class,
-                CoinCategoryCommand::class,
                 SignalsCommand::class,
                 RankChangeCommand::class,
                 TestMailCommand::class,

@@ -6,6 +6,7 @@
             <h1>Сброс пароля</h1>
 
             @include('flash::message')
+
             @if ($errors->count())
                 <div class="alert alert-danger">
                     <ul class="mb-0">
@@ -16,7 +17,7 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('register') }}">
+            <form method="POST" action="{{ route('password.email') }}">
                 @csrf
 
                 <div class="form-control-row">

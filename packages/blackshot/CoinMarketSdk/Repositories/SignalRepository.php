@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class SignalRepository
@@ -25,47 +26,52 @@ class SignalRepository
         Collection $except_uuid = null
     ): Collection
     {
-        $builder = self::queryBuilder();
+        // cache hash
+        $hash = md5(http_build_query(array_merge((array)$filter, (array)$sortable, $except_uuid->toArray())));
 
-        $end_date = new DateTimeImmutable(Signal::max('date'));
-        $start_date = $end_date->modify('-'. $filter->days .' days');
+        return Cache::remember($hash, time() + 600, function() use ($filter, $sortable, $except_uuid) {
+            $builder = self::queryBuilder();
 
-        $builder->whereBetween('date', [
-            $start_date->format('Y-m-d'),
-            $end_date->format('Y-m-d')
-        ]);
+            $end_date = new DateTimeImmutable(Signal::max('date'));
+            $start_date = $end_date->modify('-'. $filter->days .' days');
 
-        if ($filter->categories_uuid) {
-            $builder->join('coin_categories', 'coin_categories.coin_uuid', '=', 'signals.coin_uuid');
-            $builder->whereIn('coin_categories.category_uuid', $filter->categories_uuid);
+            $builder->whereBetween('date', [
+                $start_date->format('Y-m-d'),
+                $end_date->format('Y-m-d')
+            ]);
 
-            if (in_array('favorites', $filter->categories_uuid)) {
-                $builder->leftJoin('user_favorites', 'user_favorites.coin_uuid', '=', 'signals.coin_uuid');
-                $builder->orWhere('user_favorites.user_id', Auth::id());
+            if ($filter->categories_uuid) {
+                $builder->join('coin_categories', 'coin_categories.coin_uuid', '=', 'signals.coin_uuid');
+                $builder->whereIn('coin_categories.category_uuid', $filter->categories_uuid);
+
+                if (in_array('favorites', $filter->categories_uuid)) {
+                    $builder->leftJoin('user_favorites', 'user_favorites.coin_uuid', '=', 'signals.coin_uuid');
+                    $builder->orWhere('user_favorites.user_id', Auth::id());
+                }
             }
-        }
 
-        if ($except_uuid) {
-            $builder->whereNotIn('signals.coin_uuid', $except_uuid);
-        }
+            if ($except_uuid) {
+                $builder->whereNotIn('signals.coin_uuid', $except_uuid);
+            }
 
-        $signals = $builder->get();
-//        $signals = self::rankChangeCalculate($signals, $filter->signals);
-        $signals = self::rankChangeCalculate($signals, 0);
-        if (!$signals->count()) return $signals;
+            $signals = $builder->get();
+    //        $signals = self::rankChangeCalculate($signals, $filter->signals);
+            $signals = self::rankChangeCalculate($signals, 0);
+            if (!$signals->count()) return $signals;
 
-        $changed_to = self::maxChangedRankByDay($signals, $end_date);
-        $signals_uuid = self::signalsChangedByRankByDate($changed_to, $end_date);
+            $changed_to = self::maxChangedRankByDay($signals, $end_date);
+            $signals_uuid = self::signalsChangedByRankByDate($changed_to, $end_date);
 
-        self::appendSignals($signals, $signals_uuid->toArray(), $signals->max('diff'), $filter->min_rank);
+            self::appendSignals($signals, $signals_uuid->toArray(), $signals->max('diff'), $filter->min_rank);
 
-        $signals = self::filterBySignals($signals, $filter->signals);
+            $signals = self::filterBySignals($signals, $filter->signals);
 
-        return self::sortBy(
-            $signals,
-            $sortable->column,
-            $sortable->direction
-        );
+            return self::sortBy(
+                $signals,
+                $sortable->column,
+                $sortable->direction
+            );
+        });
     }
 
     /**

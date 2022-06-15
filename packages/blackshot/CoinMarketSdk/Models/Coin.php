@@ -108,6 +108,21 @@ class Coin extends Model
     }
 
     /**
+     * @return mixed
+     */
+    public function foundsCategory()
+    {
+        return $this->categories
+            ->where('type', CategoryModel::TYPE_FOUNDS);
+    }
+
+    public function otherCategory()
+    {
+        return $this->categories
+            ->where('type', CategoryModel::TYPE_OTHER);
+    }
+
+    /**
      * @return float|int
      */
     public function getSmaAttribute()

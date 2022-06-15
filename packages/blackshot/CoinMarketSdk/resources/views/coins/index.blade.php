@@ -42,10 +42,21 @@
                 <label for="category">Категория</label><br>
                 <select class="select" name="filter[category_uuid][]" multiple id="category">
                     @foreach($categories as $value => $label)
-                        <option
-                            @if(isset($filter->category_uuid) && in_array($value, $filter->category_uuid)) selected @endif
-                        value="{{ $value }}"
-                        >{{ $label }}</option>
+                        @if ($label instanceof \Illuminate\Support\Collection)
+                            <optgroup label="{{ __('categories.'.$value) }}">
+                                @foreach($label as $val => $text)
+                                    <option
+                                        @if(isset($filter->category_uuid) && in_array($val, $filter->category_uuid)) selected @endif
+                                    value="{{ $val }}"
+                                    >{{ $text }}</option>
+                                @endforeach
+                            </optgroup>
+                        @else
+                            <option
+                                @if(isset($filter->category_uuid) && in_array($value, $filter->category_uuid)) selected @endif
+                            value="{{ $value }}"
+                            >{{ $label }}</option>
+                        @endif
                     @endforeach
                 </select>
             </div>

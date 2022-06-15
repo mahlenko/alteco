@@ -94,13 +94,15 @@ class Index extends Controller
             $per_page
         );
 
-        $coins = Coin::whereIn('uuid', $signals_pagination->pluck('coin_uuid'))->get();
-
+        $coins = Coin::whereIn('uuid', $signals_pagination->pluck('coin_uuid'))
+            ->with(['info'])
+            ->get();
         $coins = $this->mergeSignalsData($coins, $signals_pagination);
 
         if ($sortable) {
             $coins = $this->sortable($coins, $sortable);
         }
+
 
         return self::paginator($coins, $signals->count(), $per_page, $page, [
             'path' => Paginator::resolveCurrentPath(),

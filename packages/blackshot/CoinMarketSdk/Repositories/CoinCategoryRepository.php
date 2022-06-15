@@ -6,6 +6,7 @@ use Blackshot\CoinMarketSdk\Models\CategoryModel;
 use Blackshot\CoinMarketSdk\Models\Coin;
 use Blackshot\CoinMarketSdk\Models\CoinCategory;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class CoinCategoryRepository
@@ -15,10 +16,15 @@ class CoinCategoryRepository
      */
     static function allCategories(): Collection
     {
-        return CategoryModel::join('coin_categories', 'coin_categories.category_uuid', '=', 'categories.uuid')
-            ->select('categories.*')
-            ->groupBy('coin_categories.category_uuid')
-            ->get();
+//        return CategoryModel::join('coin_categories', 'coin_categories.category_uuid', '=', 'categories.uuid')
+//            ->select('categories.*')
+//            ->groupBy('coin_categories.category_uuid')
+//            ->get();
+
+        // 30 минут
+        return Cache::remember('allCategories', time() + 1200, function() {
+            return CategoryModel::all();
+        });
     }
 
     /**
@@ -26,10 +32,16 @@ class CoinCategoryRepository
      */
     static function categoriesForSelect(): Collection
     {
-        $categories = self::allCategories();
+        $categories = self::allCategories()
+            ->groupBy('type')
+            ->sortKeysUsing(function($key) {
+                return $key != CategoryModel::TYPE_FOUNDS ? 1 : 0;
+            })->map(function($collection) {
+                return $collection->pluck('name', 'uuid');
+            });
 
         return collect(['favorites' => '- MY FAVORITES -'])
-            ->merge($categories->pluck('name', 'uuid'));
+            ->merge($categories);
     }
 
     /**

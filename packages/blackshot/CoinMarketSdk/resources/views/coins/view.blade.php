@@ -211,7 +211,7 @@
                 </p>
 
                 <div class="item-wrap__links d-flex">
-                    @foreach($coin->categories as $category)
+                    @foreach($coin->categories()->founds()->get() as $category)
                         <span class="portfolio-item">{{ $category->name }}</span>
                     @endforeach
                 </div>

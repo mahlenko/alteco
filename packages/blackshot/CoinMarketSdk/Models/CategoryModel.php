@@ -10,7 +10,18 @@ class CategoryModel extends Model
     protected $table = 'categories';
     protected $primaryKey = 'uuid';
     protected $keyType = 'string';
-    protected $fillable = ['id', 'name', 'title', 'num_tokens', 'avg_price_change', 'last_updated'];
+    protected $fillable = [
+        'id',
+        'type',
+        'name',
+        'title',
+        'num_tokens',
+        'avg_price_change',
+        'last_updated'
+    ];
+
+    const TYPE_FOUNDS = 'founds';
+    const TYPE_OTHER = 'other';
 
     /**
      * @return HasMany
@@ -26,5 +37,15 @@ class CategoryModel extends Model
     public function volumes(): HasMany
     {
         return $this->hasMany(CategoryVolumeModel::class, 'category_uuid', 'uuid');
+    }
+
+    public function scopeFounds($query)
+    {
+        $query->where('type', self::TYPE_FOUNDS);
+    }
+
+    public function scopeOtherType($query)
+    {
+        $query->where('type', self::TYPE_OTHER);
     }
 }

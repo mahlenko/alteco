@@ -7,6 +7,7 @@ use Blackshot\CoinMarketSdk\Models\CategoryModel;
 use Blackshot\CoinMarketSdk\Models\CategoryVolumeModel;
 use DateTimeImmutable;
 use Exception;
+use Illuminate\Support\Str;
 use Ramsey\Uuid\Uuid;
 
 class CategoryRepository
@@ -51,6 +52,7 @@ class CategoryRepository
 
         $category->fill([
             'id' => $id,
+            'type' => self::getCategoryType($category),
             'name' => $name,
             'title' => $title,
             'description' => $description,
@@ -85,6 +87,17 @@ class CategoryRepository
         }
 
         return $category;
+    }
+
+    /**
+     * @param CategoryModel $category
+     * @return string
+     */
+    public static function getCategoryType(CategoryModel $category): string
+    {
+        return Str::contains(Str::lower($category->name), 'portfolio')
+            ? CategoryModel::TYPE_FOUNDS
+            : CategoryModel::TYPE_OTHER;
     }
 
 }

@@ -16,7 +16,7 @@ class UpdateCategoriesCommand extends \Illuminate\Console\Command
     /**
      * @var string
      */
-    protected $name = 'blackshot:categories';
+    protected $name = 'blackshot:category:update';
 
     /**
      * @var string
