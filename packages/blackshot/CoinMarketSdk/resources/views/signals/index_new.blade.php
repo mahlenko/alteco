@@ -48,12 +48,25 @@
                     <label>Категория</label> <br>
                     <select name="filter[categories_uuid][]" multiple class="select" id="category">
                         @foreach($categories as $value => $label)
+                            @if ($label instanceof \Illuminate\Support\Collection)
+                                <optgroup label="{{ __('categories.'.$value) }}">
+                                    @foreach($label as $val => $text)
+                                        <option
+                                            @if(isset($filter->categories_uuid) && in_array($val, $filter->categories_uuid))
+                                                selected
+                                            @endif
+                                            value="{{ $val }}"
+                                        >{{ $text }}</option>
+                                    @endforeach
+                                </optgroup>
+                            @else
                             <option
                                 @if(isset($filter->categories_uuid) && in_array($value, $filter->categories_uuid))
                                     selected
                                 @endif
                                 value="{{ $value }}"
                             >{{ $label }}</option>
+                            @endif
                         @endforeach
                     </select>
                 </div>

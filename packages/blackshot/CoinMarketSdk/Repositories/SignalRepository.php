@@ -27,7 +27,13 @@ class SignalRepository
     ): Collection
     {
         // cache hash
-        $hash = md5(http_build_query(array_merge((array)$filter, (array)$sortable, $except_uuid->toArray())));
+        $hash_filter = (array) $filter;
+        if (key_exists('categories_uuid', $hash_filter) && in_array('favorites', $hash_filter['categories_uuid'])) {
+            $index = array_search('favorites', $filter->categories_uuid);
+            $hash_filter['categories_uuid'][$index] = Auth::user()->id;
+        }
+
+        $hash = md5(http_build_query(array_merge($hash_filter, (array)$sortable, $except_uuid->toArray())));
 
         return Cache::remember($hash, time() + 600, function() use ($filter, $sortable, $except_uuid) {
             $builder = self::queryBuilder();
