@@ -45,12 +45,23 @@ function mobileTable(table)
     let main_index = null
     let columns = []
 
-    header.querySelectorAll('td').forEach((column, index) => {
-        columns.push(column.innerText.trim())
-        if (!main_index && column.classList.contains('main')) {
-            main_index = index
-        }
-    })
+    if (header.querySelectorAll('td').length) {
+        header.querySelectorAll('td').forEach((column, index) => {
+            columns.push(column.innerText.trim())
+            if (!main_index && column.classList.contains('main')) {
+                main_index = index
+            }
+        })
+    }
+
+    if (header.querySelectorAll('th').length) {
+        header.querySelectorAll('th').forEach((column, index) => {
+            columns.push(column.innerText.trim())
+            if (!main_index && column.classList.contains('main')) {
+                main_index = index
+            }
+        })
+    }
 
     body.querySelectorAll('tr').forEach(row => {
         row.querySelectorAll('td').forEach((column, index) => {

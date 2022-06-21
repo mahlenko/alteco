@@ -79,7 +79,14 @@
                     </td>
 
                     <td class="active">
-                        {{ $user->expired_at ? 'до ' .  \Illuminate\Support\Carbon::make($user->expired_at)->isoFormat('D MMMM YYYY') : 'Бесплатная' }}
+                        @if ($user->tariff)
+                            Тариф "{{ $user->tariff->name}}"<br>
+                            <span style="font-weight: lighter; color: gray">
+                                {{ $user->expired_at ? 'до ' .  \Illuminate\Support\Carbon::make($user->expired_at)->isoFormat('D MMMM YYYY') : '' }}
+                            </span>
+                        @else
+                            ---
+                        @endif
                     </td>
 
                     <td class="active">

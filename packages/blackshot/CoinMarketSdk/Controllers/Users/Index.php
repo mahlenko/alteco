@@ -41,6 +41,6 @@ class Index extends \App\Http\Controllers\Controller
             $users->where('name', 'like', '%'. $filter['name'] .'%');
         }
 
-        return $users->paginate(self::PAGINATE_PER_PAGE);
+        return $users->with(['tariff'])->paginate(self::PAGINATE_PER_PAGE);
     }
 }

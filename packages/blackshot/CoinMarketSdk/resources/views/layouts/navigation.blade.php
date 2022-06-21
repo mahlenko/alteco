@@ -14,6 +14,7 @@
                         <li class="{{ Request::routeIs('signals.home') ? 'active' : null }}"><a href="{{ route('signals.home') }}">Сигналы</a></li>
                         @if (Auth::check() && \Illuminate\Support\Facades\Auth::user()->isAdmin())
                             <li class="{{ Request::routeIs('users.home') ? 'active' : null }}"><a href="{{ route('users.home') }}">Пользователи</a></li>
+                            <li class="{{ Request::routeIs('tariffs.home') ? 'active' : null }}"><a href="{{ route('tariffs.home') }}">Тарифы</a></li>
                             <li class="{{ Request::routeIs('settings.home') ? 'active' : null }}"><a href="{{ route('settings.home') }}">Настройки</a></li>
                         @endif
                         <li class="{{ Request::routeIs('users.edit') ? 'active' : null }}"><a href="{{ route('users.edit', \Illuminate\Support\Facades\Auth::id()) }}">Профиль</a></li>

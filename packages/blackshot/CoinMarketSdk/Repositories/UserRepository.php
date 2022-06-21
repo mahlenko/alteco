@@ -5,6 +5,7 @@ namespace Blackshot\CoinMarketSdk\Repositories;
 use App\Models\User;
 use App\Notifications\UserRegistered;
 use Blackshot\CoinMarketSdk\Models\Coin;
+use Blackshot\CoinMarketSdk\Models\TariffModel;
 use DateTimeImmutable;
 use DomainException;
 use Illuminate\Support\Facades\Auth;
@@ -26,6 +27,7 @@ class UserRepository
         string $name,
         string $email,
         string $password,
+        string $tariff_id = null,
         string $role = User::ROLE_USER,
         DateTimeImmutable $expired_at = null
     ): User
@@ -40,11 +42,14 @@ class UserRepository
             throw new InvalidArgumentException('The password cannot be empty.');
         }
 
+        $tariff_id = self::getTariffId($tariff_id);
+
         /* @var User $user */
         $user = User::create([
             'name' => $name,
             'email' => $email,
-            'password' => User::passwordHash($password)
+            'password' => User::passwordHash($password),
+            'tariff_id' => $tariff_id,
         ]);
 
         $user->changeRole($role, Auth::id() ?? 1);
@@ -79,6 +84,7 @@ class UserRepository
         string $name,
         string $email,
         string $password = null,
+        string $tariff_id = null,
         string $role = User::ROLE_USER,
         DateTimeImmutable $expired_at = null
     ): User
@@ -97,9 +103,12 @@ class UserRepository
         //
         if (!Auth::user()->isAdmin()) $role = User::ROLE_USER;
 
+        $tariff_id = self::getTariffId($tariff_id);
+
         $user->fill([
             'name' => trim($name),
-            'email' => $email
+            'email' => $email,
+            'tariff_id' => $tariff_id,
         ]);
 
         if (Auth::user()->isAdmin()) {
@@ -156,5 +165,17 @@ class UserRepository
     {
         return User::where(['email' => $email])
             ->first();
+    }
+
+    /**
+     * @param int|null $tariff_id
+     * @return int
+     */
+    private static function getTariffId(int $tariff_id = null): int
+    {
+        if ($tariff_id > 0) return $tariff_id;
+
+        $tariff = TariffModel::where('default', true)->first();
+        return $tariff->id;
     }
 }

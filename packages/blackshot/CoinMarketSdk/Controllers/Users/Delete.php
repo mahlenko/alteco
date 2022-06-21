@@ -14,7 +14,7 @@ class Delete extends \App\Http\Controllers\Controller
      * @param UserDeleteRequest $request
      * @return RedirectResponse
      */
-    public function index(UserDeleteRequest $request)
+    public function index(UserDeleteRequest $request): RedirectResponse
     {
         $data = $request->validated();
 

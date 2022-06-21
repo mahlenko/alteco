@@ -3,8 +3,9 @@
 namespace Blackshot\CoinMarketSdk\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class UserRequest extends FormRequest
+class TariffRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,13 +25,13 @@ class UserRequest extends FormRequest
     public function rules()
     {
         return [
-            'id' => ['nullable'],
+            'id' => ['nullable', Rule::exists('tariffs', 'id')],
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255'],
-            'tariff_id' => ['required', 'numeric', 'min:0'],
-            'password' => ['nullable'],
-            'role' => ['nullable'],
-            'expired_at' => ['nullable', 'date']
+            'amount' => ['required', 'numeric', 'min:0'],
+            'days' => ['required', 'numeric', 'min:0', Rule::notIn(['0'])],
+            'default' => ['nullable'],
+            'free' => ['nullable'],
+            'move' => ['nullable'],
         ];
     }
 }

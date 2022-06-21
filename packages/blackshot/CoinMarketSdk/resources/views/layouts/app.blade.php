@@ -33,15 +33,25 @@
 
             <section class="scan" id="scan">
                 <div class="container">
+                    @hasSection('title')
+                        <div style="display: flex; justify-content: space-between; align-items: center">
+                            <div>
+                                <h1>@yield('title')</h1>
+                            </div>
+
+                            @yield('title-extend')
+                        </div>
+                    @endif
+
                     @include('flash::message')
                     @if ($errors->count())
-                    <div class="alert alert-danger">
-                        <ul class="mb-0">
-                            @foreach($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
                     @endif
 
                     @yield('content')

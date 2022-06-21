@@ -25,6 +25,21 @@ Breadcrumbs::for('signals.home', function ($trail, $data = []) {
     $trail->push('Сигналы', route('signals.home'));
 });
 
+// Home > Tariffs
+Breadcrumbs::for('tariffs.home', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Тарифы', route('tariffs.home'));
+});
+
+Breadcrumbs::for('tariffs.edit', function ($trail, $data = []) {
+    $name = key_exists('breadcrumb_data', $data) && $data['breadcrumb_data']
+        ? $data['breadcrumb_data']->name
+        : 'Новый тариф';
+
+    $trail->parent('tariffs.home');
+    $trail->push($name, route('tariffs.home'));
+});
+
 
 // Home > Users
 Breadcrumbs::for('users.home', function ($trail) {

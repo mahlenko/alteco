@@ -1,0 +1,90 @@
+$table-radius: .7rem
+$table-border: 1px solid #f4f4f4
+$table-cell-padding-x: .6rem
+$table-cell-padding-y: .6rem
+$primary-color: #30366E
+
+.table
+  width: 100%
+  border-collapse: collapse
+
+  thead
+    background-color: $primary-color
+    color: white
+
+    @media screen and (max-width: 767px)
+      display: none
+
+    tr
+      th
+        font-weight: normal
+        font-size: .76rem
+        text-align: left
+        padding: $table-cell-padding-y $table-cell-padding-x
+        &:first-child
+          border-top-left-radius: $table-radius
+        &:last-child
+          border-top-right-radius: $table-radius
+  tbody
+    @media screen and (max-width: 767px)
+      display: flex
+      flex-direction: column
+      row-gap: 1rem
+    tr
+      @media screen and (max-width: 767px)
+        display: flex
+        border: $table-border
+        border-radius: $table-radius
+        flex-direction: column
+      td
+        padding: $table-cell-padding-y $table-cell-padding-x
+        @media screen and (min-width: 767px)
+          border: $table-border
+          &:not(:first-child)
+            border-left-width: 0
+          &:not(:last-child)
+            border-right-width: 0
+
+        @media screen and (max-width: 767px)
+          display: flex
+          border-bottom: $table-border
+          justify-content: space-between
+          &[data-label]:before
+            content: attr(data-label)
+            font-weight: 600
+
+  &-icon
+    height: 1rem
+    width: 1rem
+
+    &.success
+      color: limegreen
+    &.fail
+      color: orangered
+    &.secondary
+      color: darkgray
+    &.opacity
+      opacity: .5
+
+  // @todo не тут это должно быть, но используется только для таблиц
+  .flex-center
+    display: flex
+    align-items: center
+    column-gap: .25rem
+    .ignore-offsets
+      display: flex
+      align-items: center
+      margin: 0
+      padding: 0
+    &.gap-x-2, .gap-x-2
+      column-gap: .5rem
+  svg
+    height: 1rem
+    width: 1rem
+
+  .link
+    border: none
+    background-color: transparent
+    color: $primary-color
+    &:hover, &.accent
+      color: $orange

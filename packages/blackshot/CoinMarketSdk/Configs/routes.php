@@ -41,6 +41,14 @@ Route::middleware('web')->group(function() {
         });
 
         //
+        Route::prefix('tariffs')->name('tariffs.')->middleware('admin')->group(function() {
+            Route::get('/', [\Blackshot\CoinMarketSdk\Controllers\Tariffs\Home::class, 'index'])->name('home');
+            Route::get('/edit/{tariff:id?}', [\Blackshot\CoinMarketSdk\Controllers\Tariffs\Edit::class, 'index'])->name('edit');
+            Route::post('/store', [\Blackshot\CoinMarketSdk\Controllers\Tariffs\Edit::class, 'store'])->name('store');
+            Route::delete('/delete', [\Blackshot\CoinMarketSdk\Controllers\Tariffs\Delete::class, 'index'])->name('delete');
+        });
+
+        //
         Route::prefix('settings')->name('settings.')->middleware('admin')->group(function() {
             Route::get('/', [\Blackshot\CoinMarketSdk\Controllers\Settings\Index::class, 'index'])->name('home');
             Route::post('/store', [\Blackshot\CoinMarketSdk\Controllers\Settings\Store::class, 'index'])->name('store');

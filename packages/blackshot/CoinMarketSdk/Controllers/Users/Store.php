@@ -14,6 +14,7 @@ class Store extends \App\Http\Controllers\Controller
     /**
      * @param UserRequest $request
      * @return RedirectResponse
+     * @throws Exception
      */
     public function index(UserRequest $request): RedirectResponse
     {
@@ -23,9 +24,28 @@ class Store extends \App\Http\Controllers\Controller
         }
 
         try {
-            key_exists('id', $data)
-                ? UserRepository::update(User::find($data['id']), $data['name'], $data['email'], $data['password'], $data['role'] ?? User::ROLE_USER, $data['expired_at'] ?? null)
-                : UserRepository::create($data['name'], $data['email'], $data['password'], $data['role'] ?? User::ROLE_USER, $data['expired_at'] ?? null);
+            if (key_exists('id', $data) && $data['id']) {
+                UserRepository::update(
+                    User::find($data['id']),
+                    $data['name'],
+                    $data['email'],
+                    $data['password'],
+                    $data['tariff_id'],
+                    $data['role'] ?? User::ROLE_USER,
+                    $data['expired_at'] ?? null
+                );
+
+            } else {
+                UserRepository::create(
+                    $data['name'],
+                    $data['email'],
+                    $data['password'],
+                    $data['tariff_id'],
+                    $data['role'] ?? User::ROLE_USER,
+                    $data['expired_at'] ?? null
+                );
+            }
+
         } catch (Exception $exception) {
             flash($exception->getMessage())->error();
             return back()->withInput();

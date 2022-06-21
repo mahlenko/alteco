@@ -103,6 +103,22 @@
                                 </div>
 
                                 <div class="setting-form__item">
+                                    <label>Тариф</label> <br>
+                                    <select name="tariff_id" id="tariff_id">
+                                        @foreach($tariffs as $tariff)
+                                        <option
+                                            value="{{ $tariff->id }}"
+                                            @if (isset($user) && ((old('tariff_id') === $user->tariff_id) || $tariff->id === $user->tariff_id))
+                                                selected
+                                            @endif
+                                        >
+                                            {{ $tariff->name }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="setting-form__item">
                                     <label>Подписка</label> <br>
                                     <input type="date"
                                            id="expired_at"

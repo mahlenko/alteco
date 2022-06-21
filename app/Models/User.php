@@ -3,15 +3,19 @@
 namespace App\Models;
 
 use Blackshot\CoinMarketSdk\Models\Coin;
+use Blackshot\CoinMarketSdk\Models\TariffModel;
 use Blackshot\CoinMarketSdk\Models\TrackingCoin;
 use Blackshot\CoinMarketSdk\Models\UserCoinBuying;
 use Blackshot\CoinMarketSdk\Models\UserFavorites;
+use Blackshot\CoinMarketSdk\Models\UserPaymentsModel;
 use Blackshot\CoinMarketSdk\Models\UserSetting;
 use DateTimeImmutable;
 use DomainException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
@@ -41,6 +45,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'tariff_id',
     ];
 
     /**
@@ -226,7 +231,7 @@ class User extends Authenticatable
             return true;
         }
 
-        if (!$this->expired_at) {
+        if (!$this->expired_at || $this->tariff_id) {
             return false;
         }
 
@@ -234,6 +239,23 @@ class User extends Authenticatable
         return $date->format('Y-m-d') <= $expired_at->format('Y-m-d');
     }
 
+    /**
+     * Тариф пользователя
+     * @return BelongsTo
+     */
+    public function tariff(): BelongsTo
+    {
+        return $this->belongsTo(TariffModel::class);
+    }
+
+    /**
+     * Платежи пользователя
+     * @return HasMany
+     */
+    public function payments(): HasMany
+    {
+        return $this->hasMany(UserPaymentsModel::class);
+    }
 
     /**
      * @throws DomainException
