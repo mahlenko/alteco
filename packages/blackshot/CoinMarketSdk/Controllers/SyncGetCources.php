@@ -3,6 +3,7 @@
 namespace Blackshot\CoinMarketSdk\Controllers;
 
 use App\Models\User;
+use Blackshot\CoinMarketSdk\Models\TariffModel;
 use Blackshot\CoinMarketSdk\Repositories\UserRepository;
 use DateTimeImmutable;
 use Exception;
@@ -22,7 +23,6 @@ class SyncGetCources extends \App\Http\Controllers\Controller
     {
         $validator = Validator::make($request->toArray(), [
             'user_email' => ['required', 'email'],
-            'expired_at' => ['required', 'date'],
             'tariff_id' => ['nullable', Rule::exists('tariffs', 'id')]
         ]);
 
@@ -35,20 +35,36 @@ class SyncGetCources extends \App\Http\Controllers\Controller
 
         $data = $validator->validate();
 
+        $tariff = $data['tariff']
+            ? TariffModel::find($data['tariff'])
+            : TariffModel::where(['default', true])->first();
+
+        if (!$tariff) {
+            return [
+                'ok' => false,
+                'description' => 'Не указан тариф пользователя.'
+            ];
+        }
+
         /* @var User $user */
         $user = UserRepository::findByEmail($data['user_email']);
 
         if ($user) {
-            $user->setExpiredAt(new DateTimeImmutable($data['expired_at']));
+            // добавляем дни от тарифа
+            $expired_at = $user->expired_at->modify('+'. $tariff->days .' days');
+
+            $user->setExpiredAt($expired_at);
             $user->save();
         } else {
+            $expired_at = new DateTimeImmutable('+' . $tariff->days .' days');
+
             $user = UserRepository::create(
-                'User ' . (User::all()->count() + 1),
+                'User ' . (User::count() + 1),
                 $data['user_email'],
                 Str::random(8),
-                $data['$validator'],
+                $tariff->id,
                 User::ROLE_USER,
-                new DateTimeImmutable($data['expired_at'])
+                $expired_at
             );
         }
 
