@@ -52,18 +52,8 @@ class LoginController extends Controller
      */
     public function authenticated(Request $request, User $user)
     {
-//        Log::info(sprintf(
-//            'User "%s" authenticated.',
-//            $user->{$this->username()}
-//        ));
-
         if (!$user->checkExpiredAt(new DateTimeImmutable('now'))) {
             $this->logout($request);
-
-//            Log::info(sprintf(
-//                'User "%s": аккаунт деактивирован.',
-//                $user->{$this->username()}
-//            ));
 
             flash('Ваш аккаунт деактивирован. Продлите подписку для включения доступа.')
                 ->warning();
@@ -71,7 +61,7 @@ class LoginController extends Controller
             return back();
         } else {
             Log::info(sprintf(
-                'User "%s": аккаунт активен. Доступ открыт.',
+                'Пользователь "%s": аккаунт активен. Доступ открыт.',
                 $user->{$this->username()}
             ));
         }

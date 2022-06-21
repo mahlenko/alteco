@@ -231,7 +231,7 @@ class User extends Authenticatable
             return true;
         }
 
-        if (!$this->expired_at || $this->tariff_id) {
+        if (!$this->expired_at || !$this->tariff_id) {
             return false;
         }
 
