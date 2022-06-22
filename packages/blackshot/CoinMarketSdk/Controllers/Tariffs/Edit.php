@@ -5,11 +5,13 @@ namespace Blackshot\CoinMarketSdk\Controllers\Tariffs;
 use Blackshot\CoinMarketSdk\Models\TariffModel;
 use Blackshot\CoinMarketSdk\Repositories\TariffRepository;
 use Blackshot\CoinMarketSdk\Requests\TariffRequest;
+use Exception;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
 class Edit extends \App\Http\Controllers\Controller
 {
-    public function index(TariffModel $tariff = null)
+    public function index(TariffModel $tariff = null): View
     {
         return view('blackshot::tariff.edit', [
             'tariff' => $tariff,
@@ -26,26 +28,31 @@ class Edit extends \App\Http\Controllers\Controller
     {
         $data = $request->validationData();
 
-        if (key_exists('id', $data) && $data['id']) {
-            $tariff = TariffModel::find($data['id']);
-            $tariff = TariffRepository::update(
-                $tariff,
-                $data['name'],
-                $data['amount'] ?? 0,
-                $data['days'] ?? 1,
-                $data['free'] ?? false,
-                $data['default'] ?? false,
-                $data['move']
-            );
-        } else {
-            $tariff = TariffRepository::create(
-                $data['name'],
-                $data['amount'] ?? 0,
-                $data['days'] ?? 1,
-                $data['free'] ?? false,
-                $data['default'] ?? false,
-                $data['move']
-            );
+        try {
+            if (key_exists('id', $data) && $data['id']) {
+                $tariff = TariffModel::find($data['id']);
+                $tariff = TariffRepository::update(
+                    $tariff,
+                    $data['name'],
+                    $data['amount'] ?? 0,
+                    $data['days'] ?? 1,
+                    $data['free'] ?? false,
+                    $data['default'] ?? false,
+                    $data['move']
+                );
+            } else {
+                $tariff = TariffRepository::create(
+                    $data['name'],
+                    $data['amount'] ?? 0,
+                    $data['days'] ?? 1,
+                    $data['free'] ?? false,
+                    $data['default'] ?? false,
+                    $data['move']
+                );
+            }
+        } catch (Exception $exception) {
+            flash($exception->getMessage())->error();
+            return back()->withInput();
         }
 
         flash('Тариф успешно сохранен.')->success();
