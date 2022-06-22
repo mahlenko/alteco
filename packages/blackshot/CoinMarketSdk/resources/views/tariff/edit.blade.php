@@ -99,7 +99,8 @@
                     </td>
                     <td style="line-height: 1rem !important;">
                         <select name="move" id="move">
-                            <option value="-1">Не выбрано</option>
+                            <option value="{{ \Blackshot\CoinMarketSdk\Repositories\TariffRepository::NOT_MOVE }}">Не выбрано</option>
+                            <option value="-1">Всем пользователям</option>
                             <option value="0">Пользователи без тарифа</option>
                             <optgroup label="Тарифы">
                                 @foreach ($tariffs as $tariff)
