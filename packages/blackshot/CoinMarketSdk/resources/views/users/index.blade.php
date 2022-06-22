@@ -50,6 +50,14 @@
         </form>
     </div>
 
+    @if($users_without_tariff_count)
+        <p class="alert" style="margin-bottom: 1rem; background-color: #dbeaff; color: #0a53be">
+            У вас {{ $users_without_tariff_count }}
+            {{ trans_choice('пользователь|пользователя|пользователей', $users_without_tariff_count) }}
+            без тарифа, которые не имеют доступа к системе.
+        </p>
+    @endif
+
     <div class="scan__wrap">
         <table class="profile__table scan__table users__table adaptive-table">
             <thead>
@@ -91,7 +99,7 @@
 
                     <td class="active">
                         <strong>{{ \Carbon\Carbon::createFromTimeString($user->created_at)->diffForHumans() }}</strong><br>
-                        {{ \Carbon\Carbon::createFromTimeString($user->created_at) }}
+                        {{ $user->created_at->isoFormat('DD.MM.Y HH:mm') }}
                     </td>
 
                     <td class="active">

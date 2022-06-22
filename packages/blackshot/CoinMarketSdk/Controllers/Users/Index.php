@@ -23,13 +23,15 @@ class Index extends \App\Http\Controllers\Controller
 
         return view('blackshot::users.index', [
             'users' => self::getFilterUsers($filter),
+            'users_without_tariff_count' => User::where('tariff_id', null)->count(),
             'filter' => $filter
         ]);
     }
 
     public static function getFilterUsers(array $filter)
     {
-        if (!$filter) return User::paginate(self::PAGINATE_PER_PAGE);
+        if (!$filter) return User::with(['tariff'])
+            ->paginate(self::PAGINATE_PER_PAGE);
 
         $users = User::with([]);
 
@@ -39,6 +41,10 @@ class Index extends \App\Http\Controllers\Controller
 
         if (key_exists('name', $filter) && !empty(trim($filter['name']))) {
             $users->where('name', 'like', '%'. $filter['name'] .'%');
+        }
+
+        if (key_exists('tariff_id', $filter) && !empty(trim($filter['name']))) {
+            $users->where('tariff_id', $filter['tariff_id']);
         }
 
         return $users->with(['tariff'])->paginate(self::PAGINATE_PER_PAGE);
