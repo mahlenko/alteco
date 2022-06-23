@@ -176,11 +176,11 @@
                                     <img src="{{ asset('css/img/table/star.svg') }}" alt="" class="svg">
                                 </a>
 
-                                <a href="javascript:void(0);"
-                                   onclick="return tracking(this, '{{ $coin->uuid }}')"
-                                   class="table__icon tracking {{ $tracking->where('uuid', $coin->uuid)->count() ? 'able' : '' }}">
-                                    <img src="{{ asset('css/img/table/icon.svg') }}" alt="" class="svg">
-                                </a>
+{{--                                <a href="javascript:void(0);"--}}
+{{--                                   onclick="return tracking(this, '{{ $coin->uuid }}')"--}}
+{{--                                   class="table__icon tracking {{ $tracking->where('uuid', $coin->uuid)->count() ? 'able' : '' }}">--}}
+{{--                                    <img src="{{ asset('css/img/table/icon.svg') }}" alt="" class="svg">--}}
+{{--                                </a>--}}
                             </div>
 
                         </p>

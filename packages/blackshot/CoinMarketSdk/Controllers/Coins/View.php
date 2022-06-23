@@ -4,6 +4,8 @@ namespace Blackshot\CoinMarketSdk\Controllers\Coins;
 
 use Blackshot\CoinMarketSdk\Models\Coin;
 use Blackshot\CoinMarketSdk\Models\Signal;
+use DateTimeImmutable;
+use Illuminate\Support\Facades\Cache;
 
 class View extends \App\Http\Controllers\Controller
 {
@@ -15,18 +17,15 @@ class View extends \App\Http\Controllers\Controller
     {
         $coin = Coin::where('uuid', $uuid)->firstOrFail();
 
-        /*  */
-//        $quotes_last_day = (CoinRepository::groupByDate($coin->quotes))->map(function($quotes) {
-//            return $quotes->last();
-//        })->values();
-
-        $signals = Signal::where([
-            'coin_uuid' => $coin->uuid
-        ])->get();
+        $signals = Cache::rememberForever('signals:'. $coin->coin_uuid, function() use ($coin) {
+            return Signal::select(['rank', 'date'])
+                ->where('coin_uuid', $coin->uuid)
+                ->where('date', '>=', new DateTimeImmutable('-1 year'))
+                ->get();
+        });
 
         return view('blackshot::coins.view', [
             'coin' => $coin,
-//            'charts' => $quotes_last_day->pluck('cmc_rank', 'last_updated')
             'charts' => $signals->pluck('rank', 'date')
         ]);
     }

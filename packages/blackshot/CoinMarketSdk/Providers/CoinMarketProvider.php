@@ -6,6 +6,7 @@ use Blackshot\CoinMarketSdk\Commands\CategoryCommand;
 use Blackshot\CoinMarketSdk\Commands\InfoCommand;
 use Blackshot\CoinMarketSdk\Commands\MapCommand;
 use Blackshot\CoinMarketSdk\Commands\QuotesFollowingCommand;
+use Blackshot\CoinMarketSdk\Commands\QuotesGroupDay;
 use Blackshot\CoinMarketSdk\Commands\RankChangeCommand;
 use Blackshot\CoinMarketSdk\Commands\SetCategoryTypesCommand;
 use Blackshot\CoinMarketSdk\Commands\SignalsCommand;
@@ -60,6 +61,7 @@ class CoinMarketProvider extends ServiceProvider
                 InfoCommand::class,
                 MapCommand::class,
                 QuotesFollowingCommand::class,
+                QuotesGroupDay::class,
                 SignalsCommand::class,
                 RankChangeCommand::class,
                 TestMailCommand::class,

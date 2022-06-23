@@ -102,11 +102,13 @@
                             <option value="{{ \Blackshot\CoinMarketSdk\Repositories\TariffRepository::NOT_MOVE }}">Не выбрано</option>
                             <option value="-1">Всем пользователям</option>
                             <option value="0">Пользователи без тарифа</option>
+                            @if ($tariffs)
                             <optgroup label="Тарифы">
                                 @foreach ($tariffs as $tariff)
                                     <option value="{{ $tariff->id }}">{{ $tariff->name }}</option>
                                 @endforeach
                             </optgroup>
+                            @endif
                         </select>
                         <small style="display: block; margin-top: .5rem;">
                             Выберите группу пользователей которым хотите назначить этот тариф.<br>

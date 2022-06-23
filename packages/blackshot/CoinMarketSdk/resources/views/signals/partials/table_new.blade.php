@@ -9,7 +9,7 @@
         <td class="nowrap-desktop active {{ $sortable[$table_name]->column == 'diff' ? 'main' : null }}">
             Изменение ранга за
             <span class="badge bg-light text-secondary ms-1">
-                {{ $filter->days }} {{ \Illuminate\Support\Str::plural('day', $filter->days) }}
+                {{ $filter->days }} {{ trans_choice('день|дня|дней', $filter->days) }}
             </span>
             @include('blackshot::partials.sortable-signals', ['column' => 'diff', 'sortable' => $sortable[$table_name]])
         </td>

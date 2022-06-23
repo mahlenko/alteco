@@ -7,6 +7,7 @@ use Blackshot\CoinMarketSdk\Models\Signal;
 use DateTimeImmutable;
 use Exception;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 
@@ -71,6 +72,12 @@ class SignalsCommand extends Command
         $this->warn('DATA COMPLETE');
 
         foreach ($quotes as $quote) {
+            //
+            if (Cache::has('signals:'. $quote->coin_uuid)) {
+                Cache::forget('signals:'. $quote->coin_uuid);
+            }
+
+            //
             try {
                 $signal = $signals_day
                     ->where('coin_uuid', $quote->coin_uuid)

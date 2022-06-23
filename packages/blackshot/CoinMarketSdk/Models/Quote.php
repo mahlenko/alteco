@@ -22,6 +22,10 @@ class Quote extends \Illuminate\Database\Eloquent\Model
         'market_cap_by_total_supply', 'last_updated'
     ];
 
+    protected $casts = [
+        'last_updated' => 'datetime'
+    ];
+
     /**
      * @param $query
      * @param DateTimeImmutable $from

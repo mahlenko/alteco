@@ -8,7 +8,10 @@ use Blackshot\CoinMarketSdk\Models\Quote;
 use Blackshot\CoinMarketSdk\Request;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Support\Facades\Cache;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\Console\Formatter\OutputFormatterStyle;
+use Symfony\Component\Console\Helper\ProgressBar;
 
 /**
  *
@@ -42,38 +45,72 @@ class QuotesFollowingCommand extends \Illuminate\Console\Command
             return self::FAILURE;
         }
 
-        foreach ($coins->pluck('id')->chunk(100) as $chunk) {
-            $quotes = new Latest();
-            $quotes->id = $chunk->join(',');
+        $chunks = $coins->pluck('id')->chunk(100);
 
-            $response = (new Request())->run($quotes);
+        $this->withProgressBar($chunks->count(), function(ProgressBar $bar) use ($chunks, $coins) {
+            $bar->setMessage('');
+            $bar->setFormat("%current%/%max% [<info>%bar%</info>] %percent:3s%% %message%");
 
-            if (!$response->ok) {
-                $this->error('Ошибка запроса');
-                return self::FAILURE;
-            }
+            $bar->advance();
 
-            if (!$response->data || !count($response->data)) {
-                $this->error('Не получены данные по котировкам валют.');
-                return self::FAILURE;
-            }
+            foreach ($chunks as $chunk) {
+                $quotes = new Latest();
+                $quotes->id = $chunk->join(',');
 
-            foreach ($response->data as $data) {
-                /* @var Coin $coin */
-                $coin = $coins->where('id', $data->id)->first();
-                if (!$coin) continue;
-
-                foreach ($data->quote as $currency => $quote) {
-                    $coin->attachQuote($this->fillQuote($data, $quote, $currency));
-
-                    if ($currency == 'USD') {
-                        $coin->price = $quote->price;
-                        $coin->percent_change_1h = $quote->percent_change_1h;
-                        $coin->save();
-                    }
+                try {
+                    $bar->setMessage('<info>Отправка запроса</info>');
+                    $response = (new Request())->run($quotes);
+                } catch (Exception $exception) {
+                    $bar->setMessage('<error>'. $exception->getMessage() .'</error>');
+                    $bar->advance();
+                    continue;
                 }
+
+                if (!$response->ok) {
+                    $this->error('Ошибка запроса');
+                    return self::FAILURE;
+                }
+
+                if (!$response->data || !count($response->data)) {
+                    $this->error('Не получены данные по котировкам валют.');
+                    return self::FAILURE;
+                }
+
+                foreach ($response->data as $data) {
+                    /* @var Coin $coin */
+                    $coin = $coins->where('id', $data->id)->first();
+                    if (!$coin) continue;
+
+                    foreach ($data->quote as $currency => $quote) {
+                        try {
+                            $bar->setMessage('<warn>Сохраняю '. $coin->name .'</warn>');
+                            $coin->attachQuote($this->fillQuote($data, $quote, $currency));
+
+                            if ($currency == 'USD') {
+                                $coin->price = $quote->price;
+                                $coin->percent_change_1h = $quote->percent_change_1h;
+                                $coin->save();
+                            }
+                        } catch (Exception $exception) {
+                            $bar->setMessage('<error>'. $exception->getMessage() .' '. $exception->getFile() .' ('. $exception->getLine() .')</error>');
+                        }
+                    }
+
+                    //
+                    $bar->setMessage('Caching data quotes...');
+                    Cache::forever($coin->cache_quotes_key, $coin->quotes);
+                }
+
+                $bar->setMessage('Sleep 60 seconds');
+                $bar->advance();
+
+                sleep(60);
             }
-        }
+
+            $bar->finish();
+            return true;
+        });
+
 
         return self::SUCCESS;
     }

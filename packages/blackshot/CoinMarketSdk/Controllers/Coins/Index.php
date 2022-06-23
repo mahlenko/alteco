@@ -37,7 +37,7 @@ class Index extends \App\Http\Controllers\Controller
         /*  */
         $per_page = 25;
 
-        $coins = $this->getCoinsFiltered($sortable, $filter, $auth,);
+        $coins = $this->getCoinsFiltered($sortable, $filter, $auth);
         $coins_signals = $this->getPeriodRank($coins, $date_period, $sortable, $per_page);
         $viewCoins = $this->getViewCoins($coins, $coins_signals, $sortable, $per_page);
 

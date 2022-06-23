@@ -121,10 +121,10 @@
                                 <img src="{{ asset('images/star-big.svg') }}" alt="" class="svg">
                             </a>
 
-                            @php($tracking = \Illuminate\Support\Facades\Auth::user()->trackings->where('uuid', $coin->uuid)->count())
-                            <a href="javascript:void(0);" class="table__icon {{ $tracking ? 'able' : null }}" title="tracking" onclick="return tracking(this, '{{ $coin->uuid }}')">
-                                <img src="{{ asset('images/fig-big.svg') }}" alt="" class="svg">
-                            </a>
+{{--                            @php($tracking = \Illuminate\Support\Facades\Auth::user()->trackings->where('uuid', $coin->uuid)->count())--}}
+{{--                            <a href="javascript:void(0);" class="table__icon {{ $tracking ? 'able' : null }}" title="tracking" onclick="return tracking(this, '{{ $coin->uuid }}')">--}}
+{{--                                <img src="{{ asset('images/fig-big.svg') }}" alt="" class="svg">--}}
+{{--                            </a>--}}
                         </div>
                     </div>
 
@@ -134,7 +134,9 @@
                                 Market Cap
                             </p>
                             <p class="item-content__sum">
+                                @if ($current->market_cap)
                                 ${{ number_format($current->market_cap) }}
+                                @endif
                             </p>
 {{--                            <p class="item-content__num item-content__num_red">0.48</p>--}}
                         </div>
@@ -143,7 +145,9 @@
                                 Fully Diluted Market Cap
                             </p>
                             <p class="item-content__sum">
+                                @if($current->fully_diluted_market_cap)
                                 ${{ number_format($current->fully_diluted_market_cap) }}
+                                @endif
                             </p>
 {{--                            <p class="item-content__num item-content__num_green">0.11</p>--}}
                         </div>
@@ -153,7 +157,9 @@
                                 <div class="item-content__time">24h</div>
                             </div>
                             <p class="item-content__sum">
+                                @if ($current->volume_24h_reported || $current->volume_24h)
                                 ${{ number_format($current->volume_24h_reported ?? $current->volume_24h) }}
+                                @endif
                             </p>
 {{--                            <p class="item-content__num item-content__num_red">11,28</p>--}}
 
@@ -171,7 +177,9 @@
                             </p>
                             <div class="item-content__line d-flex">
                                 <p class="item-content__sum">
+                                    @if($current->circulating_supply)
                                     ${{ number_format($current->circulating_supply) }}
+                                    @endif
                                 </p>
                                 <p class="item-content__proc">
                                     @php($percent_supply = intval($current->circulating_supply / $current->total_supply  * 100))
@@ -183,6 +191,7 @@
                                 <div class="item-content__progress" style="width: {{ $percent_supply }}%"></div>
                             </div>
 
+                            @if($current->max_supply)
                             <div class="item-content__row d-flex">
                                 <p class="item-content__label">
                                     Max Supply
@@ -191,6 +200,7 @@
                                     {{ number_format($current->max_supply) }}
                                 </p>
                             </div>
+                            @endif
                             <div class="item-content__row d-flex">
                                 <p class="item-content__label">
                                     Total Supply

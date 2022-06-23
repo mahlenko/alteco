@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 /**
  *
@@ -38,6 +39,17 @@ class Coin extends Model
         'id', 'rank', 'name', 'symbol', 'slug', 'is_active',
         'first_historical_data', 'last_historical_data'
     ];
+
+    /**
+     * @var string|null
+     */
+    public ?string $cache_quotes_key = null;
+
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+        $this->cache_quotes_key = 'quotes:'. $this->uuid;
+    }
 
     /**
      * @return HasOneThrough
@@ -75,8 +87,11 @@ class Coin extends Model
      */
     public function current(string $currency = 'USD'): Quote
     {
-        return $this
-            ->quotes
+        $quotes = Cache::get($this->cache_quotes_key, function() {
+            return $this->quotes;
+        });
+
+        return $quotes
             ->where('currency', $currency)
             ->last() ?? new Quote();
     }
@@ -242,20 +257,32 @@ class Coin extends Model
             ? $quote->last_updated->format('Y-m-d H:i:s')
             : (new DateTimeImmutable($quote->last_updated))->format('Y-m-d H:i:s');
 
-        $is_unique = !(bool) Quote::where([
+        /* @var Quote $last_update_quote */
+        $last_update_quote = Quote::where([
             'coin_uuid' => $this->uuid,
-            'currency' => $quote->currency,
-            'last_updated' => $quote->last_updated
-        ])->count();
+            'currency' => $quote->currency
+        ])
+            ->where('last_updated', '>=', $quote->last_updated->format('Y-m-d 00:00:00'))
+            ->where('last_updated', '<=', $quote->last_updated->format('Y-m-d 23:59:59'))
+            ->first();
 
-        if (!$is_unique) return $quote;
 
-        $quote->coin_uuid = $this->uuid;
-        $quote->save();
+        if ($last_update_quote) {
+            $store = $last_update_quote->fill($quote->toArray());
+        } else {
+            $store = $quote;
+            $store->coin_uuid = $this->uuid;
+        }
+
+        $store->save();
 
         $this->rank = $quote->cmc_rank;
         $this->save();
 
-        return $quote;
+        if (Cache::has($this->cache_quotes_key)) {
+            Cache::forget($this->cache_quotes_key);
+        }
+
+        return $store;
     }
 }
