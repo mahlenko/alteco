@@ -31,14 +31,14 @@ class UpdateIndexes extends Migration
      */
     public function down()
     {
-//        Schema::table('signals', function(Blueprint $table) {
-//            $table->dropIndex(['coin_uuid_date']);
-//            $table->index(['date']);
-//        });
-//
-//        Schema::table('coin_quotes', function(Blueprint $table) {
-//            $table->dropIndex(['coin_uuid', 'last_updated']);
-//            $table->index(['last_updated']);
-//        });
+        Schema::table('signals', function(Blueprint $table) {
+            $table->dropIndex(['coin_uuid_date']);
+            $table->index(['date']);
+        });
+
+        Schema::table('coin_quotes', function(Blueprint $table) {
+            $table->dropIndex(['coin_uuid', 'last_updated']);
+            $table->index(['last_updated']);
+        });
     }
 }
