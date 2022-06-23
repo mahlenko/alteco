@@ -18,10 +18,10 @@ class UpdateIndexes extends Migration
             $table->index(['coin_uuid', 'date']);
         });
 
-//        Schema::table('coin_quotes', function(Blueprint $table) {
-//            $table->dropIndex(['last_updated']);
-//            $table->index(['coin_uuid', 'last_updated']);
-//        });
+        Schema::table('coin_quotes', function(Blueprint $table) {
+            $table->dropIndex(['last_updated']);
+            $table->index(['coin_uuid', 'last_updated']);
+        });
     }
 
     /**
