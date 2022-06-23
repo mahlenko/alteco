@@ -17,7 +17,7 @@ class View extends \App\Http\Controllers\Controller
     {
         $coin = Coin::where('uuid', $uuid)->firstOrFail();
 
-        $signals = Cache::rememberForever('signals:'. $coin->coin_uuid, function() use ($coin) {
+        $signals = Cache::rememberForever('signals:'. $coin->uuid, function() use ($coin) {
             return Signal::select(['rank', 'date'])
                 ->where('coin_uuid', $coin->uuid)
                 ->where('date', '>=', new DateTimeImmutable('-1 year'))
