@@ -205,7 +205,7 @@
                         доллара.
                     </p>
                 </div>
-                <img src="css/img/about.png" alt="" class="about__pic">
+                <img src="css/img/about.png?v=2" alt="" class="about__pic">
             </div>
             <div class="about__wrap">
                 <table class="profile__table adaptive-table">
@@ -618,7 +618,7 @@
                         номер телефона. После этого оплатить заказ.
                     </p>
                 </div>
-                <img src="css/img/about2.png" alt="" class="about__pic">
+                <img src="css/img/about2.png?v=2" alt="" class="about__pic">
             </div>
         </div>
     </section>
