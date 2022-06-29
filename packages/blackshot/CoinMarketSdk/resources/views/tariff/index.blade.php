@@ -18,6 +18,16 @@
                 <th>Подписок</th>
                 <th>
                     <div class="flex-center">
+                        <span>Баннеры</span>
+                        <span class="ignore-offsets" title="Рекламные модальные окна для пользователей тарифа.">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="table-icon opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </span>
+                    </div>
+                </th>
+                <th>
+                    <div class="flex-center">
                         <span>По-умолчанию</span>
                         <span class="ignore-offsets" title="Тариф будет выбран при самостоятельной регистрации пользователя в проекте. Только 1 тарифный план может быть тарифом по-умолчанию.">
                             <svg xmlns="http://www.w3.org/2000/svg" class="table-icon opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -52,6 +62,9 @@
                 <td>{{ $tariff->amount }}</td>
                 <td>{{ $tariff->days }}</td>
                 <td>{{ $tariff->subscribes_count }}</td>
+                <td>
+                    {{ $tariff->banners_count }} шт
+                </td>
                 <td>
                     <svg xmlns="http://www.w3.org/2000/svg" class="table-icon {{ $tariff->isDefault() ? 'success' : 'secondary' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />

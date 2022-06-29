@@ -46,6 +46,15 @@ Route::middleware('web')->group(function() {
             Route::get('/edit/{tariff:id?}', [\Blackshot\CoinMarketSdk\Controllers\Tariffs\Edit::class, 'index'])->name('edit');
             Route::post('/store', [\Blackshot\CoinMarketSdk\Controllers\Tariffs\Edit::class, 'store'])->name('store');
             Route::delete('/delete', [\Blackshot\CoinMarketSdk\Controllers\Tariffs\Delete::class, 'index'])->name('delete');
+
+            /* Показы и настройка банеров */
+            Route::prefix('banners')
+                ->name('banners.')
+                ->group(function() {
+                    Route::get('edit/{tariff}/{banner?}', [\Blackshot\CoinMarketSdk\Controllers\Tariffs\Banner\Edit::class, 'index'])->name('edit');
+                    Route::post('store', [\Blackshot\CoinMarketSdk\Controllers\Tariffs\Banner\Edit::class, 'store'])->name('store');
+                    Route::post('delete', [\Blackshot\CoinMarketSdk\Controllers\Tariffs\Banner\Delete::class, 'index'])->name('delete');
+                });
         });
 
         //

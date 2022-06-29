@@ -35,4 +35,9 @@ class TariffModel extends Model
     {
         return $this->hasMany(User::class, 'tariff_id', 'id');
     }
+
+    public function banners(): HasMany
+    {
+        return $this->hasMany(TariffBanner::class, 'tariff_id');
+    }
 }
