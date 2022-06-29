@@ -78,9 +78,13 @@
                         </li>
                     </ul>
                     <div class="nav__right d-flex">
-                        <a href="{{ route('login') }}" class="nav__link">
-                            Login
-                        </a>
+                        @auth
+                        @else
+                            <a href="{{ route('login') }}" class="nav__link calc" style="margin: 20px;">
+                                Login
+                            </a>
+                        @endif
+
                         <a href="{{ route('register') }}" class="nav__btn btn btn1">
                             Register for Free Plan
                         </a>
@@ -966,6 +970,45 @@
             </div>
         </div>
     </footer>
+
+    <div style="display:none;">
+        <div class="box-modal pop1" id="pop6">
+            <div class="popup">
+                <div class="popup-call__box">
+                    <div class="box-modal__close articmodal-close">
+                        <img src="css/img/close.svg" alt="" class="svg">
+                    </div>
+                    <div class="popup__flex d-flex">
+                        <div class="popup__left">
+                            <img src="css/img/logo.svg" alt="" class="popup__logo">
+                            <img src="css/img/popup.png" alt="" class="popup__pic">
+                        </div>
+                        <div class="popup__right">
+                            <p class="popup__title">
+                                Войти
+                            </p>
+                            <form action="{{ route('login') }}" method="post" class="settings-form">
+                                @csrf
+                                <div class="settings__el">
+                                    <div class="setting-form__item">
+                                        <label>Email:</label> <br>
+                                        <input type="email" name="email" placeholder="john@gmail.com" autocomplete="email" class="name">
+                                    </div>
+                                    <div class="setting-form__item">
+                                        <label>Пароль:</label> <br>
+                                        <input type="password" name="password" placeholder="****************" class="pass">
+                                    </div>
+                                </div>
+                                <button class="settings-form__btn btn btn2">
+                                    Вход
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <script src="//yandex.st/jquery/1.9.1/jquery.min.js"></script>
 <script src="js/landing.js"></script>

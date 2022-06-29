@@ -9,8 +9,5 @@ class Home extends \App\Http\Controllers\Controller
     public function index()
     {
         return view('blackshot::website');
-//        return \Illuminate\Support\Facades\Auth::check()
-//            ? redirect(RouteServiceProvider::HOME)
-//            : redirect()->route('login');
     }
 }
