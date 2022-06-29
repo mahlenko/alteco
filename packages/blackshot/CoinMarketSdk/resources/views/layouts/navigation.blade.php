@@ -24,13 +24,18 @@
 
             @auth
                 {{-- tarif info --}}
-{{--                <div class="nav__right d-flex">--}}
-{{--                    <p class="header-pages__text">--}}
-{{--                        У вас есть <span>3 дня</span>--}}
-{{--                        <br>бесплатного доступа--}}
-{{--                    </p>--}}
-{{--                    <a href="#" class="nav__btn btn btn1">Улучшить тариф</a>--}}
-{{--                </div>--}}
+                <div class="nav__right d-flex">
+                    <p class="header-pages__text">
+                        У вас <span>{{ Auth::user()->expiredAtText() }}</span>
+
+                        @if (\Illuminate\Support\Facades\Auth::user()->tariff->isFree())
+                            <br>бесплатного доступа
+                        @endif
+                    </p>
+                    @if (!\Illuminate\Support\Facades\Auth::user()->isAdmin())
+                        <a href="#" class="nav__btn btn btn1">Улучшить тариф</a>
+                    @endif
+                </div>
 
                 {{-- Account --}}
                 <div class="header-pages__info d-flex">
