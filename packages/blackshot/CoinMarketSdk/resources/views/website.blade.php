@@ -79,15 +79,9 @@
                     </ul>
                     <div class="nav__right d-flex">
                         @auth
-                            <a href="{{ route('login') }}"
-                               class="nav__link"
-                               onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-                               style="margin: 20px;">
-                                Logout
+                            <a href="{{ route('coins.home') }}" class="nav__link" style="margin: 20px;">
+                                Dashboard
                             </a>
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                @csrf
-                            </form>
                         @else
                             <a href="{{ route('login') }}" class="nav__link calc" style="margin: 20px;">
                                 Login
