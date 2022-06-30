@@ -51,7 +51,7 @@ class Index extends Controller
         $filter = $this->getFilter();
 
         /*  */
-        $categories = CoinCategoryRepository::categoriesForSelect();
+        $categories = CoinCategoryRepository::categoriesForSelect(Auth::user());
 
         /* @var Collection<Coin> $buying_coins */
         $buying_coins = Auth::user()->buyingCoins;

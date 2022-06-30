@@ -10,6 +10,9 @@ Route::middleware('web')->group(function() {
     Route::post('/sync/webhook/payment', [\Blackshot\CoinMarketSdk\Controllers\SyncGetCources::class, 'webhook'])->name('webhook.payment');
 
     //
+    Route::get('/subscribe', [\Blackshot\CoinMarketSdk\Controllers\Subscribe::class, 'index'])->name('subscribe');
+
+    //
     Route::middleware('auth')->group(function() {
         //
         Route::prefix('coins')->name('coins.')->group(function() {

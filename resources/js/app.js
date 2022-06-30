@@ -6,11 +6,13 @@ import * as am5xy from "@amcharts/amcharts5/xy";
 import animated from "@amcharts/amcharts5/themes/Animated";
 
 document.addEventListener("DOMContentLoaded", function(event) {
+    // графики
     let graphs = document.querySelectorAll('[data-json]')
     graphs.forEach(graph => {
         createGraph(graph)
     })
 
+    // "покупаю"
     let btn_buying = document.querySelectorAll('a[data-buying]');
     if (btn_buying) {
         btn_buying.forEach(btn => {
@@ -30,7 +32,49 @@ document.addEventListener("DOMContentLoaded", function(event) {
         })
     }
 
-    $('select[multiple]').selectize({});
+    $('select[multiple]').selectize({
+        render: {
+            option: function (item, escape) {
+                // кнопка подписаться в выпадающем списке
+                if (item.value === 'subscribe') {
+                    return '<a href="'+ item.url +'" class="subscribe">'+ item.text +'</a>';
+                }
+
+                return '<div data-value="'+ item.value +'" class="option">'+ escape(item.text) +'</div>';
+            },
+        },
+
+        onItemAdd: function (value) {
+            if (value !== 'subscribe') {
+                return
+            }
+
+            // убираем из выбранных элементов subscribe
+            let values = []
+            let currentValues = this.getValue()
+            let subscribeIndex = currentValues.indexOf('subscribe')
+
+            if (subscribeIndex !== -1) {
+                if (currentValues.length > 0) {
+                    currentValues.forEach((val, index) => {
+                        if (subscribeIndex !== index) {
+                            values.push(val)
+                        }
+                    })
+                    this.setValue(values, true)
+                }
+            }
+
+            this.close()
+            this.refreshOptions()
+
+            // перенаправляем пользователя по ссылке subscribe
+            let subscribeLink = this.$dropdown[0].querySelector('.subscribe')
+            document.location.href = subscribeLink.href
+
+            return
+        },
+    });
 
 });
 

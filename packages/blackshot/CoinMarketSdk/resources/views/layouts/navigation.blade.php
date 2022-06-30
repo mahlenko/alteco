@@ -33,7 +33,7 @@
                         @endif
                     </p>
                     @if (!\Illuminate\Support\Facades\Auth::user()->isAdmin())
-                        <a href="#" class="nav__btn btn btn1">Улучшить тариф</a>
+                        <a href="{{ route('subscribe') }}" class="nav__btn btn btn1">Улучшить тариф</a>
                     @endif
                 </div>
 

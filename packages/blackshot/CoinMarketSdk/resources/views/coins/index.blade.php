@@ -43,12 +43,19 @@
                 <select class="select" name="filter[category_uuid][]" multiple id="category">
                     @foreach($categories as $value => $label)
                         @if ($label instanceof \Illuminate\Support\Collection)
+                            @php($disabled = '')
                             <optgroup label="{{ __('categories.'.$value) }}">
                                 @foreach($label as $val => $text)
                                     <option
                                         @if(isset($filter->category_uuid) && in_array($val, $filter->category_uuid)) selected @endif
-                                    value="{{ $val }}"
+                                        value="{{ $val }}"
+                                        {{ $disabled }}
+                                        data-data="{{ $val == 'subscribe' ? json_encode(['url' => route('subscribe')]) : null }}"
                                     >{{ $text }}</option>
+
+                                    @if($val == 'subscribe')
+                                        @php($disabled = 'disabled')
+                                    @endif
                                 @endforeach
                             </optgroup>
                         @else

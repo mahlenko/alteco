@@ -3,6 +3,7 @@
 namespace Blackshot\CoinMarketSdk\Controllers\Coins;
 
 use App\Models\User;
+use Blackshot\CoinMarketSdk\Models\CategoryModel;
 use Blackshot\CoinMarketSdk\Models\Coin;
 use Blackshot\CoinMarketSdk\Repositories\CoinCategoryRepository;
 use Blackshot\CoinMarketSdk\Repositories\CoinRepository;
@@ -37,13 +38,15 @@ class Index extends \App\Http\Controllers\Controller
         /*  */
         $per_page = 25;
 
-        $coins = $this->getCoinsFiltered($sortable, $filter, $auth);
+        $allow_categories = CoinCategoryRepository::categoriesForSelect(Auth::user());
+
+        $coins = $this->getCoinsFiltered($allow_categories, $sortable, $filter, $auth);
         $coins_signals = $this->getPeriodRank($coins, $date_period, $sortable, $per_page);
         $viewCoins = $this->getViewCoins($coins, $coins_signals, $sortable, $per_page);
 
         return view('blackshot::coins.index', [
             'coins' => $viewCoins,
-            'categories' => CoinCategoryRepository::categoriesForSelect(),
+            'categories' => $allow_categories,
             'filter' => $filter,
             'sortable' => $sortable,
             'favorites' => $auth->favorites,
@@ -54,17 +57,36 @@ class Index extends \App\Http\Controllers\Controller
     }
 
     /**
+     * @param Collection $allow_categories
      * @param array $sortable
-     * @param $filter
+     * @param null $filter
      * @param User|null $user
      * @return Builder
      */
     public function getCoinsFiltered(
+        Collection $allow_categories,
         array $sortable,
         $filter = null,
         User $user = null
     ): Builder
     {
+        // @todo вынести функцию отдельно
+//        $allow_categories_uuid = $allow_categories
+//            ->only([CategoryModel::TYPE_OTHER, CategoryModel::TYPE_FOUNDS])
+//            ->mapWithKeys(function($item) {
+//                return $item;
+//            })->keys();
+//
+//        if (!empty($filter->category_uuid)) {
+//            $diff = $allow_categories_uuid->diff($filter->category_uuid);
+//            $_temp = $allow_categories_uuid->diff($diff);
+//            if ($_temp->count()) {
+//                $allow_categories_uuid = $_temp;
+//            }
+//        }
+        // end
+
+
         /* @var Coin $coins */
         $coins = Coin::select('coins.*');
 

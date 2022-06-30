@@ -2,3 +2,26 @@
   .optgroup-header
     color: $orange !important
     font-weight: 500
+  .disabled, [data-disabled]
+    cursor: not-allowed !important
+    filter: blur(1px)
+  .option
+    &:not([data-selectable])
+      cursor: not-allowed
+      filter: blur(1px)
+  .subscribe
+    background-color: $blue !important
+    border-radius: .3rem
+    color: $white !important
+    display: flex
+    flex-direction: column
+    margin: .25rem
+    text-align: center
+    padding: .2rem
+    &:hover
+      background-color: lighten($blue, 5) !important
+      color: $white
+    .title
+      font-weight: 600
+    .description
+      opacity: .8
