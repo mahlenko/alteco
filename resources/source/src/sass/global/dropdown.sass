@@ -1,4 +1,6 @@
 .dropdown
+  background-color: transparent
+  position: relative
   &-menu
     background: white
     box-shadow: 0 .2rem 1rem rgba(0,0,0,.1)
@@ -10,11 +12,38 @@
     z-index: 1000
     &.show
       display: flex
+    .separator
+      background-color: #f4f4f4
+      margin-top: .25rem
+      margin-bottom: .25rem
+      height: 1px
   &-item
     border-radius: .4rem
     color: black
     display: block
+    white-space: nowrap
     padding: .2rem .5rem
     font-size: .8rem
+    a
+      color: black
     &:hover
       background-color: #f4f4f4
+
+.scan .dropdown > button
+  background-color: #fdf3e9
+  &:hover
+    background-color: $orange
+
+.setting-btn
+  align-items: center
+  background-color: rgba(255,255,255, .1)
+  border-radius: .3rem
+  display: flex
+  padding: .5rem
+  justify-content: center
+
+  svg
+    width: 1.4rem
+
+  &:hover
+    background-color: rgba(255,255,255, .2)

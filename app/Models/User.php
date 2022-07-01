@@ -240,15 +240,23 @@ class User extends Authenticatable
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function expiredAtText(): string
+    public function expiredDays(): int
     {
         $days = $this->expired_at
             ? (new DateTimeImmutable())->diff($this->expired_at)->days
             : 0;
 
-        if ($days < 0) $days = 0;
+        return $days < 0 ? 0 : $days;
+    }
+
+    /**
+     * @return string
+     */
+    public function expiredAtText(): string
+    {
+        $days = $this->expiredDays();
 
         if (!$this->isAdmin() && $days == 0) {
             return 'доступ закрыт';
@@ -256,7 +264,7 @@ class User extends Authenticatable
 
         return $this->isAdmin()
             ? 'доступ администратора'
-            : 'осталось '. $days .' '. trans_choice('день|дня|дней', $days);
+            : $days .' '. trans_choice('день|дня|дней', $days);
     }
 
     /**
