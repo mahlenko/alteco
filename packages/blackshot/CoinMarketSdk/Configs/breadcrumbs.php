@@ -40,26 +40,22 @@ Breadcrumbs::for('tariffs.edit', function ($trail, $data = []) {
     $trail->push($name, route('tariffs.home'));
 });
 
-Breadcrumbs::for('tariffs.banners.edit', function ($trail, $data = []) {
+Breadcrumbs::for('banners.home', function ($trail, $data = []) {
+    $trail->parent('home');
+    $trail->push('Баннеры', route('banners.home'));
+});
 
-    $tariff = null;
-    $banner = null;
+Breadcrumbs::for('banners.edit', function ($trail, $data = []) {
 
     if (key_exists('breadcrumb_data', $data) && $data['breadcrumb_data']) {
-        //
-        $tariff = key_exists('tariff', $data['breadcrumb_data'])
-            ? $data['breadcrumb_data']['tariff']
-            : null;
-
         //
         $banner = key_exists('banner', $data['breadcrumb_data'])
             ? $data['breadcrumb_data']['banner']
             : null;
     }
 
-    $trail->parent('tariffs.home');
-    $trail->push($tariff->name, route('tariffs.edit', $tariff));
-    $trail->push($banner->uuid ?? 'Добавить баннер', route('tariffs.banners.edit', $tariff, $banner));
+    $trail->parent('banners.home');
+    $trail->push($banner->title ?? 'Добавить баннер', route('banners.edit', $banner));
 });
 
 

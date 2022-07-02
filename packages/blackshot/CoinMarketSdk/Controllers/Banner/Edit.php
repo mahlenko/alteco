@@ -1,39 +1,36 @@
 <?php
 
-namespace Blackshot\CoinMarketSdk\Controllers\Tariffs\Banner;
+namespace Blackshot\CoinMarketSdk\Controllers\Banner;
 
 use App\Http\Controllers\Controller;
-use Blackshot\CoinMarketSdk\Models\TariffBanner;
+use Blackshot\CoinMarketSdk\Models\Banner;
 use Blackshot\CoinMarketSdk\Models\TariffModel;
 use Blackshot\CoinMarketSdk\Repositories\BannerRepository;
-use Blackshot\CoinMarketSdk\Requests\TariffBannerRequest;
+use Blackshot\CoinMarketSdk\Requests\BannerRequest;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 
 class Edit extends Controller
 {
     /**
-     * @param TariffModel $tariff
-     * @param TariffBanner $banner
+     * @param Banner $banner
      * @return View
      */
-    public function index(TariffModel $tariff, TariffBanner $banner): View
+    public function index(Banner $banner): View
     {
-        return view('blackshot::tariff.banner.edit', [
-            'tariff' => $tariff,
+        return view('blackshot::banners.edit', [
             'banner' => $banner,
             'breadcrumb_data' => [
-                'tariff' => $tariff,
                 'banner' => $banner
             ]
         ]);
     }
 
     /**
-     * @param TariffBannerRequest $request
+     * @param BannerRequest $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(TariffBannerRequest $request)
+    public function store(BannerRequest $request)
     {
         $data = $request->validated();
 
@@ -45,8 +42,6 @@ class Edit extends Controller
             return back()->withInput();
         }
 
-        return redirect()->route('tariffs.edit', [
-            'tariff' => $data['tariff_id']
-        ]);
+        return redirect()->route('banners.home');
     }
 }

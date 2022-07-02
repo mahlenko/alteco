@@ -1,12 +1,11 @@
 <?php
 
-namespace Blackshot\CoinMarketSdk\Controllers\Tariffs\Banner;
+namespace Blackshot\CoinMarketSdk\Controllers\Banner;
 
 use App\Http\Controllers\Controller;
-use Blackshot\CoinMarketSdk\Models\TariffBanner;
+use Blackshot\CoinMarketSdk\Models\Banner;
 use Blackshot\CoinMarketSdk\Repositories\BannerRepository;
 use Exception;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -24,7 +23,7 @@ class Delete extends Controller
         ]);
 
         try {
-            $banner = TariffBanner::find($data['uuid']);
+            $banner = Banner::find($data['uuid']);
             BannerRepository::delete($banner, Auth::user());
 
             flash('Баннер удален.')->success();

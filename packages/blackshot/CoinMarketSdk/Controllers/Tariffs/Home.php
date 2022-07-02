@@ -8,7 +8,7 @@ class Home extends \App\Http\Controllers\Controller
 {
     public function index()
     {
-        $tariffs = TariffModel::withCount(['subscribes', 'banners'])->paginate();
+        $tariffs = TariffModel::withCount(['subscribes'])->paginate();
 
         return view('blackshot::tariff.index', [
             'tariffs' => $tariffs

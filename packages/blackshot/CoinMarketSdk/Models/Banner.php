@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Ramsey\Uuid\Uuid;
 
-class TariffBanner extends Model
+class Banner extends Model
 {
     protected $primaryKey = 'uuid';
     protected $keyType = 'string';
@@ -19,10 +19,16 @@ class TariffBanner extends Model
     const PICTURE_IMAGE_FOLDER = 'public/banners';
 
     protected $fillable = [
+        'title',
         'body',
+        'button_text',
+        'button_url',
         'start',
         'end',
+        'type',
         'is_active',
+        'delay_seconds',
+        'not_disturb_hours',
         'created_user_id',
     ];
 
@@ -67,11 +73,6 @@ class TariffBanner extends Model
         return $this;
     }
 
-    public function tariff(): BelongsTo
-    {
-        return $this->belongsTo(TariffModel::class, 'tariff_id');
-    }
-
     /**
      * @param bool $is_active
      * @return $this
@@ -103,6 +104,16 @@ class TariffBanner extends Model
     }
 
     /**
+     * @param int $seconds
+     * @return $this
+     */
+    public function setDelay(int $seconds = 0): static
+    {
+        $this->delay = $seconds;
+        return $this;
+    }
+
+    /**
      * @return $this
      */
     public function resetViews()
@@ -123,7 +134,7 @@ class TariffBanner extends Model
     {
         parent::booted();
 
-        self::creating(function(TariffBanner $banner) {
+        self::creating(function(Banner $banner) {
             $banner->uuid = Uuid::uuid4();
             $banner->views = 0;
         });

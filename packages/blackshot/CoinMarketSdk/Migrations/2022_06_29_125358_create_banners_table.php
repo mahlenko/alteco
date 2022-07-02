@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTariffBannersTable extends Migration
+class CreateBannersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,22 +13,22 @@ class CreateTariffBannersTable extends Migration
      */
     public function up()
     {
-        Schema::create('tariff_banners', function (Blueprint $table) {
+        Schema::create('banners', function (Blueprint $table) {
             $table->uuid('uuid');
-            $table->unsignedBigInteger('tariff_id');
-            $table->text('body')->nullable();
             $table->string('picture', 255)->nullable();
+            $table->text('title')->nullable();
+            $table->text('body')->nullable();
+            $table->string('button_text')->nullable();
+            $table->string('button_url')->nullable();
             $table->date('start');
             $table->date('end')->nullable();
+            $table->enum('type', [array_column(\Blackshot\CoinMarketSdk\Enums\BannerTypes::cases(), 'name')])->index();
+            $table->unsignedInteger('delay_seconds', false)->default(0);
+            $table->unsignedInteger('not_disturb_hours', false)->default(0);
             $table->boolean('is_active')->index();
             $table->bigInteger('views');
             $table->unsignedBigInteger('created_user_id')->nullable();
             $table->timestamps();
-
-            $table->foreign('tariff_id')
-                ->on('tariffs')
-                ->references('id')
-                ->cascadeOnDelete();
 
             $table->foreign('created_user_id')
                 ->on('users')
@@ -44,6 +44,6 @@ class CreateTariffBannersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tariff_banners');
+        Schema::dropIfExists('banners');
     }
 }

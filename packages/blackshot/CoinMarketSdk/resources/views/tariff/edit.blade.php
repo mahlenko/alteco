@@ -127,62 +127,6 @@
             </form>
         </div>
 
-        <div class="banner-container column">
-            <div class="flex justify-between items-center">
-                <h3>Баннеры</h3>
-                <span>
-                    <a href="{{ route('tariffs.banners.edit', ['tariff' => $tariff]) }}" class="btn btn2">
-                        Добавить баннер
-                    </a>
-                </span>
-            </div>
-
-            <div class="banners">
-                @if ($tariff->banners && $tariff->banners->count())
-                    @foreach($tariff->banners as $banner)
-                        <div class="item">
-                            @if (!empty($banner->picture))
-                                <img src="{{ $banner->pictureUrl() }}" class="picture" alt="">
-                            @endif
-
-                            <div>
-                                <p>{{ \Illuminate\Support\Str::limit(strip_tags($banner->body), 30) }}</p>
-                                <ul class="list-info">
-                                    <li>Старт: {{ $banner->start->isoFormat('DD MMMM YYYY') }}</li>
-                                    <li>Стоп: {{ $banner->end?->isoFormat('DD MMMM YYYY') ?? '---' }}</li>
-                                    <li>Просмотров: {{ $banner->views }}</li>
-                                    @if (!$banner->is_active)
-                                    <li style="color: red; display: flex; align-items: center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                        </svg>
-                                        Черновик
-                                    </li>
-                                    @endif
-                                </ul>
-                                <div style="display: flex; column-gap: 1rem">
-                                    <a href="{{ route('tariffs.banners.edit', ['tariff' => $tariff, 'banner' => $banner]) }}">Редактировать</a>
-
-                                    <form
-                                        action="{{ route('tariffs.banners.delete') }}"
-                                        method="post"
-                                        onsubmit="return confirm('Действительно удалить баннер?')"
-                                    >
-                                        @csrf
-                                        <input type="hidden" name="uuid" value="{{ $banner->uuid }}">
-                                        <button class="users__link" style="color: orangered">Удалить</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                @else
-                    <div class="item">
-                        Рекламных банеров в этом тарифе еще нет, но вы можете их добавить.
-                    </div>
-                @endif
-            </div>
-        </div>
     </div>
 
     <style>

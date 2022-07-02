@@ -3,7 +3,8 @@
 namespace Blackshot\CoinMarketSdk\Repositories;
 
 use App\Models\User;
-use Blackshot\CoinMarketSdk\Models\TariffBanner;
+use Blackshot\CoinMarketSdk\Enums\BannerTypes;
+use Blackshot\CoinMarketSdk\Models\Banner;
 use DateTimeImmutable;
 use DomainException;
 use Exception;
@@ -15,40 +16,45 @@ class BannerRepository
     /**
      * @param array $data
      * @param Authenticatable|User $user
-     * @return TariffBanner
+     * @return Banner
      * @throws Exception
      */
-    public static function store(array $data, Authenticatable|User $user): TariffBanner
+    public static function store(array $data, Authenticatable|User $user): Banner
     {
-        if (key_exists('uuid', $data) && $data['uuid']) {
-            $banner = TariffBanner::find($data['uuid']);
-        } else {
-            $banner = new TariffBanner();
-            $banner->tariff_id = $data['tariff_id'];
-        }
-
-        return self::update($banner, $data, $user);
+        return self::update(Banner::findOrNew($data['uuid']), $data, $user);
     }
 
     /**
-     * @param TariffBanner $banner
+     * @param Banner $banner
      * @param array $data
      * @param Authenticatable|User $user
-     * @return TariffBanner
+     * @return Banner
      * @throws Exception
      */
     public static function update(
-        TariffBanner $banner,
-        array $data,
+        Banner               $banner,
+        array                $data,
         Authenticatable|User $user
-    ): TariffBanner {
+    ): Banner {
         //
         if (!key_exists('is_active', $data) || !$data['is_active']) {
             $data['is_active'] = false;
         }
 
+        if (!key_exists('button_url', $data)) {
+            $data['button_url'] = null;
+        }
+
         //
         $data['created_user_id'] = $user->id;
+
+        if ($data['type'] === BannerTypes::static) {
+            $data['delay_seconds'] = 0;
+            $data['not_disturb_hours'] = 0;
+        } else {
+            $data['button_text'] = null;
+            $data['button_url'] = null;
+        }
 
         //
         $banner
@@ -62,11 +68,11 @@ class BannerRepository
     }
 
     /**
-     * @param TariffBanner $banner
+     * @param Banner $banner
      * @param Authenticatable|User $user
      * @return void
      */
-    public static function delete(TariffBanner $banner, Authenticatable|User $user): void
+    public static function delete(Banner $banner, Authenticatable|User $user): void
     {
         if (!$user->isAdmin()) {
             throw new DomainException('Недостаточно прав доступа.');
