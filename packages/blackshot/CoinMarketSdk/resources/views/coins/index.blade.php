@@ -121,6 +121,9 @@
                         <span class="ms-1 badge text-secondary bg-light">60д</span>
                         @include('blackshot::partials.sortable', ['column' => 'rank_60d'])
                     </td>
+                    <td class="active">AltEco Ранг</td>
+                    <td class="active">Коэф. Alpha</td>
+                    <td class="active">Коэф. Kalmar</td>
                     <td class="active" width="50"></td>
                 </tr>
             </thead>
@@ -174,6 +177,18 @@
                         @include('blackshot::partials.badge-position-text', ['position' => $coin->rank_60d])
                     </td>
 
+                    <td class="active"></td>
+                    <td class="active {{ $coin->alpha >= 0 ? 'green' : 'red' }}">
+                        <p class="d-flex flex-center table__num">
+                            {{ floatval($coin->alpha) }}%
+                        </p>
+                    </td>
+                    <td class="active {{ $coin->squid >= 0 ? 'green' : 'red' }}">
+                        <p class="d-flex table__num flex-center">
+                            {{ number_format($coin->squid, 2) }}
+                        </p>
+                    </td>
+
                     <td class="active" data-label="">
                         <p class="table__el">
                             <div class="table__icons d-flex">
@@ -188,6 +203,16 @@
 {{--                                   class="table__icon tracking {{ $tracking->where('uuid', $coin->uuid)->count() ? 'able' : '' }}">--}}
 {{--                                    <img src="{{ asset('css/img/table/icon.svg') }}" alt="" class="svg">--}}
 {{--                                </a>--}}
+
+                                @auth()
+                                    @if (\Illuminate\Support\Facades\Auth::user()->isAdmin())
+                                    <a href="{{ route('coins.edit', $coin) }}" title="Редактировать">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                    </a>
+                                    @endif
+                                @endif
                             </div>
 
                         </p>

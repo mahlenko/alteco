@@ -53,6 +53,9 @@ class Kernel extends ConsoleKernel
         $schedule->command('blackshot:rank:change 60')
             ->hourly()
             ->runInBackground();
+
+        /* Получение CRIX индекса */
+        $schedule->command('blackshot:crix:indexes')->daily();
     }
 
     /**

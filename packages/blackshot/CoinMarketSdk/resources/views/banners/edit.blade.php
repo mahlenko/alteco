@@ -9,49 +9,49 @@
                 @csrf
 
                 <input type="hidden" name="uuid" value="{{ $banner->uuid ?? null }}">
+                <input type="hidden" name="type" value="{{ \Blackshot\CoinMarketSdk\Enums\BannerTypes::static->name }}">
 
                 <table class="table-setting">
                     <tbody>
+{{--                        <tr>--}}
+{{--                            <td>--}}
+{{--                                <label for="">Тип</label>--}}
+{{--                                <span class="required">*</span>--}}
+{{--                            </td>--}}
+{{--                            <td>--}}
 
-                        <tr>
-                            <td>
-                                <label for="">Тип</label>
-                                <span class="required">*</span>
-                            </td>
-                            <td>
+{{--                                @php($type_static = \Blackshot\CoinMarketSdk\Enums\BannerTypes::static)--}}
+{{--                                @php($type_modal = \Blackshot\CoinMarketSdk\Enums\BannerTypes::modal)--}}
 
-                                @php($type_static = \Blackshot\CoinMarketSdk\Enums\BannerTypes::static)
-                                @php($type_modal = \Blackshot\CoinMarketSdk\Enums\BannerTypes::modal)
+{{--                                <div class="d-flex" style="align-items: flex-start; column-gap: 1.5rem">--}}
+{{--                                    <div class="d-flex" style="align-items: flex-start; column-gap: .5rem">--}}
+{{--                                        <input type="radio"--}}
+{{--                                               name="type"--}}
+{{--                                               id="{{ $type_static->name }}"--}}
+{{--                                               value="{{ $type_static->name }}"--}}
+{{--                                               {{ old('type', $banner->type) === $type_static->name ? 'checked' : null }}--}}
+{{--                                        >--}}
+{{--                                        <label for="{{ $type_static->name }}" style="display: flex; flex-direction: column; line-height: 1rem">--}}
+{{--                                            <strong>{{ $type_static->value }}</strong>--}}
+{{--                                            <small style="color: gray;">Статичный банер для встраивания на страницу</small>--}}
+{{--                                        </label>--}}
+{{--                                    </div>--}}
 
-                                <div class="d-flex" style="align-items: flex-start; column-gap: 1.5rem">
-                                    <div class="d-flex" style="align-items: flex-start; column-gap: .5rem">
-                                        <input type="radio"
-                                               name="type"
-                                               id="{{ $type_static->name }}"
-                                               value="{{ $type_static->name }}"
-                                               {{ old('type', $banner->type) === $type_static->name ? 'checked' : null }}
-                                        >
-                                        <label for="{{ $type_static->name }}" style="display: flex; flex-direction: column; line-height: 1rem">
-                                            <strong>{{ $type_static->value }}</strong>
-                                            <small style="color: gray;">Статичный банер для встраивания на страницу</small>
-                                        </label>
-                                    </div>
-
-                                    <div class="d-flex" style="align-items: flex-start; column-gap: .5rem">
-                                        <input type="radio"
-                                               name="type"
-                                               id="{{ $type_modal->name }}"
-                                               value="{{ $type_modal->name }}"
-                                               {{ old('type', $banner->type) === $type_modal->name ? 'checked' : null }}
-                                        >
-                                        <label for="{{ $type_modal->name }}" style="display: flex; flex-direction: column; line-height: 1rem">
-                                            <strong>{{ $type_modal->value }}</strong>
-                                            <small style="color: gray;">Всплывающее окно с формой для заполнения контактов.</small>
-                                        </label>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
+{{--                                    <div class="d-flex" style="align-items: flex-start; column-gap: .5rem">--}}
+{{--                                        <input type="radio"--}}
+{{--                                               name="type"--}}
+{{--                                               id="{{ $type_modal->name }}"--}}
+{{--                                               value="{{ $type_modal->name }}"--}}
+{{--                                               {{ old('type', $banner->type) === $type_modal->name ? 'checked' : null }}--}}
+{{--                                        >--}}
+{{--                                        <label for="{{ $type_modal->name }}" style="display: flex; flex-direction: column; line-height: 1rem">--}}
+{{--                                            <strong>{{ $type_modal->value }}</strong>--}}
+{{--                                            <small style="color: gray;">Всплывающее окно с формой для заполнения контактов.</small>--}}
+{{--                                        </label>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                            </td>--}}
+{{--                        </tr>--}}
 
                         <tr>
                             <td>
@@ -91,17 +91,75 @@
                             </td>
                         </tr>
 
-                        <tr>
-                            <td>
-                                <label for="button_text">Текст на кнопке</label>
-                                <span class="required">*</span>
-                            </td>
-                            <td>
-                                <input name="button_text"
-                                       id="button_text"
-                                       value="{{ old('button_text', $banner->button_text) }}" size="35">
-                            </td>
-                        </tr>
+{{--                        <tr>--}}
+{{--                            <td colspan="2">--}}
+{{--                                <div class="d-flex" style="column-gap: 1.5rem">--}}
+{{--                                    <div class="d-flex" style="flex-grow: 1; align-items: flex-start; column-gap: .5rem">--}}
+{{--                                        <input type="radio"--}}
+{{--                                               name="type_action"--}}
+{{--                                               id="type_action_button"--}}
+{{--                                               value="button">--}}
+{{--                                        <label for="type_action_button" style="display: flex; flex-direction: column; line-height: 1rem">--}}
+{{--                                            <strong>Кнопка</strong>--}}
+{{--                                            <small style="color: gray;">Задать ссылку и текст кнопке</small>--}}
+{{--                                        </label>--}}
+{{--                                    </div>--}}
+
+{{--                                    <div class="d-flex" style="flex-grow: 1; align-items: flex-start; column-gap: .5rem">--}}
+{{--                                        <input type="radio"--}}
+{{--                                               name="type_action"--}}
+{{--                                               id="type_action_form"--}}
+{{--                                               value="form">--}}
+{{--                                        <label for="type_action_form" style="display: flex; flex-direction: column; line-height: 1rem">--}}
+{{--                                            <strong>Лид форма</strong>--}}
+{{--                                            <small style="color: gray;">Указать скрипт на виджет лид-формы.</small>--}}
+{{--                                        </label>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                            </td>--}}
+{{--                        </tr>--}}
+
+{{--                        <tr>--}}
+{{--                            <td>--}}
+{{--                                <label for="button_text">Текст на кнопке</label>--}}
+{{--                                <span class="required">*</span>--}}
+{{--                            </td>--}}
+{{--                            <td>--}}
+{{--                                <input name="button_text"--}}
+{{--                                       id="button_text"--}}
+{{--                                       value="{{ old('button_text', $banner->button_text) }}" size="35">--}}
+{{--                            </td>--}}
+{{--                        </tr>--}}
+
+{{--                        <tr>--}}
+{{--                            <td>--}}
+{{--                                <label for="button_url">Ссылка на кнопке</label>--}}
+{{--                                <span class="required">*</span>--}}
+{{--                            </td>--}}
+{{--                            <td>--}}
+{{--                                <input name="button_url"--}}
+{{--                                       id="button_url"--}}
+{{--                                       value="{{ old('button_url', $banner->button_url) }}" size="35">--}}
+{{--                            </td>--}}
+{{--                        </tr>--}}
+
+{{--                        <tr>--}}
+{{--                            <td style="line-height: 140% !important">--}}
+{{--                                <label for="lead_form">Лид форма (script)</label>--}}
+{{--                                <span class="required">*</span><br>--}}
+{{--                                <small>--}}
+{{--                                    <strong>Пример:</strong><br>--}}
+{{--                                    <span style="color: slategray">--}}
+{{--                                        &lt;script id="538e161fdd842f816b64fda570ea8d72314d42d3" src="https://altecoschool.ru/pl/lite/widget/script?id=697587"&gt;&lt;/script&gt;--}}
+{{--                                    </span>--}}
+{{--                                </small>--}}
+{{--                            </td>--}}
+{{--                            <td>--}}
+{{--                                <input name="button_text"--}}
+{{--                                       id="button_text"--}}
+{{--                                       value="{{ old('button_text', $banner->button_text) }}" size="35">--}}
+{{--                            </td>--}}
+{{--                        </tr>--}}
 
                         <tr>
                             <td>
@@ -157,42 +215,42 @@
                             </td>
                         </tr>
 
-                        <tr>
-                            <td>
-                                <label for="delay_seconds">Показать через (секунд)</label>
-                            </td>
-                            <td>
-                                <input type="number"
-                                       id="delay_seconds"
-                                       name="delay_seconds"
-                                       value="{{ old('delay_seconds', $banner->delay_seconds ?? 0) }}"
-                                />
+{{--                        <tr>--}}
+{{--                            <td>--}}
+{{--                                <label for="delay_seconds">Показать через (секунд)</label>--}}
+{{--                            </td>--}}
+{{--                            <td>--}}
+{{--                                <input type="number"--}}
+{{--                                       id="delay_seconds"--}}
+{{--                                       name="delay_seconds"--}}
+{{--                                       value="{{ old('delay_seconds', $banner->delay_seconds ?? 0) }}"--}}
+{{--                                />--}}
 
-                                <small style="display: block; margin-top: .5rem;">
-                                    Через заданное количество секунд пользователю откроется "Модальное окно".
-                                </small>
-                            </td>
-                        </tr>
+{{--                                <small style="display: block; margin-top: .5rem;">--}}
+{{--                                    Через заданное количество секунд пользователю откроется "Модальное окно".--}}
+{{--                                </small>--}}
+{{--                            </td>--}}
+{{--                        </tr>--}}
 
-                        <tr>
-                            <td>
-                                <label for="not_disturb_hours">Не беспокоить (часов)</label>
-                            </td>
-                            <td>
-                                <input type="number"
-                                       id="not_disturb_hours"
-                                       name="not_disturb_hours"
-                                       value="{{ old('not_disturb_hours', $banner->not_disturb_hours ?? 0) }}"
-                                />
+{{--                        <tr>--}}
+{{--                            <td>--}}
+{{--                                <label for="not_disturb_hours">Не беспокоить (часов)</label>--}}
+{{--                            </td>--}}
+{{--                            <td>--}}
+{{--                                <input type="number"--}}
+{{--                                       id="not_disturb_hours"--}}
+{{--                                       name="not_disturb_hours"--}}
+{{--                                       value="{{ old('not_disturb_hours', $banner->not_disturb_hours ?? 0) }}"--}}
+{{--                                />--}}
 
-                                <small style="display: block; margin-top: .5rem; max-width: 400px">
-                                    <strong>Например</strong>: если указали "не беспокоить" в течении 1 часа.
-                                    После закрытия модального окна пользователем, сайт только через 1 час повторно покажет модальное окно.
-                                    Если указано "0", то 1 раз за 1 обновление/открытие страницы,
-                                    через указанное в поле "Показать через" секунд.
-                                </small>
-                            </td>
-                        </tr>
+{{--                                <small style="display: block; margin-top: .5rem; max-width: 400px">--}}
+{{--                                    <strong>Например</strong>: если указали "не беспокоить" в течении 1 часа.--}}
+{{--                                    После закрытия модального окна пользователем, сайт только через 1 час повторно покажет модальное окно.--}}
+{{--                                    Если указано "0", то 1 раз за 1 обновление/открытие страницы,--}}
+{{--                                    через указанное в поле "Показать через" секунд.--}}
+{{--                                </small>--}}
+{{--                            </td>--}}
+{{--                        </tr>--}}
                     </tbody>
                 </table>
 

@@ -71,6 +71,7 @@ class RankChangeCommand extends Command
         });
 
         $this->info('DONE');
-        return Command::SUCCESS;
+
+        return 0;
     }
 }

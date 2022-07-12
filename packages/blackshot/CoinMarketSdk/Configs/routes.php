@@ -19,6 +19,8 @@ Route::middleware('web')->group(function() {
             Route::get('/', [\Blackshot\CoinMarketSdk\Controllers\Coins\Index::class, 'index'])->name('home');
             Route::get('/view/{uuid}', [\Blackshot\CoinMarketSdk\Controllers\Coins\View::class, 'index'])->name('view');
             Route::post('/filter/store', [\Blackshot\CoinMarketSdk\Controllers\Coins\SaveFilter::class, 'index'])->name('filter.store');
+            /*  */
+            Route::get('/edit/{uuid}', [\Blackshot\CoinMarketSdk\Controllers\Coins\Edit::class, 'index'])->name('edit');
         });
 
         //

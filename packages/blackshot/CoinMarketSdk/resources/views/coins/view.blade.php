@@ -91,14 +91,23 @@
 {{--                                97--}}
 {{--                            </p>--}}
 {{--                        </div>--}}
-{{--                        <div class="item-content__el">--}}
-{{--                            <p class="item-content__label">--}}
-{{--                                Коэф. Alpha--}}
-{{--                            </p>--}}
-{{--                            <p class="item-content__info item-content__info_red">--}}
-{{--                                24.16%--}}
-{{--                            </p>--}}
-{{--                        </div>--}}
+                        <div class="item-content__el">
+                            <p class="item-content__label">
+                                Коэф. Alpha
+                            </p>
+                            <p class="item-content__info {{ $coin->alpha >= 0 ? 'item-content__info_green' : 'item-content__info_red' }}">
+                                {{ $coin->alpha }}%
+                            </p>
+                        </div>
+
+                        <div class="item-content__el">
+                            <p class="item-content__label">
+                                Коэф. Kalmar
+                            </p>
+                            <p class="item-content__info {{ $coin->squid >= 0 ? 'item-content__info_green' : 'item-content__info_red' }}">
+                                {{ $coin->squid }}%
+                            </p>
+                        </div>
 {{--                        <div class="item-content__el">--}}
 {{--                            <p class="item-content__label">--}}
 {{--                                Индекс AltEco--}}
@@ -233,10 +242,20 @@
                 <p class="item-graph__name">История рейтинга</p>
             </div>
 
-            <style>#coin_chart{width: 100%;height: 500px;}</style>
-            <div id="coin_chart" data-json='@json($charts)'></div>
+            <style>#coin_chart{width: 100%; height: 500px; position: relative}</style>
+            <div id="coin_chart" data-json='@json($charts)'>
+                @if (\Illuminate\Support\Facades\Auth::user()->tariff->isFree())
+                <div class="blur-container">
+                    <a href="{{ route('subscribe') }}" class="btn btn1">
+                        Оформить подписку
+                    </a>
+                </div>
+                @endif
+            </div>
 
-            <p class="item-graph__text">{{ $coin->info->description ?? '' }}</p>
+            <p class="item-graph__text @if (\Illuminate\Support\Facades\Auth::user()->tariff->isFree())blur-text @endif">
+                {{ $coin->info->description ?? '' }}
+            </p>
         </div>
     </section>
 

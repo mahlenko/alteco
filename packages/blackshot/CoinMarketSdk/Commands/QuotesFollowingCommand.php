@@ -10,7 +10,6 @@ use Exception;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Cache;
 use Ramsey\Uuid\Uuid;
-use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Helper\ProgressBar;
 
 /**
@@ -111,6 +110,9 @@ class QuotesFollowingCommand extends \Illuminate\Console\Command
             return true;
         });
 
+
+        $this->info('Обновление коэффициентов');
+        $this->call('blackshot:coin:ratio');
 
         return self::SUCCESS;
     }
