@@ -25,7 +25,7 @@ Route::middleware('web')->group(function() {
                 ->middleware('admin')
                 ->name('edit');
 
-            Route::get('/store', [\Blackshot\CoinMarketSdk\Controllers\Coins\Store::class, 'index'])
+            Route::post('/store', [\Blackshot\CoinMarketSdk\Controllers\Coins\Store::class, 'index'])
                 ->middleware('admin')
                 ->name('store');
         });

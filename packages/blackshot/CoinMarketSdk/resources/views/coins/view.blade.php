@@ -100,7 +100,7 @@
                                 Индекс AltEco
                             </p>
 
-                            <div class="step-progress" data-value="{{ $coin->alteco ?? 86 }}">
+                            <div class="step-progress" data-value="{{ $coin->alteco ?? 0 }}">
                                 <div class="step-progress__container">
                                     <span class="step" data-max="9"></span>
                                     <span class="step" data-max="19"></span>
@@ -267,7 +267,7 @@
                 <p class="item-graph__name">История рейтинга</p>
             </div>
 
-            <style>#coin_chart{width: 100%; height: 500px; position: relative}</style>
+            <style>#coin_chart{width: 100%; height: 500px; position: relative; margin-bottom: 3rem}</style>
             <div id="coin_chart" data-json='@json($charts)'>
                 @if (\Illuminate\Support\Facades\Auth::user()->tariff->isFree())
                 <div class="blur-container">
@@ -278,9 +278,9 @@
                 @endif
             </div>
 
-            <p class="item-graph__text @if (\Illuminate\Support\Facades\Auth::user()->tariff->isFree())blur-text @endif">
-                {{ $coin->info->description ?? '' }}
-            </p>
+            <div class="@if (\Illuminate\Support\Facades\Auth::user()->tariff->isFree())blur-text @endif">
+                {!! $coin->info->description ?? '' !!}
+            </div>
         </div>
     </section>
 

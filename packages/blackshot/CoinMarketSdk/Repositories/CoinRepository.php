@@ -4,6 +4,7 @@ namespace Blackshot\CoinMarketSdk\Repositories;
 
 use Blackshot\CoinMarketSdk\Models\Coin;
 use Blackshot\CoinMarketSdk\Models\Platform;
+use Blackshot\CoinMarketSdk\Requests\CoinRequest;
 use DateTimeImmutable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -257,7 +258,6 @@ class CoinRepository
                     });
                 }
 
-
                 if ($favorites->count()) {
                     $builder->orWhereIn('coins.uuid', $favorites->pluck('uuid'));
                     $builder->groupBy('coins.uuid');
@@ -267,5 +267,23 @@ class CoinRepository
         }
 
         return $builder;
+    }
+
+    /**
+     * @param CoinRequest $request
+     * @return Coin
+     */
+    public static function store(CoinRequest $request): Coin
+    {
+        $data = $request->validated();
+
+        $coin = Coin::find($data['uuid']);
+        $coin->alteco = $data['alteco'];
+        $coin->save();
+
+        $coin->info->description = $data['description'];
+        $coin->info->save();
+
+        return $coin;
     }
 }

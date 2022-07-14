@@ -8,7 +8,7 @@
             <form action="{{ route('coins.store') }}" method="post">
                 @csrf
 
-                <input type="hidden" name="id" value="{{ $coin->id }}">
+                <input type="hidden" name="uuid" value="{{ $coin->uuid }}">
 
                 <table class="table-setting">
                     <tbody>

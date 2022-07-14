@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class CoinInfo extends \Illuminate\Database\Eloquent\Model
 {
     protected $table = 'coin_info';
-    protected $primaryKey = 'uuid';
+    protected $primaryKey = 'coin_uuid';
     protected $keyType = 'string';
 
     protected $fillable = [
