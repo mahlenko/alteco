@@ -19,7 +19,7 @@ class SetCategoryTypesCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Установит категориям типы';
+    protected $description = 'Разделит категории на типы: фонды, остальные';
 
     /**
      * Create a new command instance.
