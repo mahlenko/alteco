@@ -19,6 +19,13 @@ Breadcrumbs::for('coins.view', function ($trail, $data = []) {
     $trail->push($data['coin']->name, route('coins.view', $data['coin']->uuid));
 });
 
+// Home > Coins > {Coin}
+Breadcrumbs::for('coins.edit', function ($trail, $data = []) {
+    $trail->parent('coins.home');
+    $trail->push($data['coin']->name, route('coins.view', $data['coin']->uuid));
+    $trail->push('Редактирование', route('coins.edit', $data['coin']->uuid));
+});
+
 // Home > Signals
 Breadcrumbs::for('signals.home', function ($trail, $data = []) {
     $trail->parent('coins.home');

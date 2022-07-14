@@ -77,20 +77,45 @@
                             </p>
                             <div class="item-content__flex d-flex">
                                 <p class="item-content__main">
-                                    @include('blackshot::coins.partials.price', ['price' => $coin->price])
+{{--                                    @include('blackshot::coins.partials.price', ['price' => $coin->price])--}}
+                                    $
+                                    <span data-counter-step="10" data-number="{{ $coin->price }}">
+                                    @if ($coin->price > 0.1)
+                                            {{ number_format($coin->price, 2, ',', ' ') }}
+                                        @else
+                                            @if ($coin->price > 0.01)
+                                                {{ number_format($coin->price, 3, ',', ' ') }}
+                                            @else
+                                                {{ number_format($coin->price, 5, ',', ' ') }}
+                                            @endif
+                                        @endif
+                                    </span>
                                 </p>
 
                                 @include('blackshot::coins.partials.badge-position', ['percent' => $coin->percent_change_1h])
                             </div>
                         </div>
-{{--                        <div class="item-content__el">--}}
-{{--                            <p class="item-content__label">--}}
-{{--                                Индекс AltEco--}}
-{{--                            </p>--}}
-{{--                            <p class="item-content__info item-content__info_green">--}}
-{{--                                97--}}
-{{--                            </p>--}}
-{{--                        </div>--}}
+                        <div class="item-content__el">
+                            <p class="item-content__label">
+                                Индекс AltEco
+                            </p>
+
+                            <div class="step-progress" data-value="{{ $coin->alteco ?? 86 }}">
+                                <div class="step-progress__container">
+                                    <span class="step" data-max="9"></span>
+                                    <span class="step" data-max="19"></span>
+                                    <span class="step" data-max="29"></span>
+                                    <span class="step" data-max="39"></span>
+                                    <span class="step" data-max="49"></span>
+                                    <span class="step" data-max="59"></span>
+                                    <span class="step" data-max="69"></span>
+                                    <span class="step" data-max="79"></span>
+                                    <span class="step" data-max="89"></span>
+                                    <span class="step" data-max="100"></span>
+                                </div>
+                                <span class="label">0</span>
+                            </div>
+                        </div>
                         <div class="item-content__el">
                             <p class="item-content__label">
                                 Коэф. Alpha

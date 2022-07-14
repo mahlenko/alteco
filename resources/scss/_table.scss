@@ -1,9 +1,11 @@
 .table {
+
+  tr {
     td {
       font-size: .86rem;
 
       .badge {
-          font-size: .78rem;
+        font-size: .78rem;
       }
 
       svg {
@@ -15,6 +17,7 @@
         display: flex;
       }
     }
+  }
 
   @include media-breakpoint-down(md) {
     display: flex;

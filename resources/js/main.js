@@ -6,7 +6,7 @@ $(document).ready(function () {
       selectOption = _this.find('option'),
       selectOptionLength = selectOption.length,
       selectedOption = selectOption.filter(':selected'),
-      duration = 450; // длительность анимации 
+      duration = 450; // длительность анимации
 
     _this.hide();
     _this.wrap('<div class="select"></div>');
@@ -76,6 +76,7 @@ $(document).ready(function () {
   });
 
 });
+
 // Scrollto
 $('.go_to').click(function () { // ловим клик по ссылке с классом go_to
   var scroll_el = $(this).attr('href'); // возьмем содержимое атрибута href, должен быть селектором, т.е. например начинаться с # или .
@@ -84,12 +85,14 @@ $('.go_to').click(function () { // ловим клик по ссылке с кл
   }
   return false; // выключаем стандартное действие
 });
+
 // Burger
 $('.menu .button').click(function (event) {
   $(this).toggleClass('active');
   $('.burger').toggleClass('active');
   return false;
 });
+
 jQuery('img.svg').each(function () {
   var $img = jQuery(this);
   var imgID = $img.attr('id');
@@ -121,5 +124,4 @@ jQuery('img.svg').each(function () {
     $img.replaceWith($svg);
 
   }, 'xml');
-
 });
