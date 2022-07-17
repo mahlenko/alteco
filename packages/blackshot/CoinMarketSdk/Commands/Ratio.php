@@ -99,18 +99,18 @@ class Ratio extends Command
      * @return array|null
      * @throws Exception
      */
-    public static function beta(Collection $price_collection, int $periodDays = null): ?array
+    public static function beta(Collection $price_collection): ?array
     {
         if (!function_exists('trader_beta')) {
             dd('Run `pecl install trader` PHP extension.');
         }
 
         // доходность инвестиций
-        $profit = self::profit($price_collection, $periodDays);
+        $profit = self::profit($price_collection);
         if (!$profit->count()) return null;
 
         // доходность рынка
-        $crix = self::crix($price_collection, $periodDays);
+        $crix = self::crix($price_collection);
         if (!$crix->count()) return null;
 
         // Сравниваем даты, чтобы данные совпадали и были одного количества
@@ -154,23 +154,74 @@ class Ratio extends Command
      */
     public static function squid(Collection $price_collection): float
     {
-        $profit = self::profit($price_collection);
+////        $profit = self::profit($price_collection)->values();
+//
+//        $collection = $price_collection->pluck('price');
+//
+//        $avg_geometry = sqrt($collection->first() * $collection->last());
+//
+////        $avg_geometry = $profit->map(function($price) {
+////            return round($price, 5);
+////        })->values()->toArray();
+////
+////        $string = number_format(
+////            abs(array_product($avg_geometry)),
+////            0,
+////            '',
+////            ''
+////        );
+//
+//        $max_drawdown = 0;
+//        foreach ($collection as $index => $current_profit) {
+//            if (!$index) continue;
+//
+//            $drawdown = $current_profit - $collection[$index - 1];
+//            if ($drawdown < 0 && $drawdown < $max_drawdown) {
+//                $max_drawdown = $drawdown;
+//            }
+//        }
+//
+//        return $avg_geometry / $max_drawdown;
 
-        $product = self::expFormat(
-            array_product(array_filter($profit->toArray()))
-        );
+//        $product = self::expFormat(
+//            array_product(array_filter($profit->toArray()))
+//        );
 
-        $average_sqrt = sqrt($product);
-        if (is_nan($average_sqrt)) {
-            $average_sqrt = sqrt($product * -1 ) * -1;
+        $profit = $price_collection->pluck('price')
+            ->map(function($price) {
+                return round($price, 2);
+            });
+
+        $prices = [];
+        foreach ($profit as $index => $price) {
+            if (!$index) continue;
+
+            $before = $profit[$index - 1];
+            if (!$before || !$price) {
+                $prices[] = 0;
+                continue;
+            }
+
+            $prices[] = round($price / $before, 5);
         }
 
-        $max_dradown = $profit->min();
-        if ($max_dradown >= 0) {
-            $max_dradown = $profit->filter()->min();
+        $average_sqrt = sqrt(array_product($prices));
+
+        $max_drawdown = 0;
+        foreach ($profit as $index => $current_profit) {
+            if (!$index) continue;
+
+            if ($current_profit < $profit[$index - 1]) {
+                $drawdown = round($current_profit / $profit[$index - 1], 5);
+                if ($drawdown > $max_drawdown) {
+                    $max_drawdown = $drawdown;
+                }
+            }
         }
 
-        return self::expFormat($average_sqrt / $max_dradown);
+        return $average_sqrt == 0 || $max_drawdown == 0
+            ? 0
+            : round($average_sqrt / $max_drawdown, 2);
     }
 
     /**
@@ -242,7 +293,10 @@ class Ratio extends Command
     private static function profitPercent(float $buy, float $current): float
     {
         $profit = ($current - $buy) / $buy;
-        return self::expFormat(number_format(ceil($profit * 100), 2));
+//        dd($profit * 100, self::expFormat($profit * 100));
+
+        return $profit * 100;
+//        return self::expFormat($profit * 100);
     }
 
     private static function expFormat(float|string $number): float
