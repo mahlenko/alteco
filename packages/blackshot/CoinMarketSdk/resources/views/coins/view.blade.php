@@ -79,16 +79,8 @@
                                 <p class="item-content__main">
 {{--                                    @include('blackshot::coins.partials.price', ['price' => $coin->price])--}}
                                     $
-                                    <span data-counter-step="10" data-number="{{ $coin->price }}">
-                                    @if ($coin->price > 0.1)
-                                            {{ number_format($coin->price, 2, ',', ' ') }}
-                                        @else
-                                            @if ($coin->price > 0.01)
-                                                {{ number_format($coin->price, 3, ',', ' ') }}
-                                            @else
-                                                {{ number_format($coin->price, 5, ',', ' ') }}
-                                            @endif
-                                        @endif
+                                    <span @if ($coin->price > 0.0001)data-counter-step="10"@endif data-number="{{ $coin->price }}" data-decimals="{{ \Blackshot\CoinMarketSdk\Helpers\NumberHelper::decimals($coin->price) }}">
+                                        {{ \Blackshot\CoinMarketSdk\Helpers\NumberHelper::format($coin->price) }}
                                     </span>
                                 </p>
 

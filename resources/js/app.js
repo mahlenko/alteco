@@ -317,6 +317,7 @@ function numberAnimation(elements)
     let steps = item.dataset.counterStep
     let defaultContent = item.textContent.trim()
     let value = item.dataset.number ?? defaultContent
+    let decimals = item.dataset.decimals ?? 2
 
     if (!steps || isNaN(parseInt(steps)) || isNaN(value)) return null
 
@@ -328,12 +329,6 @@ function numberAnimation(elements)
     let delayIteration = delay / steps
 
     let numberFormat = new Intl.NumberFormat()
-    let fixed = defaultContent.indexOf(',')
-    if (fixed > 0) {
-      fixed = defaultContent.substring(fixed + 1).length
-    } else {
-      fixed = 0
-    }
 
     let pseudo = document.createElement('span')
     pseudo.style.position = 'absolute'
@@ -346,7 +341,7 @@ function numberAnimation(elements)
           pseudo.remove()
           item.style.opacity = 1
         } else {
-          pseudo.textContent = numberFormat.format((iterationValue * i).toFixed(fixed))
+          pseudo.textContent = numberFormat.format((iterationValue * i).toFixed(decimals))
         }
       }, delayIteration * i)
     }
