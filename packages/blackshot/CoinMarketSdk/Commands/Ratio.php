@@ -198,11 +198,11 @@ class Ratio extends Command
 
             $before = $profit[$index - 1];
             if (!$before || !$price) {
-                $prices[] = 0;
+//                $prices[] = 0;
                 continue;
             }
 
-            $prices[] = round($price / $before, 5);
+            $prices[] = round($price / $before, 8);
         }
 
         $average_sqrt = sqrt(array_product($prices));
