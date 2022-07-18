@@ -19,7 +19,7 @@ class CoinInfo extends Migration
             $table->string('logo')->nullable();
             $table->text('description')->nullable();
             $table->text('notice')->nullable();
-            $table->timestamp('date_added');
+            $table->timestamp('date_added')->nullable();
 
             $table->timestamps();
         });
