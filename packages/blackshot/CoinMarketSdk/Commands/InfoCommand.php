@@ -49,7 +49,8 @@ class InfoCommand extends \Illuminate\Console\Command
 
             if (!$response->ok) {
                 $this->error('Ошибка запроса.');
-                return self::FAILURE;
+//                return self::FAILURE;
+                continue;
             }
 
             if (!$response->data || !count($response->data)) {
