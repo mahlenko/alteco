@@ -16,9 +16,9 @@ class CoinInfo extends Migration
         Schema::create('coin_info', function (Blueprint $table) {
             $table->uuid('coin_uuid')->primary();
             $table->string('category');
-            $table->string('logo');
-            $table->text('description');
-            $table->text('notice');
+            $table->string('logo')->nullable();
+            $table->text('description')->nullable();
+            $table->text('notice')->nullable();
             $table->timestamp('date_added');
 
             $table->timestamps();
