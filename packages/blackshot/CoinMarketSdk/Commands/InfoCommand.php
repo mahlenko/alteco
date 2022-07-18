@@ -60,7 +60,7 @@ class InfoCommand extends \Illuminate\Console\Command
             //
             foreach ($response->data as $info) {
                 CoinInfoRepository::create(
-                    $coins->where('id', $info->id)->first(),
+                    $coin = $coins->where('id', $info->id)->first(),
                     $info->category,
                     $info->logo,
                     $info->description,
@@ -69,6 +69,8 @@ class InfoCommand extends \Illuminate\Console\Command
                     $info->tags,
                     $info->urls
                 );
+
+                $this->info('Update: ' . $coin->name);
             }
         }
 
