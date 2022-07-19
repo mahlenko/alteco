@@ -3,11 +3,14 @@
 namespace Blackshot\CoinMarketSdk\Controllers\Coins;
 
 use App\Models\User;
+use Blackshot\CoinMarketSdk\Enums\BannerTypes;
+use Blackshot\CoinMarketSdk\Models\Banner;
 use Blackshot\CoinMarketSdk\Models\CategoryModel;
 use Blackshot\CoinMarketSdk\Models\Coin;
 use Blackshot\CoinMarketSdk\Repositories\CoinCategoryRepository;
 use Blackshot\CoinMarketSdk\Repositories\CoinRepository;
 use Blackshot\CoinMarketSdk\Repositories\UserSettingsRepository;
+use DateTimeImmutable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -44,6 +47,21 @@ class Index extends \App\Http\Controllers\Controller
         $coins_signals = $this->getPeriodRank($coins, $date_period, $sortable, $per_page);
         $viewCoins = $this->getViewCoins($coins, $coins_signals, $sortable, $per_page);
 
+        if (Auth::check() && Auth::user()->tariff->isFree()) {
+            $now = new DateTimeImmutable();
+            $banners = Banner::where('is_active', true)
+                ->where('type', BannerTypes::static->name)
+                ->where('start', '<=', $now)
+                ->where(function($builder) use ($now) {
+                    $builder->where('end', null);
+                    $builder->orWhere('end', '<=', $now);
+                })->get();
+
+            if ($banners) {
+                $banners = $banners->shuffle()->take(2);
+            }
+        }
+
         return view('blackshot::coins.index', [
             'coins' => $viewCoins,
             'categories' => $allow_categories,
@@ -52,7 +70,8 @@ class Index extends \App\Http\Controllers\Controller
             'favorites' => $auth->favorites,
             'tracking' => $auth->trackings,
             'change' => $date_period,
-            'change_diff' => $date_period[0]->diff($date_period[1])
+            'change_diff' => $date_period[0]->diff($date_period[1]),
+            'banners' => $banners ?? collect()
         ]);
     }
 

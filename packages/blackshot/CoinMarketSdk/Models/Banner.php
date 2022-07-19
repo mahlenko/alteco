@@ -21,6 +21,7 @@ class Banner extends Model
     protected $fillable = [
         'title',
         'body',
+        'color_scheme',
         'button_text',
         'button_url',
         'start',
@@ -35,6 +36,7 @@ class Banner extends Model
     protected $casts = [
         'start' => 'datetime',
         'end' => 'datetime',
+        'is_active' => 'bool'
     ];
 
     public function pictureUrl()

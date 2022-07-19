@@ -91,57 +91,61 @@
                             </td>
                         </tr>
 
-{{--                        <tr>--}}
-{{--                            <td colspan="2">--}}
-{{--                                <div class="d-flex" style="column-gap: 1.5rem">--}}
-{{--                                    <div class="d-flex" style="flex-grow: 1; align-items: flex-start; column-gap: .5rem">--}}
-{{--                                        <input type="radio"--}}
-{{--                                               name="type_action"--}}
-{{--                                               id="type_action_button"--}}
-{{--                                               value="button">--}}
-{{--                                        <label for="type_action_button" style="display: flex; flex-direction: column; line-height: 1rem">--}}
-{{--                                            <strong>Кнопка</strong>--}}
-{{--                                            <small style="color: gray;">Задать ссылку и текст кнопке</small>--}}
-{{--                                        </label>--}}
-{{--                                    </div>--}}
+                        <tr>
+                            <td>
+                                <strong>Цвет текста на баннере</strong>
+                                <span class="required">*</span>
+                            </td>
+                            <td>
+                                <div class="d-flex" style="column-gap: 1.5rem; align-items: center">
+                                    <div class="d-flex" style="flex-grow: 1; align-items: flex-start; column-gap: .5rem">
+                                        <input type="radio"
+                                               name="color_scheme"
+                                               id="color_scheme_default"
+                                               {{ old('color_scheme', $banner->color_scheme ?? 'default') == 'default' ? 'checked' : null }}
+                                               value="default">
+                                        <label for="color_scheme_default" style="display: flex; flex-direction: column; line-height: 1rem">
+                                            Темный (по-умолчанию)
+                                        </label>
+                                    </div>
 
-{{--                                    <div class="d-flex" style="flex-grow: 1; align-items: flex-start; column-gap: .5rem">--}}
-{{--                                        <input type="radio"--}}
-{{--                                               name="type_action"--}}
-{{--                                               id="type_action_form"--}}
-{{--                                               value="form">--}}
-{{--                                        <label for="type_action_form" style="display: flex; flex-direction: column; line-height: 1rem">--}}
-{{--                                            <strong>Лид форма</strong>--}}
-{{--                                            <small style="color: gray;">Указать скрипт на виджет лид-формы.</small>--}}
-{{--                                        </label>--}}
-{{--                                    </div>--}}
-{{--                                </div>--}}
-{{--                            </td>--}}
-{{--                        </tr>--}}
+                                    <div class="d-flex" style="flex-grow: 1; align-items: flex-start; column-gap: .5rem">
+                                        <input type="radio"
+                                               name="color_scheme"
+                                               id="color_scheme_white"
+                                               {{ old('color_scheme', $banner->color_scheme) == 'white' ? 'checked' : null }}
+                                               value="white">
+                                        <label for="color_scheme_white" style="display: flex; flex-direction: column; line-height: 1rem">
+                                            Светлый
+                                        </label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
 
-{{--                        <tr>--}}
-{{--                            <td>--}}
-{{--                                <label for="button_text">Текст на кнопке</label>--}}
-{{--                                <span class="required">*</span>--}}
-{{--                            </td>--}}
-{{--                            <td>--}}
-{{--                                <input name="button_text"--}}
-{{--                                       id="button_text"--}}
-{{--                                       value="{{ old('button_text', $banner->button_text) }}" size="35">--}}
-{{--                            </td>--}}
-{{--                        </tr>--}}
+                        <tr>
+                            <td>
+                                <label for="button_text">Текст на кнопке</label>
+                                <span class="required">*</span>
+                            </td>
+                            <td>
+                                <input name="button_text"
+                                       id="button_text"
+                                       value="{{ old('button_text', $banner->button_text) }}" size="35">
+                            </td>
+                        </tr>
 
-{{--                        <tr>--}}
-{{--                            <td>--}}
-{{--                                <label for="button_url">Ссылка на кнопке</label>--}}
-{{--                                <span class="required">*</span>--}}
-{{--                            </td>--}}
-{{--                            <td>--}}
-{{--                                <input name="button_url"--}}
-{{--                                       id="button_url"--}}
-{{--                                       value="{{ old('button_url', $banner->button_url) }}" size="35">--}}
-{{--                            </td>--}}
-{{--                        </tr>--}}
+                        <tr>
+                            <td>
+                                <label for="button_url">Ссылка на кнопке</label>
+                                <span class="required">*</span>
+                            </td>
+                            <td>
+                                <input name="button_url"
+                                       id="button_url"
+                                       value="{{ old('button_url', $banner->button_url) }}" size="35">
+                            </td>
+                        </tr>
 
 {{--                        <tr>--}}
 {{--                            <td style="line-height: 140% !important">--}}

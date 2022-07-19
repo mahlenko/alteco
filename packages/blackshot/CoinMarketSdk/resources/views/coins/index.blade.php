@@ -1,7 +1,7 @@
 @extends('blackshot::layouts.app')
 
 @section('content')
-    <div class="scan__flex d-flex">
+    <div class="scan__flex d-flex" style="align-items: flex-end; column-gap: 2rem; margin-top: 1rem;">
         <div class="scan__left">
             <h1 class="pages__title">
                 Монеты
@@ -11,7 +11,14 @@
                 на {{ $coins->lastPage() }} страницах.
             </p>
         </div>
-        <a href="{{ route('signals.home') }}" class="scan__show btn btn1">
+
+        <div class="banners">
+            @foreach($banners as $banner)
+                @include('blackshot::banners.show-item')
+            @endforeach
+        </div>
+
+        <a href="{{ route('signals.home') }}" class="scan__show btn btn1" style="white-space: nowrap; padding-left: 1rem; padding-right: 1rem;">
             Показать мои сигналы
         </a>
     </div>

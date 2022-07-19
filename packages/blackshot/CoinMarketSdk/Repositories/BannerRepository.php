@@ -48,13 +48,13 @@ class BannerRepository
         //
         $data['created_user_id'] = $user->id;
 
-        if ($data['type'] === BannerTypes::static) {
-            $data['delay_seconds'] = 0;
-            $data['not_disturb_hours'] = 0;
-        } else {
-            $data['button_text'] = null;
-            $data['button_url'] = null;
-        }
+//        if ($data['type'] === BannerTypes::static) {
+//            $data['delay_seconds'] = 0;
+//            $data['not_disturb_hours'] = 0;
+//        } else {
+//            $data['button_text'] = null;
+//            $data['button_url'] = null;
+//        }
 
         //
         $banner
