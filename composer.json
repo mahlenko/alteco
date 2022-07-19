@@ -9,6 +9,7 @@
         "ext-json": "*",
         "ext-trader": "*",
         "davejamesmiller/laravel-breadcrumbs": "5.x",
+        "doctrine/dbal": "^3.3",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.4",
         "laracasts/flash": "^3.2",

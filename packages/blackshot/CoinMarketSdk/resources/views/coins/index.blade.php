@@ -104,6 +104,10 @@
                         Ранг
                         @include('blackshot::partials.sortable', ['column' => 'rank'])
                     </td>
+                    <td class="active {{ $sortable['column'] == 'exponential_rank' ? 'main' : null }}">
+                        Эксп. ранк
+                        @include('blackshot::partials.sortable', ['column' => 'exponential_rank'])
+                    </td>
                     <td class="active {{ $sortable['column'] == 'rank_period' ? 'main' : null }}">
                         Ранг
                         <span class="ms-1 badge text-secondary bg-light">
@@ -111,19 +115,28 @@
                         </span>
                         @include('blackshot::partials.sortable', ['column' => 'rank_period'])
                     </td>
-                    <td class="active {{ $sortable['column'] == 'rank_30d' ? 'main' : null }}">
-                        Ранг
-                        <span class="ms-1 badge text-secondary bg-light">30д</span>
-                        @include('blackshot::partials.sortable', ['column' => 'rank_30d'])
-                    </td>
+{{--                    <td class="active {{ $sortable['column'] == 'rank_30d' ? 'main' : null }}">--}}
+{{--                        Ранг--}}
+{{--                        <span class="ms-1 badge text-secondary bg-light">30д</span>--}}
+{{--                        @include('blackshot::partials.sortable', ['column' => 'rank_30d'])--}}
+{{--                    </td>--}}
                     <td class="active {{ $sortable['column'] == 'rank_60d' ? 'main' : null }}">
                         Ранг
                         <span class="ms-1 badge text-secondary bg-light">60д</span>
                         @include('blackshot::partials.sortable', ['column' => 'rank_60d'])
                     </td>
-                    <td class="active">AltEco Ранг</td>
-                    <td class="active">Коэф. Alpha</td>
-                    <td class="active">Коэф. Kalmar</td>
+                    <td class="active {{ $sortable['column'] == 'alteco' ? 'main' : null }}">
+                        AltEco Ранг
+                        @include('blackshot::partials.sortable', ['column' => 'alteco'])
+                    </td>
+                    <td class="active {{ $sortable['column'] == 'alpha' ? 'main' : null }}">
+                        Коэф. Alpha
+                        @include('blackshot::partials.sortable', ['column' => 'alpha'])
+                    </td>
+                    <td class="active {{ $sortable['column'] == 'squid' ? 'main' : null }}">
+                        Коэф. Kalmar
+                        @include('blackshot::partials.sortable', ['column' => 'squid'])
+                    </td>
                     <td class="active" width="50"></td>
                 </tr>
             </thead>
@@ -162,6 +175,10 @@
                     </td>
 
                     <td class="active">
+                        {{ $coin->exponential_rank }}
+                    </td>
+
+                    <td class="active">
                         {{ $coin->rank }}
                     </td>
 
@@ -169,24 +186,43 @@
                         @include('blackshot::partials.badge-position-text', ['position' => $coin->rank_period])
                     </td>
 
-                    <td class="active {{ $coin->rank_30d > 0 ? 'green' : 'red' }}">
-                        @include('blackshot::partials.badge-position-text', ['position' => $coin->rank_30d])
-                    </td>
+{{--                    <td class="active {{ $coin->rank_30d > 0 ? 'green' : 'red' }}">--}}
+{{--                        @include('blackshot::partials.badge-position-text', ['position' => $coin->rank_30d])--}}
+{{--                    </td>--}}
 
                     <td class="active {{ $coin->rank_60d > 0 ? 'green' : 'red' }}">
                         @include('blackshot::partials.badge-position-text', ['position' => $coin->rank_60d])
                     </td>
 
-                    <td class="active"></td>
-                    <td class="active {{ $coin->alpha >= 0 ? 'green' : 'red' }}">
-                        <p class="d-flex flex-center table__num">
-                            {{ floatval($coin->alpha) }}%
-                        </p>
+                    <td class="active">
+                        <div class="d-flex flex-center">
+                            <div class="progress alteco" data-value="{{ $coin->alteco ? $coin->alteco - ($coin->alteco % 10) : 0 }}">
+                                <div class="bar"></div>
+                            </div>
+                            <span>{{ $coin->alteco ?: '' }}</span>
+                        </div>
                     </td>
-                    <td class="active {{ $coin->squid >= 0 ? 'green' : 'red' }}">
-                        <p class="d-flex table__num flex-center">
-                            {{ number_format($coin->squid, 2) }}
-                        </p>
+                    <td class="active">
+                        <div class="d-flex flex-center">
+                            <div class="progress {{ $coin->alphaStatus }}">
+                                <div class="bar" style="width: {{ $coin->alphaProgressPercent }}%"></div>
+                            </div>
+
+                            @if (!is_null($coin->alpha))
+                                <span>{{ floatval($coin->alpha) }}%</span>
+                            @endif
+                        </div>
+                    </td>
+                    <td class="active">
+                        <div class="d-flex flex-center">
+                            <div class="progress {{ $coin->squidStatus }}">
+                                <div class="bar" style="width: {{ $coin->squidProgressPercent }}%"></div>
+                            </div>
+
+                            @if (!is_null($coin->squid))
+                                <span>{{ number_format($coin->squid, 2) }}</span>
+                            @endif
+                        </div>
                     </td>
 
                     <td class="active" data-label="">

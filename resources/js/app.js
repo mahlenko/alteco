@@ -7,9 +7,15 @@ import animated from "@amcharts/amcharts5/themes/Animated";
 
 document.addEventListener("DOMContentLoaded", function (event) {
   // графики
-  let graphs = document.querySelectorAll('[data-json]')
+  let graphs = document.querySelectorAll('[data-graph-json]')
   graphs.forEach(graph => {
-    createGraph(graph)
+    createGraph(graph, graph.dataset.reverse)
+  })
+
+  // табы
+  let tabs = document.querySelectorAll('.tabs')
+  tabs.forEach(tab => {
+    Tabs.init(tab)
   })
 
   // "покупаю"
@@ -151,14 +157,19 @@ function buying(uuid) {
  * Соберет JSON из <script type="application/json" id="{container}">
  * @returns {*[]}
  * @param json
+ * @param reverse
  */
-function jsonToGraphData(json) {
+function jsonToGraphData(json, reverse) {
   let data = [];
+
   Object.keys(json).forEach(date => {
+    let value = parseFloat(json[date])
+    if (reverse) value = json[date] * -1
+
     data.push({
       date: date,
       default_value: json[date],
-      value: json[date] * -1
+      value: value
     })
   })
 
@@ -168,10 +179,10 @@ function jsonToGraphData(json) {
 /**
  * @param container
  */
-function createGraph(container) {
+function createGraph(container, reverse) {
   if (!container) return
 
-  let data = JSON.parse(container.dataset.json)
+  let data = JSON.parse(container.dataset.graphJson)
   if (!data) return
 
   // -------
@@ -203,11 +214,22 @@ function createGraph(container) {
     tooltip: am5.Tooltip.new(root, {})
   }));
 
-  let yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
-    maxPrecision: 0,
-    numberFormat: "#s", // "s" - убирает минусовые значения в плюс
+  let data_clean = []
+  Object.keys(data).forEach(index => {
+    data_clean.push(parseFloat(data[index]))
+  })
+  console.log(data_clean)
+
+  let configAxisY = {
+    strictMinMax: true,
     renderer: am5xy.AxisRendererY.new(root, {})
-  }));
+  }
+
+  if (reverse) {
+    configAxisY.numberFormat = "#s" // "s" - убирает минусовые значения в плюс
+  }
+
+  let yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, configAxisY));
 
   let series = chart.series.push(am5xy.SmoothedXLineSeries.new(root, {
     // noRisers: true,
@@ -220,7 +242,7 @@ function createGraph(container) {
     stroke: am5.color(0xf52e2e),
     tooltip: am5.Tooltip.new(root, {
       // pointerOrientation: "horizontal",
-      labelText: "{default_value}",
+      labelText: (container.dataset.prefix ?? '') + "{default_value}",
     })
   }));
 
@@ -239,7 +261,7 @@ function createGraph(container) {
     dateFields: ["date"]
   });
 
-  series.data.setAll(jsonToGraphData(data));
+  series.data.setAll(jsonToGraphData(data, reverse));
 
   series.bullets.push(function () {
     let circle = am5.Circle.new(root, {
@@ -348,4 +370,37 @@ function numberAnimation(elements)
 
     item.parentNode.style.removeProperty('width')
   })
+}
+
+let Tabs = {
+  init: navigation => {
+    let tabs = navigation.querySelectorAll('.tab')
+
+    tabs.forEach(tab => {
+      //
+      tab.addEventListener('click', (e) => {
+        e.preventDefault()
+        navigation.querySelector('.tab.show').classList.remove('show')
+        tab.classList.add('show')
+
+        Tabs.update(navigation)
+      })
+
+      Tabs.update(navigation)
+    })
+  },
+
+  update: navigation => {
+    let tabs = navigation.querySelectorAll('.tab')
+
+    tabs.forEach(tab => {
+      let container = document.querySelector('#' + tab.dataset.for)
+
+      if (tab.classList.contains('show')) {
+        container.style.display = 'block'
+      } else {
+        container.style.display = 'none'
+      }
+    })
+  }
 }

@@ -2,10 +2,12 @@
 
 namespace Blackshot\CoinMarketSdk\Controllers\Coins;
 
+use Blackshot\CoinMarketSdk\Helpers\NumberHelper;
 use Blackshot\CoinMarketSdk\Models\Coin;
 use Blackshot\CoinMarketSdk\Models\Signal;
 use DateTimeImmutable;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 class View extends \App\Http\Controllers\Controller
 {
@@ -24,9 +26,19 @@ class View extends \App\Http\Controllers\Controller
                 ->get();
         });
 
+        $prices = [];
+        foreach($coin->quotes as $quote) {
+            $price = Str::replace(' ', '', NumberHelper::format($quote->price));
+//            $prices[$quote->last_updated->format('Y-m-d')] = floatval($price);
+            $prices[$quote->last_updated->format('Y-m-d')] = $price;
+        }
+
         return view('blackshot::coins.view', [
             'coin' => $coin,
-            'charts' => $signals->pluck('rank', 'date')
+            'charts' => [
+                'rang' => $signals->pluck('rank', 'date'),
+                'prices' => $prices
+            ],
         ]);
     }
 }

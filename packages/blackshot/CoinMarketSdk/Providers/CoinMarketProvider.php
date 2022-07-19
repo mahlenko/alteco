@@ -3,6 +3,7 @@
 namespace Blackshot\CoinMarketSdk\Providers;
 
 use Blackshot\CoinMarketSdk\Commands\CategoryCommand;
+use Blackshot\CoinMarketSdk\Commands\ExponentialRank;
 use Blackshot\CoinMarketSdk\Commands\Ratio;
 use Blackshot\CoinMarketSdk\Commands\GetCrixIndex;
 use Blackshot\CoinMarketSdk\Commands\InfoCommand;
@@ -65,6 +66,7 @@ class CoinMarketProvider extends ServiceProvider
                 QuotesFollowingCommand::class,
                 QuotesGroupDay::class,
                 SignalsCommand::class,
+                ExponentialRank::class,
                 RankChangeCommand::class,
                 TestMailCommand::class,
                 Ratio::class,

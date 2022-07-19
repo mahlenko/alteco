@@ -8,7 +8,6 @@ use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 /**
  * Requires an PECL PHP Trader lib
@@ -44,6 +43,7 @@ class Ratio extends Command
      * Execute the console command.
      * @see https://www.swe-notes.ru/post/exp_smoothing/article
      * @return int
+     * @throws Exception
      */
     public function handle()
     {
@@ -95,7 +95,6 @@ class Ratio extends Command
 
     /**
      * @param Collection $price_collection
-     * @param int|null $periodDays
      * @return array|null
      * @throws Exception
      */
@@ -154,39 +153,6 @@ class Ratio extends Command
      */
     public static function squid(Collection $price_collection): float
     {
-////        $profit = self::profit($price_collection)->values();
-//
-//        $collection = $price_collection->pluck('price');
-//
-//        $avg_geometry = sqrt($collection->first() * $collection->last());
-//
-////        $avg_geometry = $profit->map(function($price) {
-////            return round($price, 5);
-////        })->values()->toArray();
-////
-////        $string = number_format(
-////            abs(array_product($avg_geometry)),
-////            0,
-////            '',
-////            ''
-////        );
-//
-//        $max_drawdown = 0;
-//        foreach ($collection as $index => $current_profit) {
-//            if (!$index) continue;
-//
-//            $drawdown = $current_profit - $collection[$index - 1];
-//            if ($drawdown < 0 && $drawdown < $max_drawdown) {
-//                $max_drawdown = $drawdown;
-//            }
-//        }
-//
-//        return $avg_geometry / $max_drawdown;
-
-//        $product = self::expFormat(
-//            array_product(array_filter($profit->toArray()))
-//        );
-
         $profit = $price_collection->pluck('price')
             ->map(function($price) {
                 return round($price, 2);
@@ -198,7 +164,6 @@ class Ratio extends Command
 
             $before = $profit[$index - 1];
             if (!$before || !$price) {
-//                $prices[] = 0;
                 continue;
             }
 
@@ -293,26 +258,6 @@ class Ratio extends Command
     private static function profitPercent(float $buy, float $current): float
     {
         $profit = ($current - $buy) / $buy;
-//        dd($profit * 100, self::expFormat($profit * 100));
-
         return $profit * 100;
-//        return self::expFormat($profit * 100);
-    }
-
-    private static function expFormat(float|string $number): float
-    {
-        $result = $number;
-
-        $dot_pos = strpos((string) $result, '.');
-
-        if (Str::contains($result, 'E')) {
-            $result = Str::substr($result, 0, $dot_pos + 3);
-        }
-
-        if (Str::length(Str::substr($result, $dot_pos)) > 4) {
-            $result = Str::substr($result, 0, $dot_pos + 3);
-        }
-
-        return floatval($result);
     }
 }

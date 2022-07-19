@@ -36,6 +36,7 @@
                         https://coinmarketcap.com/
                     </a>
 
+                    @isset($coin->info->urls)
                     <div class="item-info__links d-flex">
                         @foreach($coin->info->urls->groupBy('type') as $group => $links)
                             @if ($links->count() > 1)
@@ -63,6 +64,7 @@
                             @endif
                         @endforeach
                     </div>
+                    @endif
                     <p class="item-info__text">
                         Мы отслеживаем с {{ $coin->created_at->format('d.m.Y') }}
                     </p>
@@ -112,8 +114,12 @@
                             <p class="item-content__label">
                                 Коэф. Alpha
                             </p>
-                            <p class="item-content__info {{ $coin->alpha >= 0 ? 'item-content__info_green' : 'item-content__info_red' }}">
-                                {{ $coin->alpha }}%
+                            <p class="item-content__info @if(!is_null($coin->alpha)){{ $coin->alpha >= 0 ? 'item-content__info_green' : 'item-content__info_red' }}@endif">
+                                @if(!is_null($coin->alpha))
+                                    {{ $coin->alpha }}%
+                                @else
+                                    -
+                                @endif
                             </p>
                         </div>
 
@@ -121,8 +127,12 @@
                             <p class="item-content__label">
                                 Коэф. Kalmar
                             </p>
-                            <p class="item-content__info {{ $coin->squid >= 0 ? 'item-content__info_green' : 'item-content__info_red' }}">
-                                {{ $coin->squid }}%
+                            <p class="item-content__info @if(!is_null($coin->squid)){{ $coin->squid >= 0 ? 'item-content__info_green' : 'item-content__info_red' }}@endif">
+                                @if(!is_null($coin->squid))
+                                    {{ $coin->squid }}%
+                                @else
+                                    -
+                                @endif
                             </p>
                         </div>
 {{--                        <div class="item-content__el">--}}
@@ -208,13 +218,15 @@
                                     @endif
                                 </p>
                                 <p class="item-content__proc">
-                                    @php($percent_supply = intval($current->circulating_supply / $current->total_supply  * 100))
-                                    {{ $percent_supply }}%
+                                    @if ($current->circulating_supply && $current->total_supply)
+                                        @php($percent_supply = intval($current->circulating_supply / $current->total_supply  * 100))
+                                        {{ $percent_supply }}%
+                                    @endif
                                 </p>
                             </div>
 
                             <div class="item-content__load">
-                                <div class="item-content__progress" style="width: {{ $percent_supply }}%"></div>
+                                <div class="item-content__progress" style="width: {{ $percent_supply ?? 0 }}%"></div>
                             </div>
 
                             @if($current->max_supply)
@@ -256,17 +268,31 @@
             {{-- Rating graph --}}
             <div class="item-graph">
                 <h2 class="item-graph__title">{{ $coin->name }} ({{ $coin->symbol }})</h2>
-                <p class="item-graph__name">История рейтинга</p>
             </div>
 
-            <style>#coin_chart{width: 100%; height: 500px; position: relative; margin-bottom: 3rem}</style>
-            <div id="coin_chart" data-json='@json($charts)'>
+            <ul class="tabs">
+                <li class="tab show" data-for="coin_chart_rank">Рейтинг</li>
+                <li class="tab" data-for="coin_chart_prices">Цена</li>
+            </ul>
+
+            <style>.charts-container{width: 100%; height: 500px; position: relative; margin-bottom: 3rem}</style>
+            <div id="coin_chart_rank" class="charts-container" data-reverse="true" data-graph-json='@json($charts['rang'])'>
                 @if (\Illuminate\Support\Facades\Auth::user()->tariff->isFree())
                 <div class="blur-container">
                     <a href="{{ route('subscribe') }}" class="btn btn1">
                         Оформить подписку
                     </a>
                 </div>
+                @endif
+            </div>
+
+            <div id="coin_chart_prices" class="charts-container" data-prefix="$" data-graph-json='@json($charts['prices'])'>
+                @if (\Illuminate\Support\Facades\Auth::user()->tariff->isFree())
+                    <div class="blur-container">
+                        <a href="{{ route('subscribe') }}" class="btn btn1">
+                            Оформить подписку
+                        </a>
+                    </div>
                 @endif
             </div>
 
@@ -295,7 +321,7 @@
                     }
                 })
 
-            return tracking(trecking_link, uuid)
+            // return tracking(trecking_link, uuid)
         }
 
         /**
@@ -303,16 +329,16 @@
          * @param element
          * @param uuid
          */
-        function tracking(element, uuid)
-        {
-            axios.post('{{ route('users.tracking') }}', { uuid })
-                .then(response => {
-                    if (response.data.data.tracking === 'delete') {
-                        element.classList.remove('able')
-                    } else {
-                        element.classList.add('able')
-                    }
-                })
-        }
+        {{--function tracking(element, uuid)--}}
+        {{--{--}}
+        {{--    axios.post('{{ route('users.tracking') }}', { uuid })--}}
+        {{--        .then(response => {--}}
+        {{--            if (response.data.data.tracking === 'delete') {--}}
+        {{--                element.classList.remove('able')--}}
+        {{--            } else {--}}
+        {{--                element.classList.add('able')--}}
+        {{--            }--}}
+        {{--        })--}}
+        {{--}--}}
     </script>
 @endsection

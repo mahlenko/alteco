@@ -4,6 +4,7 @@ namespace Blackshot\CoinMarketSdk\Models;
 
 use DateTimeImmutable;
 use Exception;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -285,4 +286,45 @@ class Coin extends Model
 
         return $store;
     }
+
+    public function getAlphaStatusAttribute()
+    {
+        $value = $this->alpha;
+
+        return match (true) {
+            $value < 0 => 'negative',
+            $value >= 5 && $value <= 9.99 => 'good',
+            $value >= 10 && $value <= 19.99 => 'nice',
+            $value >= 20 => 'very-good',
+            default => 'danger'
+        };
+    }
+
+    public function getAlphaProgressPercentAttribute()
+    {
+        return $this->alpha
+            ? min(($this->alpha / 20) * 100, 100)
+            : 0;
+    }
+
+    public function getSquidStatusAttribute()
+    {
+        $value = $this->squid;
+
+        return match (true) {
+            $value < 0 => 'negative',
+            $value >= 0.44 && $value <= 0.99 => 'good',
+            $value >= 1.00 && $value <= 2.99 => 'nice',
+            $value >= 3 => 'very-good',
+            default => 'danger'
+        };
+    }
+
+    public function getSquidProgressPercentAttribute()
+    {
+        return $this->squid
+            ? min(($this->squid / 3) * 100, 100)
+            : 0;
+    }
+
 }

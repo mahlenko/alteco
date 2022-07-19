@@ -105,6 +105,9 @@ class SignalsCommand extends Command
             }
         }
 
+        // Расчет экспоненциального ранка
+        $this->call('blackshot:rank:exponential');
+
         $this->info('DONE');
         return Command::SUCCESS;
     }

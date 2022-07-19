@@ -10,5 +10,5 @@ class CoinUrl extends Model
     protected $primaryKey = 'uuid';
     protected $keyType = 'string';
 
-    protected $fillable = ['coin_uuid', 'type', 'url'];
+    protected $fillable = ['type', 'url'];
 }

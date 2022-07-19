@@ -46,6 +46,8 @@ class CoinInfoRepository
             $coin->info()->create([
                 'category' => $category
             ]);
+
+            $coin->refresh();
         }
 
         $data = [
@@ -111,7 +113,7 @@ class CoinInfoRepository
         /* @var CoinUrl $url_from_db */
         $url_from_db = $coinInfo->urls
             ->where('type', $type)
-            ->where('url', $url .'as')
+            ->where('url', $url)
             ->first();
 
 

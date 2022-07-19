@@ -6,16 +6,21 @@ use Illuminate\Support\Str;
 
 class NumberHelper
 {
-    public static function format(float $number, $decimal_separator = '.', $thousands_separator = ' ')
+    public static function format(float $number = null, $decimal_separator = '.', $thousands_separator = ' ')
     {
+        if (is_null($number)) return 0;
+
         $result = number_format($number, self::decimals($number), $decimal_separator, $thousands_separator);
+
         return strpos($result, '.')
             ? $result
             : number_format($number, 2, $decimal_separator, $thousands_separator);
     }
 
-    public static function decimals(float $number)
+    public static function decimals(float $number = null): int
     {
+        if (is_null($number)) return 0;
+
         $number_string = number_format($number, 15);
 
         $decimal_string = Str::substr($number_string, strpos($number_string, '.') + 1);
