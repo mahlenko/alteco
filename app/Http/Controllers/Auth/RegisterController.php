@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Notifications\UserRegistered;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use Blackshot\CoinMarketSdk\Models\TariffModel;
@@ -83,8 +84,11 @@ class RegisterController extends Controller
             'tariff_id' => $tariff_default->id
         ]);
 
-        $user->setExpiredAt(new DateTimeImmutable('+' . $tariff_default->days .' days'));
+        $tariff_expired = new DateTimeImmutable('+' . $tariff_default->days .' days');
+        $user->setExpiredAt($tariff_expired);
         $user->save();
+
+        $user->notify(new UserRegistered($data['password'], $tariff_expired));
 
         return $user;
     }
