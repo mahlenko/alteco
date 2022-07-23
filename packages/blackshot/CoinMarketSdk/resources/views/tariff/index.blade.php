@@ -12,6 +12,7 @@
     <table class="table">
         <thead class="table-secondary">
             <tr>
+                <th>ID</th>
                 <th>Название</th>
                 <th>Стоимость</th>
                 <th>Кол-во дней</th>
@@ -44,6 +45,7 @@
         <tbody>
             @foreach($tariffs as $tariff)
             <tr>
+                <td>{{ $tariff->id }}</td>
                 <td>
                     <a href="{{ route('tariffs.edit', $tariff) }}" class="link">
                         <span>{{ $tariff->name }}</span>
