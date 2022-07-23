@@ -27,6 +27,7 @@ class CoinRequest extends FormRequest
         return [
             'uuid' => ['required', Rule::exists('coins')],
             'alteco' => ['required', 'integer', 'min:1', 'max:100'],
+            'alteco_desc' => ['nullable', 'string', 'max:65535'],
             'description' => ['required', 'string', 'max:65535'],
         ];
     }

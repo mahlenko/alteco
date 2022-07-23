@@ -24,7 +24,6 @@ class Store extends Controller
             return redirect()->route('coins.home');
         } catch (Exception $exception) {
             flash('Не удалось сохранить данные.')->error();
-            dd($exception->getMessage());
             Log::error($exception->getMessage());
         }
 

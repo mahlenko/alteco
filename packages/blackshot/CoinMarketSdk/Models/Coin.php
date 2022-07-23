@@ -38,7 +38,7 @@ class Coin extends Model
      */
     protected $fillable = [
         'id', 'rank', 'name', 'symbol', 'slug', 'is_active',
-        'first_historical_data', 'last_historical_data'
+        'first_historical_data', 'last_historical_data', 'alteco_desc',
     ];
 
     /**

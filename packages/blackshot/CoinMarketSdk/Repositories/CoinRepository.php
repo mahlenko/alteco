@@ -279,6 +279,7 @@ class CoinRepository
 
         $coin = Coin::find($data['uuid']);
         $coin->alteco = $data['alteco'];
+        $coin->alteco_desc = $data['alteco_desc'];
         $coin->save();
 
         $coin->info->description = $data['description'];

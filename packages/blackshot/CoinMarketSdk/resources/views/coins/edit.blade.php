@@ -29,9 +29,39 @@
                         <tr>
                             <td colspan="2">
                                 <p>
-                                    <strong>Описание</strong>
+                                    Категории оценки для рейтинга ALTECO:
                                 </p>
-                                <textarea name="description" id="editor" rows="10">{!! old('description', $coin->info?->description) !!}</textarea>
+
+                                @if (!$coin->alteco_desc)
+                                    <small style="color: red">Категории оценки пока не заполнены, ниже готовый шаблон для заполнения.</small>
+                                @endif
+
+                                @php($default_desc = "<b>Категории оценки для рейтинга ALTECO</b>:
+Инвесторы:
+Команда:
+Продукт:
+Социальные активности:
+Дорожная карта: ")
+                                <textarea name="alteco_desc"
+                                          data-type="editor"
+                                          rows="10">{!! old('alteco_desc', $coin->alteco_desc ?? nl2br($default_desc)) !!}</textarea>
+                            </td>
+                        </tr>
+
+
+                        <tr>
+                            <td colspan="2" style="padding-top: 2rem;">
+                                <div class="d-flex flex-center">
+                                    @if(!empty($coin->info->logo))
+                                        <img src="{{ $coin->info->logo }}" class="table__logo" alt="">
+                                    @endif
+                                    <strong>Описание {{ $coin->name }}</strong>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <textarea name="description" data-type="editor" rows="10">{!! old('description', $coin->info?->description) !!}</textarea>
                             </td>
                         </tr>
                     </tbody>
@@ -47,21 +77,23 @@
     @push('scripts', '<script src="https://cdn.ckeditor.com/ckeditor5/34.2.0/classic/ckeditor.js"></script>')
     <script>
         document.addEventListener("DOMContentLoaded", (event) => {
-            ClassicEditor
-                .create(document.querySelector('#editor'), {
-                    height: '200px',
-                    toolbar: {
-                        items: [
-                            'numberedList', 'bulletedList', '|', 'bold', 'italic', 'underline', 'strikethrough', '|', 'link', '|', 'undo', 'redo'
-                        ]
-                    },
-                })
-                .then( editor => {
-                    console.log( editor );
-                } )
-                .catch( error => {
-                    console.error( error );
-                } );
+            document.querySelectorAll('[data-type="editor"]').forEach(editor => {
+                ClassicEditor
+                    .create(editor, {
+                        height: '200px',
+                        toolbar: {
+                            items: [
+                                'numberedList', 'bulletedList', '|', 'bold', 'italic', 'underline', 'strikethrough', '|', 'link', '|', 'undo', 'redo'
+                            ]
+                        },
+                    })
+                    .then( editor => {
+                        console.log( editor );
+                    } )
+                    .catch( error => {
+                        console.error( error );
+                    } );
+            })
         });
     </script>
 @endsection

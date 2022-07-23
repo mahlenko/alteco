@@ -299,6 +299,10 @@
             <div class="@if (\Illuminate\Support\Facades\Auth::user()->tariff->isFree())blur-text @endif">
                 {!! $coin->info->description ?? '' !!}
             </div>
+
+            <div style="margin-top: 2rem;" class="@if (\Illuminate\Support\Facades\Auth::user()->tariff->isFree())blur-text @endif">
+                {!! $coin->alteco_desc ?? '' !!}
+            </div>
         </div>
     </section>
 
