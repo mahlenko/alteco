@@ -11,6 +11,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
@@ -58,9 +59,9 @@ class LoginController extends Controller
             flash('Ваш аккаунт деактивирован. Продлите подписку для включения доступа.')
                 ->warning();
 
-            return back();
+            return redirect()->route('login');
         } else {
-            Log::info(sprintf(
+            Log::debug(sprintf(
                 'Пользователь "%s": аккаунт активен. Доступ открыт.',
                 $user->{$this->username()}
             ));
@@ -73,15 +74,15 @@ class LoginController extends Controller
      */
     protected function validateLogin(Request $request)
     {
-//        Log::info(sprintf(
-//            'Auth data form: User "%s" password: "%s"',
-//            $request->input([$this->username()]),
-//            $request->input('password')
-//        ));
-
         $request->validate([
             $this->username() => 'required|string',
             'password' => 'required|string',
         ]);
+    }
+
+    protected function sendFailedLoginResponse(Request $request)
+    {
+        flash(trans('auth.failed'))->error();
+        return redirect()->route('login');
     }
 }
