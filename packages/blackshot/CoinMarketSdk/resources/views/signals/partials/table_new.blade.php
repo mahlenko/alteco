@@ -14,6 +14,19 @@
             @include('blackshot::partials.sortable-signals', ['column' => 'diff', 'sortable' => $sortable[$table_name]])
         </td>
         <td class="active">Цена токена</td>
+
+        <td class="active {{ $sortable[$table_name]->column == 'alteco' ? 'main' : null }}">
+            AltEco Ранг
+            @include('blackshot::partials.sortable-signals', ['column' => 'alteco', 'sortable' => $sortable[$table_name]])
+        </td>
+        <td class="active {{ $sortable[$table_name]->column == 'alpha' ? 'main' : null }}">
+            Коэф. Alpha
+            @include('blackshot::partials.sortable-signals', ['column' => 'alpha', 'sortable' => $sortable[$table_name]])
+        </td>
+        <td class="active {{ $sortable[$table_name]->column == 'squid' ? 'main' : null }}">
+            Коэф. Kalmar
+            @include('blackshot::partials.sortable-signals', ['column' => 'squid', 'sortable' => $sortable[$table_name]])
+        </td>
         <td class="active"></td>
     </tr>
     </thead>
@@ -48,6 +61,37 @@
                 @if($coin->first_historical_data)
                     @include('blackshot::coins.partials.price', ['price' => $coin->price])
                 @endif
+            </td>
+
+            <td class="active">
+                <div class="d-flex flex-center">
+                    <div class="progress alteco" data-value="{{ $coin->alteco ? $coin->alteco - ($coin->alteco % 10) : 0 }}">
+                        <div class="bar"></div>
+                    </div>
+                    <span>{{ $coin->alteco ?: '' }}</span>
+                </div>
+            </td>
+            <td class="active">
+                <div class="d-flex flex-center">
+                    <div class="progress {{ $coin->alphaStatus }}">
+                        <div class="bar" style="width: {{ $coin->alphaProgressPercent }}%"></div>
+                    </div>
+
+                    @if (!is_null($coin->alpha))
+                        <span>{{ floatval($coin->alpha) }}%</span>
+                    @endif
+                </div>
+            </td>
+            <td class="active">
+                <div class="d-flex flex-center">
+                    <div class="progress {{ $coin->squidStatus }}">
+                        <div class="bar" style="width: {{ $coin->squidProgressPercent }}%"></div>
+                    </div>
+
+                    @if (!is_null($coin->squid))
+                        <span>{{ number_format($coin->squid, 2) }}</span>
+                    @endif
+                </div>
             </td>
 
             <td class="active">

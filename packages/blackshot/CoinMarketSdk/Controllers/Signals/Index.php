@@ -4,16 +4,11 @@ namespace Blackshot\CoinMarketSdk\Controllers\Signals;
 
 use App\Http\Controllers\Controller;
 use Blackshot\CoinMarketSdk\Models\Coin;
-use Blackshot\CoinMarketSdk\Models\TrackingCoin;
 use Blackshot\CoinMarketSdk\Repositories\CoinCategoryRepository;
-use Blackshot\CoinMarketSdk\Repositories\CoinRepository;
 use Blackshot\CoinMarketSdk\Repositories\SignalRepository;
 use Blackshot\CoinMarketSdk\Repositories\UserSettingsRepository;
-use DateTimeImmutable;
 use Exception;
 use Illuminate\Contracts\View\View;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
@@ -216,181 +211,6 @@ class Index extends Controller
         return $filter;
     }
 
-
-
-
-
-
-
-    /**
-     * @param Request $request
-     * @return View
-     * @throws Exception
-     */
-//    public function index_last(Request $request): View
-//    {
-//        if ($request->has('sortable')) {
-//            $sortable = $request->get('sortable');
-//
-//            $key = array_key_first($sortable) === 'signals'
-//                ? self::SORTABLE_SIGNAL_SETTINGS_KEY : self::SORTABLE_BUYING_SETTINGS_KEY;
-//
-//            @list($column, $direction) = explode(':', array_shift($sortable));
-//            if (!isset($column) || !isset($direction)) {
-//                $column = 'rank';
-//                $direction = 'asc';
-//            }
-//
-//            $this->updateSortableSettings($key, $column, $direction);
-//            return redirect()->route('signals.home');
-//        }
-//
-//        /*  */
-//        $categories = CoinCategoryRepository::categoriesForSelect();
-//
-//        /*  */
-//        $filter = UserSettingsRepository::get('signal_filter') ?? null;
-//        if (!$filter) {
-//            $filter = new stdClass();
-//            $filter->days = 7;
-//            $filter->min_rank = 30;
-//            $filter->signals = [];
-//            UserSettingsRepository::saveJson('signal_filter', (array) $filter);
-//        }
-//
-//        /*  */
-//        $coins = $this->trackingCoins($filter);
-//
-//        if (!isset($filter->signals) || !isset($filter->days) || !isset($filter->min_rank) ) {
-//            UserSettingsRepository::saveJson('signal_filter', [
-//                'signals' => [],
-//                'min_rank' => 30,
-//                'days' => 7
-//            ]);
-//
-//            redirect()->route('signals.home');
-//        }
-//
-//        /* */
-//        $start = (new DateTimeImmutable('now -'. $filter->days .' days'))
-//            ->setTime(0,0);
-//
-//        $end = (new DateTimeImmutable('now'))
-//            ->setTime(23, 59, 59);
-//
-//        /* @var HasManyThrough $my_buying_coins */
-//        $my_buying_coins = Auth::user()->buyingCoins;
-//
-//        /* @var Coin $coin */
-//        $coins->map(function ($coin) use ($my_buying_coins, $start, $end, $filter) {
-//            $now = new DateTimeImmutable('now');
-//
-//            $quotes = $coin->quotesByDate($start, $end);
-//
-//            // сгруппировать изменения по дням
-//            $coin->quotes_group_by_days = CoinRepository::groupByDate(
-//                // рассчитать изменения позиций
-//                CoinRepository::calculateRankChanged($quotes)
-//            )->sortKeysDesc();
-//
-//            // изменения позиций
-//            $start = $coin->quotes_group_by_days->first();
-//            $end = $coin->quotes_group_by_days->last();
-//
-//            $coin->rank_diff = $end
-//                ? $end->last()->cmc_rank - $start->last()->cmc_rank
-//                : 0;
-//
-//            /* минусовые не показываем */
-//            if ($coin->rank_diff < 0) $coin->rank_diff = 0;
-//
-//            $today = $coin->quotes_group_by_days->get($now->format('Y-m-d'));
-//
-//            // 1. самый большой прирост за день
-//            $coin->max_up_today = false;
-//            $coin->max_up_today_rank = $today
-//                ? $today->max('cmc_rank_changed')
-//                : 0;
-//
-//            // 2. самый большой прирост выбранный период
-////            dump($coin->quotes_group_by_days);
-//            $coin->max_up_period = false;
-//            $coin->max_up_period_rank = $coin->quotes_group_by_days
-//                ? $coin->quotes_group_by_days
-//                    ->flatten()
-//                    ->max('cmc_rank_changed')
-//                : 0;
-//
-//            // 3. более 30 мест за неделю
-//            $coin->more_30_rank = $coin->rank_diff >= $filter->min_rank;
-//
-//            // 4. Я покупаю эту монету
-//            $coin->buying_me = (bool) $my_buying_coins->where('uuid', $coin->uuid)->count();
-//        });
-//
-//        if ($coins->count()) {
-//            $this->setKeyWhere(
-//                $coins,
-//                'max_up_today_rank',
-//                $coins->max('max_up_today_rank') ?? 0,
-//                'max_up_today'
-//            );
-//
-//            $this->setKeyWhere(
-//                $coins,
-//                'max_up_period_rank',
-//                $coins->max('max_up_period_rank') ?? 0,
-//                'max_up_period'
-//            );
-//        }
-//
-//        // все монеты с сигналами
-//        $filter_coins_signals_all = $coins->filter(function($coin) {
-//            return $coin->more_30_rank || $coin->max_up_period || $coin->max_up_today;
-//        });
-//
-//        // монеты соответствующие фильтру
-//        $filter_coins_signals = $filter_coins_signals_all->filter(function($coin) use ($filter) {
-//            if (isset($filter) && count($filter->signals)) {
-//                foreach ($filter->signals as $key) {
-//                    if ($coin->$key === true && !$coin->buying_me) return $coin;
-//                }
-//            }
-//
-//            return false;
-//        });
-//
-//        /* sortable settings */
-//        $signals_sortable_settings = $this->getSettingSortable(self::SORTABLE_SIGNAL_SETTINGS_KEY);
-//        $buying_sortable_settings = $this->getSettingSortable(self::SORTABLE_BUYING_SETTINGS_KEY);
-//
-//        /* sort signals */
-//        $signals = $this->sortableTable($filter_coins_signals, $signals_sortable_settings);
-//
-//        /* sort buying coins */
-//        $buying = $this->sortableTable($coins->filter(function($coin) {
-//            return $coin->buying_me;
-//        }), $buying_sortable_settings);
-//
-//        /* categories */
-//
-//        return view('blackshot::signals.index', [
-//            'coins' => $signals,
-//            'coins_buying_me' => $buying,
-//            'categories' => $categories,
-//            'sortable' => [
-//                'signals' => $signals_sortable_settings,
-//                'buying' => $buying_sortable_settings
-//            ],
-//            'filter' => $filter,
-//            'filter_counter' => [
-//                'max_up_today' => $filter_coins_signals_all->where('max_up_today', true)->where('buying_me', false)->count(),
-//                'max_up_period' => $filter_coins_signals_all->where('max_up_period', true)->where('buying_me', false)->count(),
-//                'more_30_rank' => $filter_coins_signals_all->where('more_30_rank', true)->where('buying_me', false)->count(),
-//            ]
-//        ]);
-//    }
-
     /**
      * @param string $key
      * @return null
@@ -443,7 +263,7 @@ class Index extends Controller
      */
     private function updateSortableSettings(string $key, string $column, string $direction): void
     {
-        if (!in_array($column, ['rank', 'diff'])) $column = 'rank';
+        if (!in_array($column, ['rank', 'diff', 'alteco', 'alpha', 'squid'])) $column = 'rank';
         if (!in_array($direction, ['asc', 'desc'])) $direction = 'asc';
 
         UserSettingsRepository::saveJson($key, [
@@ -452,30 +272,4 @@ class Index extends Controller
         ]);
     }
 
-    /**
-     * @param Collection $collection
-     * @param stdClass $sortable
-     * @return Collection
-     */
-//    private function sortableTable(Collection $collection, stdClass $sortable): Collection
-//    {
-//        if ($sortable->direction === 'asc') {
-//            return $collection->sortBy($sortable->column);
-//        }
-//
-//        return $collection->sortByDesc($sortable->column);
-//    }
-
-    /**
-     * @param Collection $collection
-     * @param string $search_key
-     * @param string $value
-     * @param string $set_key_bool
-//     */
-//    private function setKeyWhere(Collection &$collection, string $search_key, string $value, string $set_key_bool)
-//    {
-//        $collection->map(function($item) use ($search_key, $value, $set_key_bool) {
-//            $item->$set_key_bool = $item->$search_key == $value;
-//        });
-//    }
 }
