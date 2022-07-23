@@ -60,7 +60,7 @@
                 </div>
 
                 <div>
-                    <input class="form-check-input" type="checkbox" required name="agreement" id="agreement" {{ old('agreement') ? 'checked' : '' }}>
+                    <input class="form-check-input" type="checkbox" name="agreement" id="agreement" {{ old('agreement') ? 'checked' : '' }}>
                     <label class="form-check-label" for="agreement">
                         Я ознакомлен с <a href="/files/user-agreement.pdf" target="_blank">пользовательским соглашением</a>
                         и даю свое согласие на обработку персональных данных.
