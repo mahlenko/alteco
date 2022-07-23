@@ -32,6 +32,8 @@ class TariffRequest extends FormRequest
             'default' => ['nullable'],
             'free' => ['nullable'],
             'move' => ['nullable'],
+            'description' => ['required', 'max:65565'],
+            'payment_widget' => ['nullable']
         ];
     }
 }

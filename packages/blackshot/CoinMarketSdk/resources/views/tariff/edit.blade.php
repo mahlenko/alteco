@@ -55,6 +55,25 @@
                         </tr>
 
                         <tr>
+                            <td>Описание тарифа</td>
+                            <td>
+                                <textarea name="description" data-type="editor" cols="30" rows="10">{{ old('description', $tariff?->description) }}</textarea>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Скрипт виджета для оплаты</td>
+                            <td>
+                                <input type="text"
+                                       value="{{ old('payment_widget', $tariff?->payment_widget) }}"
+                                       name="payment_widget"
+                                       id="payment_widget"
+                                       size="40"
+                                       placeholder="&lt;script src='...'&gt;&lt;script/&gt;">
+                            </td>
+                        </tr>
+
+                        <tr>
                             <td>
                                 Тариф по-умолчанию
                             </td>
@@ -129,89 +148,26 @@
 
     </div>
 
-    <style>
-        .flex {
-            display: flex;
-            width: 100%;
-        }
-
-        .flex.justify-between {
-            justify-content: space-between;
-        }
-        .flex.items-center {
-            align-items: center;
-        }
-
-        .row {
-            display: flex;
-            flex-direction: column;
-            row-gap: 4rem;
-            column-gap: 4rem;
-        }
-
-        .row .column {
-            max-width: 100%;
-        }
-
-        .banner-container {
-            /*border: 1px solid #eee;*/
-            display: flex;
-            flex-direction: column;
-            row-gap: 1rem;
-            border-radius: 1rem;
-            background-color: #f7f7f7;
-            padding: 1rem 1.5rem;
-            width: 100%;
-        }
-
-        .banners .item {
-            align-items: flex-start;
-            background-color: white;
-            border: 1px solid #f4f4f4;
-            border-radius: 1rem;
-            display: flex;
-            column-gap: 1rem;
-            padding: .5rem;
-        }
-
-        .banners .item .picture {
-            border-radius: .6rem;
-            max-height: 70px;
-            /*width: 25%;*/
-            max-width: 25%;
-        }
-
-        .banners .icon {
-            width: 1rem;
-            height: 1rem;
-        }
-
-        .banners .item .list-info {
-            display: flex;
-            flex-wrap: wrap;
-            column-gap: 1rem;
-            margin: .3rem 0;
-            padding: 0;
-        }
-
-        .banners .item .list-info li {
-            color: slategray;
-            font-size: .8rem;
-        }
-
-        @media screen and (min-width: 1024px) {
-            .row {
-                flex-direction: row;
-            }
-
-            .banner-container {
-                padding: 1rem 2rem;
-                width: 50%;
-            }
-
-            .banners .item .picture {
-                max-width: 15%;
-            }
-        }
-    </style>
+    @push('scripts', '<script src="https://cdn.ckeditor.com/ckeditor5/34.2.0/classic/ckeditor.js"></script>')
+    <script>
+        document.addEventListener("DOMContentLoaded", (event) => {
+            document.querySelectorAll('[data-type="editor"]').forEach(editor => {
+                ClassicEditor
+                    .create(editor, {
+                        height: '200px',
+                        toolbar: {
+                            items: [
+                                'numberedList', 'bulletedList', '|', 'bold', 'italic', 'underline', 'strikethrough', '|', 'link', '|', 'undo', 'redo'
+                            ]
+                        },
+                    })
+                    .then( editor => {
+                        console.log( editor );
+                    } )
+                    .catch( error => {
+                        console.error( error );
+                    } );
+            })
+        });
+    </script>
 @endsection

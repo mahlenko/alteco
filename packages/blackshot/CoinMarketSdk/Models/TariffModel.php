@@ -18,7 +18,9 @@ class TariffModel extends Model
         'amount',
         'days',
         'free',
-        'default'
+        'default',
+        'description',
+        'payment_widget',
     ];
 
     public function isFree(): bool

@@ -38,7 +38,9 @@ class Edit extends \App\Http\Controllers\Controller
                     $data['days'] ?? 1,
                     $data['free'] ?? false,
                     $data['default'] ?? false,
-                    $data['move']
+                    $data['description'],
+                    $data['payment_widget'],
+                    $data['move'],
                 );
             } else {
                 $tariff = TariffRepository::create(
@@ -47,7 +49,9 @@ class Edit extends \App\Http\Controllers\Controller
                     $data['days'] ?? 1,
                     $data['free'] ?? false,
                     $data['default'] ?? false,
-                    $data['move']
+                    $data['description'],
+                    $data['payment_widget'],
+                    $data['move'],
                 );
             }
         } catch (Exception $exception) {

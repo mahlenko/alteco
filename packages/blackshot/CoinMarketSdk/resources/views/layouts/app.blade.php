@@ -20,7 +20,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700;800&family=Merriweather:ital,wght@1,300;1,700;1,900&display=swap"
         rel="stylesheet">
-
+    <link rel="stylesheet" href="{{ asset('css/jquery.arcticmodal-0.3.css') }}">
 </head>
 <body>
     <div class="body-wrap pages">
@@ -66,10 +66,11 @@
 
     <!-- Scripts -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-    <script src="{{ asset('js/all.js') }}" defer></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.13.3/js/standalone/selectize.min.js"></script>
+    <script src="{{ asset('js/jquery.arcticmodal-0.3.min.js') }}"></script>
+    <script src="{{ asset('js/all.js') }}" defer></script>
 
     @stack('scripts')
 

@@ -24,6 +24,8 @@ class TariffRepository
      * @param bool $free
      * @param bool $default
      * @param int|string $move_users
+     * @param string|null $description
+     * @param string|null $payment_widget
      * @return TariffModel
      */
     public static function create(
@@ -32,7 +34,9 @@ class TariffRepository
         int $days = 0,
         bool $free = false,
         bool $default = false,
-        int|string $move_users = self::NOT_MOVE
+        string $description = null,
+        string $payment_widget = null,
+        int|string $move_users = self::NOT_MOVE,
     ): TariffModel
     {
         if (TariffModel::where('name', trim($name))->count()) {
@@ -46,7 +50,9 @@ class TariffRepository
             'amount' => $amount,
             'days' => $days,
             'free' => $free,
-            'default' => $default
+            'default' => $default,
+            'description' => $description,
+            'payment_widget' => $payment_widget
         ]);
 
         self::moveUsers($tariffModel->id, $move_users);
@@ -62,6 +68,8 @@ class TariffRepository
      * @param int|null $days
      * @param bool $free
      * @param bool $default
+     * @param string|null $description
+     * @param string|null $payment_widget
      * @param int|string $move_users = self::NOT_MOVE
      * @return TariffModel
      */
@@ -72,6 +80,8 @@ class TariffRepository
         int $days = null,
         bool $free = false,
         bool $default = false,
+        string $description = null,
+        string $payment_widget = null,
         int|string $move_users = self::NOT_MOVE
     ): TariffModel
     {
@@ -93,7 +103,9 @@ class TariffRepository
             'amount' => $amount,
             'days' => $days,
             'free' => $free,
-            'default' => $default
+            'default' => $default,
+            'description' => $description,
+            'payment_widget' => $payment_widget
         ])->save();
 
         return $tariffModel;
