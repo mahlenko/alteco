@@ -21,6 +21,8 @@ class CreateTariffsTable extends Migration
             $table->integer('days')->default(0);
             $table->boolean('free')->default(false);
             $table->boolean('default')->default(false);
+            $table->text('description')->nullable();
+            $table->text('payment_widget')->nullable();
             $table->timestamps();
         });
 
