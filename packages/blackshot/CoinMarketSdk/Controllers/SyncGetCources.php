@@ -35,8 +35,8 @@ class SyncGetCources extends \App\Http\Controllers\Controller
 
         $data = $validator->validate();
 
-        $tariff = $data['tariff']
-            ? TariffModel::find($data['tariff'])
+        $tariff = $data['tariff_id']
+            ? TariffModel::find($data['tariff_id'])
             : TariffModel::where(['default', true])->first();
 
         if (!$tariff) {
@@ -53,7 +53,8 @@ class SyncGetCources extends \App\Http\Controllers\Controller
             // добавляем дни от тарифа
             $expired_at = $user->expired_at->modify('+'. $tariff->days .' days');
 
-            $user->setExpiredAt($expired_at);
+//            $user->setExpiredAt($expired_at);
+            $user->expired_at = $expired_at;
             $user->save();
         } else {
             $expired_at = new DateTimeImmutable('+' . $tariff->days .' days');
