@@ -10,7 +10,10 @@ class Subscribe extends Controller
     public function index()
     {
         return view('blackshot::subscribe', [
-            'tariffs' => TariffModel::where('default', false)->orderByDesc('amount')->get()
+            'tariffs' => TariffModel::where('default', false)
+                ->where('amount', '>', 0)
+                ->orderByDesc('amount')
+                ->get()
         ]);
     }
 }
