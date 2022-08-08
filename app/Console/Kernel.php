@@ -41,8 +41,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('blackshot:category')->everyMinute();
 
         /* Соберет сигналы - временно, чтобы загрузить старые сигналы */
-//        $schedule->command('blackshot:signals')
-//            ->everyMinute();
+        $schedule->command('blackshot:signals')->dailyAt('02:00');
 
         /* Рассчитать rank 30 дней */
         $schedule->command('blackshot:rank:change 30')

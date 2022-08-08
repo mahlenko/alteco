@@ -45,12 +45,7 @@ class SignalsCommand extends Command
      */
     public function handle()
     {
-//        $date = new DateTimeImmutable($this->option('date'));
-
-        // @todo временная выгрузка
-        $min_date = Signal::max('date') ?? Quote::min('last_updated');
-        $date = (new DateTimeImmutable($min_date))->modify('+1 day');
-        // @todo end
+        $date = new DateTimeImmutable($this->option('date'));
 
         $date_string = $date->format('Y-m-d');
 
