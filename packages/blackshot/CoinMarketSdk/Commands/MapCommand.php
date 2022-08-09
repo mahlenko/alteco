@@ -70,14 +70,13 @@ class MapCommand extends \Illuminate\Console\Command
             return self::FAILURE;
         }
 
-        $today_date = (new DateTimeImmutable('now'))->format('Y-m-d');
-        $latest_date = (new DateTimeImmutable('-1 day'))->format('Y-m-d');
+//        $today_date = (new DateTimeImmutable('now'))->format('Y-m-d');
+//        $latest_date = (new DateTimeImmutable('-1 day'))->format('Y-m-d');
 
-        $signals_latest = Signal::where('date', $latest_date)->get();
-        $signals_today = Signal::where('date', $today_date)->get();
+//        $signals_latest = Signal::where('date', $latest_date)->get();
+//        $signals_today = Signal::where('date', $today_date)->get();
 
-        foreach ($response->data as $coin)
-        {
+        foreach ($response->data as $coin) {
             // Create new or find platform
             $platform = null;
             if ($coin->platform && $coin->platform->id) {
@@ -86,7 +85,8 @@ class MapCommand extends \Illuminate\Console\Command
             }
 
             // Create new or find coin
-            $coin = CoinRepository::create(
+//            $coin = CoinRepository::create(
+            CoinRepository::create(
                 $coin->id,
                 $coin->name,
                 $coin->symbol,
