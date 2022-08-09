@@ -19,12 +19,14 @@ class View extends \App\Http\Controllers\Controller
     {
         $coin = Coin::where('uuid', $uuid)->firstOrFail();
 
-        $signals = Cache::rememberForever('signals:'. $coin->uuid, function() use ($coin) {
-            return Signal::select(['rank', 'date'])
-                ->where('coin_uuid', $coin->uuid)
-                ->where('date', '>=', new DateTimeImmutable('-1 year'))
-                ->get();
-        });
+        $cache_ttl = time() + 1200; // cache ttl: 20 minutes
+        $signals = Cache::remember('signals:'. $coin->uuid, $cache_ttl,
+            function() use ($coin) {
+                return Signal::select(['rank', 'date'])
+                    ->where('coin_uuid', $coin->uuid)
+                    ->where('date', '>=', new DateTimeImmutable('-1 year'))
+                    ->get();
+            });
 
         $prices = [];
         foreach($coin->quotes as $quote) {

@@ -28,6 +28,7 @@ class SignalRepository
     {
         // cache hash
         $hash_filter = (array) $filter;
+        $hash_filter['user_id'] = Auth::id();
         if (key_exists('categories_uuid', $hash_filter) && in_array('favorites', $hash_filter['categories_uuid'])) {
             $index = array_search('favorites', $filter->categories_uuid);
             $hash_filter['categories_uuid'][$index] = Auth::user()->id;
@@ -35,7 +36,8 @@ class SignalRepository
 
         $hash = md5(http_build_query(array_merge($hash_filter, (array)$sortable, $except_uuid->toArray())));
 
-        return Cache::remember($hash, time() + (30 * 60), function() use ($filter, $sortable, $except_uuid) {
+        $cache_ttl = time() + 1200; // cache ttl: 20 minutes
+        return Cache::remember($hash, $cache_ttl, function() use ($filter, $sortable, $except_uuid) {
             $builder = self::queryBuilder();
 
             $end_date = new DateTimeImmutable(Signal::max('date'));

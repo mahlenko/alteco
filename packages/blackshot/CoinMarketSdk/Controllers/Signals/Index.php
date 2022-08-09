@@ -50,13 +50,12 @@ class Index extends Controller
 
         /* @var Collection<Coin> $buying_coins */
         $buying_coins = Auth::user()->buyingCoins;
-        $i_buy_uuid = $buying_coins ? $buying_coins->pluck('uuid') : null;
+        $i_buy_uuid = $buying_coins?->pluck('uuid');
 
-        /* @var Collection<object> */
         $signals = SignalRepository::coinCollection($filter, $signals_sortable, $i_buy_uuid);
         $coins = $this->viewCoins($signals, $signals_sortable);
 
-        /* @var Collection<object> */
+        /* @var Collection<object> $buying */
         $buying = SignalRepository::buyingCollection($filter, $i_buy_uuid);
         $coins_buy = $this->viewBuyCoins($buying, $buying_sortable);
 
