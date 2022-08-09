@@ -54,7 +54,7 @@ class Kernel extends ConsoleKernel
             ->runInBackground();
 
         /* Получение CRIX индекса */
-        $schedule->command('blackshot:crix:indexes')->daily();
+        $schedule->command('blackshot:crix:indices')->daily();
     }
 
     /**
