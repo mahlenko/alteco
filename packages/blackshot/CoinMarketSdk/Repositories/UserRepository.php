@@ -15,7 +15,7 @@ use InvalidArgumentException;
 class UserRepository
 {
     /**
-     * @param int $user_id Rnj
+     * @param int $user_id
      * @param string $name
      * @param string $email
      * @param string $password
@@ -64,7 +64,7 @@ class UserRepository
         $user->save();
 
         //
-        $user->notify(new UserRegistered($password));
+        $user->notify(new UserRegistered($password, $expired_at));
 
 
         return $user;
