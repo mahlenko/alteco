@@ -7,9 +7,8 @@ use Blackshot\CoinMarketSdk\Models\Signal;
 use DateTimeImmutable;
 use Exception;
 use Illuminate\Console\Command;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Date;
-use Illuminate\Support\Facades\DB;
 
 class SignalsCommand extends Command
 {
@@ -45,65 +44,170 @@ class SignalsCommand extends Command
      */
     public function handle()
     {
-        $date = new DateTimeImmutable($this->option('date'));
-
-        $date_string = $date->format('Y-m-d');
-
-        $signals_latest = Signal::where('date', $date->modify('-1 day')->format('Y-m-d'))->get();
-        $signals_day = Signal::where('date', $date_string)->get();
-
-        $this->warn('BUILDING DATA '. $date->format('d.m.Y'));
-
-        $quotes = DB::table('coin_quotes')
-            ->distinct()
-            ->select('coin_uuid')
-//            ->selectRaw('FIRST_VALUE(`cmc_rank`) OVER (PARTITION BY coin_uuid ORDER BY last_updated ASC) start_day_rank')
-            ->selectRaw('FIRST_VALUE(`cmc_rank`) OVER (PARTITION BY coin_uuid ORDER BY last_updated DESC) end_day_rank')
+        $date = new DateTimeImmutable($this->option('date') ?? Signal::max('date'));
+        $quotes = Quote::select(['coin_uuid', 'cmc_rank'])
             ->whereBetween('last_updated', [
                 $date->format('Y-m-d 00:00:00'),
                 $date->format('Y-m-d 23:59:59')
             ])->get();
 
-        $this->warn('DATA COMPLETE');
+        $signals_latest = self::signalsByDate($date);
 
-        foreach ($quotes as $quote) {
-            //
-            if (Cache::has('signals:'. $quote->coin_uuid)) {
-                Cache::forget('signals:'. $quote->coin_uuid);
-            }
+        $previous_date = new DateTimeImmutable(self::previousDateSignal($date));
+        $signals_previous = self::signalsByDate($previous_date);
 
-            //
-            try {
-                $signal = $signals_day
-                    ->where('coin_uuid', $quote->coin_uuid)
-                    ->first();
+        $this->info('Start date: ' . $previous_date->format('Y-m-d'));
+        $this->info('End date: ' . $date->format('Y-m-d'));
 
-                $latest = $signals_latest
-                    ->where('coin_uuid', $quote->coin_uuid)
-                    ->first();
+//        $quotes = DB::table('coin_quotes')
+//            ->distinct()
+//            ->select('coin_uuid')
+////            ->selectRaw('FIRST_VALUE(`cmc_rank`) OVER (PARTITION BY coin_uuid ORDER BY last_updated ASC) start_day_rank')
+//            ->selectRaw('FIRST_VALUE(`cmc_rank`) OVER (PARTITION BY coin_uuid ORDER BY last_updated DESC) end_day_rank')
+//            ->whereBetween('last_updated', [
+//                $date->format('Y-m-d 00:00:00'),
+//                $date->format('Y-m-d 23:59:59')
+//            ])->get();
 
-                if (!$signal) {
-                    $signal = new Signal();
-                    $signal->coin_uuid = $quote->coin_uuid;
-                    $signal->date = $date_string;
-                }
+//        dd($quotes->count());
 
-                $signal->rank = $quote->end_day_rank;
-                $signal->diff = $latest
-                    ? $latest->rank - $quote->end_day_rank
-                    : 0;
+        $this->info('Previous signals: ' . $signals_previous->count());
+        $this->info('Quotes: ' . $quotes->count());
 
-                $signal->save();
+        $signals = self::createSignals($quotes, $signals_latest, $signals_previous);
 
-            } catch (Exception $exception) {
-                $this->warn($quote->coin_uuid .': '. $exception->getMessage());
-            }
-        }
+        self::table(['coin', 'rank', 'previous rank', 'diff', 'date'], $signals);
+
+        return 0;
+
+//        foreach ($quotes as $quote) {
+//            //
+//            if (Cache::has('signals:'. $quote->coin_uuid)) {
+//                Cache::forget('signals:'. $quote->coin_uuid);
+//            }
+//
+//            //
+//            try {
+//                $signal = $signals_latest
+//                    ->where('coin_uuid', $quote->coin_uuid)
+//                    ->first();
+//
+//                $latest = $signals_previous
+//                    ->where('coin_uuid', $quote->coin_uuid)
+//                    ->first();
+//
+//                if (!$signal) {
+//                    $signal = new Signal();
+//                    $signal->coin_uuid = $quote->coin_uuid;
+//                    $signal->date = $date;
+//                }
+//
+//                $signal->rank = $quote->end_day_rank;
+//                $signal->diff = $latest
+//                    ? $latest->rank - $quote->end_day_rank
+//                    : 0;
+//
+//                $signal->save();
+//
+//            } catch (Exception $exception) {
+//                $this->warn($quote->coin_uuid .': '. $exception->getMessage());
+//            }
+//        }
 
         // Расчет экспоненциального ранка
-        $this->call('blackshot:rank:exponential');
+//        $this->call('blackshot:rank:exponential');
 
-        $this->info('DONE');
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
+
+    /**
+     * @param DateTimeImmutable $date
+     * @return string
+     */
+    private static function previousDateSignal(DateTimeImmutable $date): string
+    {
+        return Signal::where('date', '<', $date->format('Y-m-d 00:00:00'))
+            ->max('date');
+    }
+
+    /**
+     * @param DateTimeImmutable $date
+     * @return Collection
+     */
+    private static function signalsByDate(DateTimeImmutable $date): Collection
+    {
+        return Signal::whereBetween('date', [
+            $date->format('Y-m-d 00:00:00'),
+            $date->format('Y-m-d 23:59:59'),
+        ])->get();
+    }
+
+    /**
+     * @param Collection $quotes
+     * @param Collection $latest
+     * @param Collection $previous
+     * @return Collection
+     */
+    private static function createSignals(
+        Collection $quotes,
+        Collection $latest,
+        Collection $previous
+    ): Collection {
+        $collection = collect();
+
+        /* @var Quote $quote */
+        foreach ($quotes as $quote) {
+            /* @var Signal $signal */
+            $signal = $latest->where('coin_uuid', $quote->coin_uuid)->first();
+
+            /* @var Signal $previous_signal */
+            $previous_signal = $previous->where('coin_uuid', $quote->coin_uuid)->first();
+
+            if (!$signal) {
+                $signal = new Signal();
+                $signal->coin_uuid = $quote->coin_uuid;
+            }
+
+            $signal->rank = $quote->cmc_rank;
+            $signal->diff = self::calculateDiff($quote, $previous_signal);
+            $signal->date = (new DateTimeImmutable($quote->last_updated))->format('Y-m-d');
+
+            try {
+                $signal->save();
+
+                if (Cache::has('signals:' . $quote->coin_uuid)) {
+                    Cache::forget('signals:'. $quote->coin_uuid);
+                }
+            } catch (Exception) {}
+
+            $collection->push([
+                'coin_uuid' => $signal->coin_uuid,
+                'rank' => $signal->rank,
+                'previous_rank' => $previous_signal->rank ?? '---',
+                'diff' => $signal->diff,
+                'date' => $signal->date->format('d.m.Y')
+            ]);
+        }
+
+        return $collection;
+    }
+
+    /**
+     * {previous} - {current} = {diff}
+     * --------------------------------------------------
+     * Examples:
+     *  5 - 7 = -2  // упал на 2 позиции
+     *  8 - 3 = 5   // поднялся на 5 позиций
+     *
+     * @param Quote $quote
+     * @param Signal $previous_signal
+     * @return void
+     */
+    private static function calculateDiff(Quote $quote, Signal $previous_signal = null): int
+    {
+        return $previous_signal
+            ? $previous_signal->rank - $quote->cmc_rank
+            : 0;
+    }
+
 }

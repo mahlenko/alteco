@@ -2,9 +2,9 @@
 
 namespace Blackshot\CoinMarketSdk\Models;
 
+use App;
 use DateTimeImmutable;
 use Exception;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -258,7 +258,6 @@ class Coin extends Model
             ? $quote->last_updated->format('Y-m-d H:i:s')
             : (new DateTimeImmutable($quote->last_updated))->format('Y-m-d H:i:s');
 
-        /* @var Quote $last_update_quote */
         $last_update_quote = Quote::where([
             'coin_uuid' => $this->uuid,
             'currency' => $quote->currency
@@ -280,11 +279,16 @@ class Coin extends Model
         $this->rank = $quote->cmc_rank;
         $this->save();
 
+        $this->forgetCache();
+
+        return $store;
+    }
+
+    public function forgetCache(): void
+    {
         if (Cache::has($this->cache_quotes_key)) {
             Cache::forget($this->cache_quotes_key);
         }
-
-        return $store;
     }
 
     public function getAlphaStatusAttribute()

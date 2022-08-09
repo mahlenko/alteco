@@ -19,7 +19,7 @@ class Signal extends Model
     ];
 
     protected $casts = [
-        'date'
+        'date' => 'datetime'
     ];
 
     public function coin(): BelongsTo

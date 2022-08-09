@@ -10,7 +10,6 @@ use Exception;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Cache;
 use Ramsey\Uuid\Uuid;
-use Symfony\Component\Console\Helper\ProgressBar;
 
 /**
  *
@@ -46,92 +45,79 @@ class QuotesFollowingCommand extends \Illuminate\Console\Command
 
         $chunks = $coins->pluck('id')->chunk(100);
 
-        $this->withProgressBar($chunks->count(), function(ProgressBar $bar) use ($chunks, $coins) {
-            $bar->setMessage('');
-            $bar->setFormat("%current%/%max% [<info>%bar%</info>] %percent:3s%% %message%");
+        foreach ($chunks as $chunk) {
+            $quotes = new Latest();
+            $quotes->id = $chunk->join(',');
 
-            $bar->advance();
-
-            foreach ($chunks as $chunk) {
-                $quotes = new Latest();
-                $quotes->id = $chunk->join(',');
-
-                try {
-                    $bar->setMessage('<info>Отправка запроса</info>');
-                    $response = (new Request())->run($quotes);
-                } catch (Exception $exception) {
-                    $bar->setMessage('<error>'. $exception->getMessage() .'</error>');
-                    $bar->advance();
-                    continue;
-                }
-
-                if (!$response->ok) {
-                    $this->error('Ошибка запроса');
-                    return self::FAILURE;
-                }
-
-                if (!$response->data || !count($response->data)) {
-                    $this->error('Не получены данные по котировкам валют.');
-                    return self::FAILURE;
-                }
-
-                foreach ($response->data as $data) {
-                    /* @var Coin $coin */
-                    $coin = $coins->where('id', $data->id)->first();
-                    if (!$coin) continue;
-
-                    foreach ($data->quote as $currency => $quote) {
-                        try {
-                            $bar->setMessage('<warn>Сохраняю '. $coin->name .'</warn>');
-                            $coin->attachQuote($this->fillQuote($data, $quote, $currency));
-
-                            if ($currency == 'USD') {
-                                $coin->price = $quote->price;
-                                $coin->percent_change_1h = $quote->percent_change_1h;
-                                $coin->save();
-                            }
-                        } catch (Exception $exception) {
-                            $bar->setMessage('<error>'. $exception->getMessage() .' '. $exception->getFile() .' ('. $exception->getLine() .')</error>');
-                        }
-                    }
-
-                    //
-                    $bar->setMessage('Caching data quotes...');
-                    Cache::forever($coin->cache_quotes_key, $coin->quotes);
-                }
-
-                $bar->setMessage('Sleep 60 seconds');
-                $bar->advance();
-
-                sleep(60);
+            try {
+                $response = (new Request())->run($quotes);
+            } catch (Exception $exception) {
+                $this->error($exception->getMessage());
+                continue;
             }
 
-            $bar->finish();
-            return true;
-        });
+            if (!$response->ok) {
+                $this->error('Ошибка запроса');
+                return self::FAILURE;
+            }
 
+            if (!$response->data || !count($response->data)) {
+                $this->error('Не получены данные по котировкам валют.');
+                return self::FAILURE;
+            }
+
+            foreach ($response->data as $data) {
+                /* @var Coin $coin */
+                $coin = $coins->where('id', $data->id)->first();
+                if (!$coin) continue;
+
+                foreach ($data->quote as $currency => $quote) {
+                    try {
+                        $this->comment('Сохраняю '. $coin->name);
+                        $coin->attachQuote($this->fillQuote($data, $quote, $currency));
+
+                        if ($currency == 'USD') {
+                            $coin->price = $quote->price;
+                            $coin->percent_change_1h = $quote->percent_change_1h;
+                            $coin->save();
+                        }
+                    } catch (Exception $exception) {
+                        $this->error($exception->getMessage() .' '. $exception->getFile() .' ('. $exception->getLine());
+                    }
+                }
+
+                //
+                $this->info('Caching data quotes...');
+                $coin->forgetCache();
+            }
+
+            $this->info('Sleep 60 seconds');
+
+            sleep(60);
+        }
 
         $this->info('Обновление коэффициентов');
         $this->call('blackshot:coin:ratio');
+        $this->call('blackshot:signals');
 
         return self::SUCCESS;
     }
 
     /**
-     * @param $coin
+     * @param $data
      * @param $quote
      * @param $currency
      * @return Quote
      */
-    private function fillQuote($coin, $quote, $currency): Quote
+    private function fillQuote($data, $quote, $currency): Quote
     {
         return new Quote([
             'uuid' => Uuid::uuid4()->toString(),
             'currency' => $currency,
-            'cmc_rank' => $coin->cmc_rank,
-            'max_supply' => $coin->max_supply,
-            'circulating_supply' => $coin->circulating_supply,
-            'total_supply' => $coin->total_supply,
+            'cmc_rank' => $data->cmc_rank,
+            'max_supply' => $data->max_supply,
+            'circulating_supply' => $data->circulating_supply,
+            'total_supply' => $data->total_supply,
             'price' => $quote->price,
             'volume_24h' => $quote->volume_24h,
             'volume_24h_reported' => $quote->volume_24h_reported,

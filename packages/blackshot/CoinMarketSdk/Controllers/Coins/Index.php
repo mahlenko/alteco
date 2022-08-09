@@ -5,7 +5,6 @@ namespace Blackshot\CoinMarketSdk\Controllers\Coins;
 use App\Models\User;
 use Blackshot\CoinMarketSdk\Enums\BannerTypes;
 use Blackshot\CoinMarketSdk\Models\Banner;
-use Blackshot\CoinMarketSdk\Models\CategoryModel;
 use Blackshot\CoinMarketSdk\Models\Coin;
 use Blackshot\CoinMarketSdk\Repositories\CoinCategoryRepository;
 use Blackshot\CoinMarketSdk\Repositories\CoinRepository;
@@ -106,7 +105,6 @@ class Index extends \App\Http\Controllers\Controller
         // end
 
 
-        /* @var Coin $coins */
         $coins = Coin::select('coins.*');
 
         if (empty($filter->q) && empty($filter->category_uuid)) {
