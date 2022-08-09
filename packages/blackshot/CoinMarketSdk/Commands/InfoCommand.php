@@ -63,10 +63,12 @@ class InfoCommand extends \Illuminate\Console\Command
                 CoinInfoRepository::create(
                     $coin = $coins->where('id', $info->id)->first(),
                     $info->category,
-                    $info->logo,
-                    $info->description,
-                    $info->notice,
-                    new DateTimeImmutable($info->date_added),
+                    $info->logo ?? null,
+                    $info->description ?? null,
+                    $info->notice ?? null,
+                    isset($info->date_added)
+                        ? new DateTimeImmutable($info->date_added)
+                        : new DateTimeImmutable('now'),
                     $info->tags,
                     $info->urls
                 );

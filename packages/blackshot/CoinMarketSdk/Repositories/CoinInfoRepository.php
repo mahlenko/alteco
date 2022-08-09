@@ -44,7 +44,8 @@ class CoinInfoRepository
     {
         if (!$coin->info) {
             $coin->info()->create([
-                'category' => $category
+                'category' => $category,
+                'date_added' => $date_added,
             ]);
 
             $coin->refresh();
