@@ -3,7 +3,6 @@
 namespace Blackshot\CoinMarketSdk\Commands;
 
 use Blackshot\CoinMarketSdk\Methods\Cryptocurrency\Map;
-use Blackshot\CoinMarketSdk\Models\Coin;
 use Blackshot\CoinMarketSdk\Models\Platform;
 use Blackshot\CoinMarketSdk\Models\Setting;
 use Blackshot\CoinMarketSdk\Models\Signal;
@@ -99,25 +98,25 @@ class MapCommand extends \Illuminate\Console\Command
                 $platform
             );
 
-            /* Save signal */
-            $signal_latest = $signals_latest->where('coin_uuid', $coin->uuid)->first();
-            $signal_today = $signals_today->where('coin_uuid', $coin->uuid)->first();
-
-            if (!$signal_today) {
-                $signal_today = new Signal();
-                $signal_today->coin_uuid = $coin->uuid;
-                $signal_today->date = $today_date;
-            }
-
-            $signal_today->rank = $coin->rank;
-
-            if ($signal_latest) {
-                $signal_today->diff = $signal_latest->rank - $signal_today->rank;
-            } else {
-                $signal_today->diff = 0;
-            }
-
-            $signal_today->save();
+//            /* Save signal */
+//            $signal_latest = $signals_latest->where('coin_uuid', $coin->uuid)->first();
+//            $signal_today = $signals_today->where('coin_uuid', $coin->uuid)->first();
+//
+//            if (!$signal_today) {
+//                $signal_today = new Signal();
+//                $signal_today->coin_uuid = $coin->uuid;
+//                $signal_today->date = $today_date;
+//            }
+//
+//            $signal_today->rank = $coin->rank;
+//
+//            if ($signal_latest) {
+//                $signal_today->diff = $signal_latest->rank - $signal_today->rank;
+//            } else {
+//                $signal_today->diff = 0;
+//            }
+//
+//            $signal_today->save();
         }
 
         // update for next request
