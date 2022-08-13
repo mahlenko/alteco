@@ -16,7 +16,7 @@
         <td class="active">Цена токена</td>
 
         <td class="active {{ $sortable[$table_name]->column == 'alteco' ? 'main' : null }}">
-            AltEco Ранг
+            Рейтинг AltEco
             @include('blackshot::partials.sortable-signals', ['column' => 'alteco', 'sortable' => $sortable[$table_name]])
         </td>
         <td class="active {{ $sortable[$table_name]->column == 'alpha' ? 'main' : null }}">
@@ -73,23 +73,23 @@
             </td>
             <td class="active">
                 <div class="d-flex flex-center">
-                    <div class="progress {{ $coin->alphaStatus }}">
-                        <div class="bar" style="width: {{ $coin->alphaProgressPercent }}%"></div>
-                    </div>
+{{--                    <div class="progress {{ $coin->alphaStatus }}">--}}
+{{--                        <div class="bar" style="width: {{ $coin->alphaProgressPercent }}%"></div>--}}
+{{--                    </div>--}}
 
                     @if (!is_null($coin->alpha))
-                        <span>{{ floatval($coin->alpha) }}%</span>
+                        <span class="text-color-{{ $coin->alphaStatus }}">{{ floatval($coin->alpha) }}%</span>
                     @endif
                 </div>
             </td>
             <td class="active">
                 <div class="d-flex flex-center">
-                    <div class="progress {{ $coin->squidStatus }}">
-                        <div class="bar" style="width: {{ $coin->squidProgressPercent }}%"></div>
-                    </div>
+{{--                    <div class="progress {{ $coin->squidStatus }}">--}}
+{{--                        <div class="bar" style="width: {{ $coin->squidProgressPercent }}%"></div>--}}
+{{--                    </div>--}}
 
                     @if (!is_null($coin->squid))
-                        <span>{{ number_format($coin->squid, 2) }}</span>
+                        <span class="text-color-{{ $coin->squidStatus }}">{{ number_format($coin->squid, 2) }}</span>
                     @endif
                 </div>
             </td>
@@ -97,7 +97,7 @@
             <td class="active">
                 @if ($coins_buying_me->where('uuid', $coin->uuid)->count())
                     <a href="javascript:void(0);" class="table__sell btn" data-uuid="{{ $coin->uuid }}" data-buying>
-                        Не покупаю
+                        Уже продал
                     </a>
                 @else
                     <a href="javascript:void(0);" class="table__buy btn" data-uuid="{{ $coin->uuid }}" data-buying>

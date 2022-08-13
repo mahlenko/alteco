@@ -4,10 +4,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('web')->group(function() {
     //
-//    Route::get('/', [\Blackshot\CoinMarketSdk\Controllers\Home::class, 'index'])->name('home');
-    Route::get('/', function() {
-        return redirect()->route('login');
-    });
+    Route::get('/', [\Blackshot\CoinMarketSdk\Controllers\Home::class, 'index'])->name('home');
+//    Route::get('/', function() {
+//        return redirect()->route('login');
+//    });
 
 //    Route::get('/sync', [\Blackshot\CoinMarketSdk\Controllers\SyncGetCources::class, 'index']);
     Route::post('/sync/webhook/payment', [\Blackshot\CoinMarketSdk\Controllers\SyncGetCources::class, 'webhook'])->name('webhook.payment');

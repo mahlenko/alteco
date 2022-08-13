@@ -79,18 +79,27 @@
                     </ul>
                     <div class="nav__right d-flex">
                         @auth
-                            <a href="{{ route('coins.home') }}" class="nav__link" style="margin: 20px;">
-                                Dashboard
+                            <a href="{{ route('login') }}" class="nav__link" style="margin: 20px;"
+                               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                Выйти
+                            </a>
+
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
+
+                            <a href="{{ route('coins.home') }}" class="nav__btn btn btn1">
+                                Личный кабинет
                             </a>
                         @else
                             <a href="{{ route('login') }}" class="nav__link calc" style="margin: 20px;">
-                                Login
+                                Войти
+                            </a>
+
+                            <a href="{{ route('register') }}" class="nav__btn btn btn1">
+                                Бесплатный доступ
                             </a>
                         @endif
-
-                        <a href="{{ route('register') }}" class="nav__btn btn btn1">
-                            Register for Free Plan
-                        </a>
                     </div>
                     <div class="menu">
                         <a href="#" class="button"><span></span></a>
@@ -547,57 +556,17 @@
 						03
 					</span>
             </div>
-            <div class="our__box d-flex">
-                <div class="our__item">
-                    <p class="our__time">
-                        6 месяцев
-                    </p>
-                    <p class="our__sum">
-                        Бесплатно
-                    </p>
-                    <p class="our__res">Резидентам курса Криптоинвестор</p>
-                    <a href="#" class="our__btn btn btn2">
-                        Стать резидентом
-                    </a>
-                </div>
-                <div class="our__item">
-                    <p class="our__time">
-                        Редко, но метко
-                    </p>
-                    <p class="our__sum">
-                        990 руб/мес
-                    </p>
-                    <ul class="our__list">
-                        <li>
-                            доступ к криптосканеру на 1 месяц
-                        </li>
-                        <li>
-                            обучающее видео, как работать с криптосканером
-                        </li>
-                    </ul>
-                    <a href="#" class="our__btn btn btn2">
-                        Стать резидентом
-                    </a>
-                </div>
-                <div class="our__item">
-                    <p class="our__time">
-                        Я криптоинвестор
-                    </p>
-                    <p class="our__sum">
-                        4990 руб/год
-                    </p>
-                    <ul class="our__list">
-                        <li>
-                            доступ к криптосканеру на 1 месяц
-                        </li>
-                        <li>
-                            обучающее видео, как работать с криптосканером
-                        </li>
-                    </ul>
-                    <a href="#" class="our__btn btn btn2">
-                        Стать резидентом
-                    </a>
-                </div>
+
+            <div class="our__box d-flex" style="flex-wrap: wrap; row-gap: 1rem">
+                @foreach($tariffs as $tariff)
+                    <div class="our__item">
+                        <p class="our__time">{{ $tariff->name }}</p>
+                        <p class="our__sum">{{ $tariff->amount }} руб.</p>
+                        <p class="our__res">{!! $tariff->description !!}</p>
+
+                        <a href="#" class="our__btn btn btn2">Стать резидентом</a>
+                    </div>
+                @endforeach
             </div>
         </div>
     </section>
@@ -974,6 +943,7 @@
         </div>
     </footer>
 
+    {{-- login --}}
     <div style="display:none;">
         <div class="box-modal pop1" id="pop6">
             <div class="popup">

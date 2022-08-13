@@ -424,6 +424,8 @@ div {
 
 .about__content {
   max-width: 720px;
+  position: relative;
+  z-index: 2;
   flex: 1 0 auto;
   width: 100%; }
 

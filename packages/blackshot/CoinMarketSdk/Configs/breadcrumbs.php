@@ -4,13 +4,13 @@ use DaveJamesMiller\Breadcrumbs\Facades\Breadcrumbs;
 
 // Home
 Breadcrumbs::for('home', function ($trail) {
-    $trail->push('Главная', route('home'));
+    $trail->push('Криптосканер', route('coins.home'));
 });
 
 // Home > Coins
 Breadcrumbs::for('coins.home', function ($trail) {
-    $trail->parent('home');
-    $trail->push('Монеты', route('coins.home'));
+//    $trail->parent('home');
+    $trail->push('Криптосканер', route('coins.home'));
 });
 
 // Home > Coins > {Coin}
@@ -48,7 +48,7 @@ Breadcrumbs::for('tariffs.edit', function ($trail, $data = []) {
 });
 
 Breadcrumbs::for('banners.home', function ($trail, $data = []) {
-    $trail->parent('home');
+//    $trail->parent('home');
     $trail->push('Баннеры', route('banners.home'));
 });
 

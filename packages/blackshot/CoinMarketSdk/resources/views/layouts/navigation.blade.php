@@ -10,7 +10,7 @@
                 {{-- Desktop navigation --}}
                 @auth
                     <ul class="nav__list d-flex" style="max-width: none;">
-                        <li class="{{ Request::routeIs('coins.home') ? 'active' : null }}"><a href="{{ route('coins.home') }}">Монеты</a></li>
+                        <li class="{{ Request::routeIs('coins.home') ? 'active' : null }}"><a href="{{ route('coins.home') }}">Криптосканер</a></li>
                         <li class="{{ Request::routeIs('signals.home') ? 'active' : null }}"><a href="{{ route('signals.home') }}">Сигналы</a></li>
                     </ul>
                 @endauth

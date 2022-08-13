@@ -4,11 +4,11 @@
     <div class="scan__flex d-flex" style="align-items: flex-end; column-gap: 2rem; margin-top: 1rem;">
         <div class="scan__left">
             <h1 class="pages__title">
-                Монеты
+                Криптосканер
             </h1>
             <p class="scan__search">
-                Всего {{ $coins->total() }} монет
-                на {{ $coins->lastPage() }} страницах.
+                Всего {{ $coins->total() }} {{ trans_choice('монета|монеты|монет', $coins->total()) }}
+                на {{ $coins->lastPage() }} {{ trans_choice('странице|страницах|страницах', $coins->lastPage()) }}.
             </p>
         </div>
 
@@ -48,9 +48,9 @@
             <div class="scan-form__item">
                 <label for="category">Категория</label><br>
                 <select class="select" name="filter[category_uuid][]" multiple id="category">
+                    @php($disabled = '')
                     @foreach($categories as $value => $label)
                         @if ($label instanceof \Illuminate\Support\Collection)
-                            @php($disabled = '')
                             <optgroup label="{{ __('categories.'.$value) }}">
                                 @foreach($label as $val => $text)
                                     <option
@@ -108,19 +108,19 @@
                     </td>
                     <td class="active">Цена</td>
                     <td class="active {{ $sortable['column'] == 'rank' ? 'main' : null }}">
-                        Ранг
-                        @include('blackshot::partials.sortable', ['column' => 'rank'])
-                    </td>
-                    <td class="active {{ $sortable['column'] == 'exponential_rank' ? 'main' : null }}">
-                        Эксп. ранк
-                        @include('blackshot::partials.sortable', ['column' => 'exponential_rank'])
+                        Место
+                        @include('blackshot::partials.sortable', ['column' => 'rank', 'default' => 'asc'])
                     </td>
                     <td class="active {{ $sortable['column'] == 'rank_period' ? 'main' : null }}">
                         Ранг
                         <span class="ms-1 badge text-secondary bg-light">
                             {{ $change_diff->days + 1 }}д
                         </span>
-                        @include('blackshot::partials.sortable', ['column' => 'rank_period'])
+                        @include('blackshot::partials.sortable', ['column' => 'rank_period', 'default' => 'desc'])
+                    </td>
+                    <td class="active {{ $sortable['column'] == 'exponential_rank' ? 'main' : null }}">
+                        Эксп. ранк
+                        @include('blackshot::partials.sortable', ['column' => 'exponential_rank', 'default' => 'asc'])
                     </td>
 {{--                    <td class="active {{ $sortable['column'] == 'rank_30d' ? 'main' : null }}">--}}
 {{--                        Ранг--}}
@@ -130,19 +130,19 @@
                     <td class="active {{ $sortable['column'] == 'rank_60d' ? 'main' : null }}">
                         Ранг
                         <span class="ms-1 badge text-secondary bg-light">60д</span>
-                        @include('blackshot::partials.sortable', ['column' => 'rank_60d'])
+                        @include('blackshot::partials.sortable', ['column' => 'rank_60d', 'default' => 'desc'])
                     </td>
                     <td class="active {{ $sortable['column'] == 'alteco' ? 'main' : null }}">
-                        AltEco Ранг
-                        @include('blackshot::partials.sortable', ['column' => 'alteco'])
+                        Рейтинг AltEco
+                        @include('blackshot::partials.sortable', ['column' => 'alteco', 'default' => 'desc'])
                     </td>
                     <td class="active {{ $sortable['column'] == 'alpha' ? 'main' : null }}">
                         Коэф. Alpha
-                        @include('blackshot::partials.sortable', ['column' => 'alpha'])
+                        @include('blackshot::partials.sortable', ['column' => 'alpha', 'default' => 'desc'])
                     </td>
                     <td class="active {{ $sortable['column'] == 'squid' ? 'main' : null }}">
                         Коэф. Kalmar
-                        @include('blackshot::partials.sortable', ['column' => 'squid'])
+                        @include('blackshot::partials.sortable', ['column' => 'squid', 'default' => 'desc'])
                     </td>
                     <td class="active" width="50"></td>
                 </tr>
@@ -167,9 +167,9 @@
                                 </p>
                             </div>
 
-                            <div class="table__flex d-flex" style="white-space: nowrap">
-                                @include('blackshot::coins.partials.badge-position-text', ['percent' => $coin->percent_change_1h])
-                            </div>
+{{--                            <div class="table__flex d-flex" style="white-space: nowrap">--}}
+{{--                                @include('blackshot::coins.partials.badge-position-text', ['percent' => $coin->percent_change_1h])--}}
+{{--                            </div>--}}
                         </div>
                     </td>
 
@@ -185,12 +185,12 @@
                         {{ $coin->rank }}
                     </td>
 
-                    <td class="active">
-                        {{ $coin->exponential_rank }}
-                    </td>
-
                     <td class="active {{ $coin->rank_period > 0 ? 'green' : 'red' }}">
                         @include('blackshot::partials.badge-position-text', ['position' => $coin->rank_period])
+                    </td>
+
+                    <td class="active">
+                        {{ $coin->exponential_rank }}
                     </td>
 
 {{--                    <td class="active {{ $coin->rank_30d > 0 ? 'green' : 'red' }}">--}}
@@ -211,23 +211,23 @@
                     </td>
                     <td class="active">
                         <div class="d-flex flex-center">
-                            <div class="progress {{ $coin->alphaStatus }}">
-                                <div class="bar" style="width: {{ $coin->alphaProgressPercent }}%"></div>
-                            </div>
+{{--                            <div class="progress {{ $coin->alphaStatus }}">--}}
+{{--                                <div class="bar" style="width: {{ $coin->alphaProgressPercent }}%"></div>--}}
+{{--                            </div>--}}
 
                             @if (!is_null($coin->alpha))
-                                <span>{{ floatval($coin->alpha) }}%</span>
+                                <span class="text-color-{{ $coin->alphaStatus }}">{{ floatval($coin->alpha) }}%</span>
                             @endif
                         </div>
                     </td>
                     <td class="active">
                         <div class="d-flex flex-center">
-                            <div class="progress {{ $coin->squidStatus }}">
-                                <div class="bar" style="width: {{ $coin->squidProgressPercent }}%"></div>
-                            </div>
+{{--                            <div class="progress {{ $coin->squidStatus }}">--}}
+{{--                                <div class="bar" style="width: {{ $coin->squidProgressPercent }}%"></div>--}}
+{{--                            </div>--}}
 
                             @if (!is_null($coin->squid))
-                                <span>{{ number_format($coin->squid, 2) }}</span>
+                                <span class="text-color-{{ $coin->squidStatus }}">{{ number_format($coin->squid, 2) }}</span>
                             @endif
                         </div>
                     </td>

@@ -107,6 +107,10 @@ class Index extends \App\Http\Controllers\Controller
 
         $coins = Coin::select('coins.*');
 
+        if (key_exists('column', $sortable) && !empty($sortable['column']) && $sortable['column'] != 'rank_period') {
+            $coins->where($sortable['column'], '<>', null);
+        }
+
         if (empty($filter->q) && empty($filter->category_uuid)) {
             if ($sortable['column'] != 'rank_period') {
                 return $sortable['direction'] == 'asc'
@@ -283,7 +287,6 @@ class Index extends \App\Http\Controllers\Controller
                 list($column, $direction) = explode(',', $request->get('sortable'));
             } else {
                 $column = $request->get('sortable');
-                $direction = 'asc';
             }
         }
 

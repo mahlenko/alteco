@@ -205,6 +205,12 @@ class Index extends Controller
             $filter->signals = [];
             $filter->categories_uuid = [];
             UserSettingsRepository::saveJson('signal_filter', (array) $filter);
+        } elseif ($filter->signals) {
+            // Сбрасываем выбранные сигналы пользователя
+            // т.к. убрали чекбоксы со страницы.
+            // Иначе он не увидит все сигналы
+            $filter->signals = [];
+            UserSettingsRepository::saveJson('signal_filter', (array) $filter);
         }
 
         return $filter;

@@ -47,9 +47,9 @@
                 <div class="scan-form__item">
                     <label>Категория</label> <br>
                     <select name="filter[categories_uuid][]" multiple class="select" id="category">
+                        @php($disabled = '')
                         @foreach($categories as $value => $label)
                             @if ($label instanceof \Illuminate\Support\Collection)
-                                @php($disabled = '')
                                 <optgroup label="{{ __('categories.'.$value) }}">
                                     @foreach($label as $val => $text)
                                         <option
@@ -87,71 +87,71 @@
             </div>
 
             {{-- Checkboxed --}}
-            <div class="scan-form__row signal__bottom d-flex">
-                <p class="signal__text">Выберите сигналы:</p>
+{{--            <div class="scan-form__row signal__bottom d-flex">--}}
+{{--                <p class="signal__text">Выберите сигналы:</p>--}}
 
-                <div class="d-flex opt">
-                    <input type="checkbox"
-                           name="filter[signals][]"
-                           onchange="return document.getElementById('filter_form').submit()"
-                           {{ array_search('signal_max_diff', $filter->signals) !== false ? 'checked' : null }}
-                           value="signal_max_diff"
-                           id="signal_max_diff"
-                    >
-                    <label for="signal_max_diff">
-                        <p>
-                            Самый большой прирост в последнем обновлении
-                            @if ($smt = $signals->where('signal_max_diff')->count())
-                                <span>
-                                ({{ $smt }}
-                                    {{ \Illuminate\Support\Str::plural('coin', $smt) }})
-                            </span>
-                            @endif
-                        </p>
-                    </label>
-                </div>
-                <div class="d-flex opt">
-                    <input type="checkbox"
-                           name="filter[signals][]"
-                           onchange="return document.getElementById('filter_form').submit()"
-                           {{ array_search('signal_max_period', $filter->signals) !== false ? 'checked' : null }}
-                           id="signal_max_period"
-                           value="signal_max_period"
-                    >
-                    <label for="signal_max_period">
-                        <p>
-                            Самый большой прирост за {{ $filter->days }} дней
-                            @if ($smp = $signals->where('signal_max_period')->count())
-                                <span>
-                                ({{ $smp }}
-                                    {{ \Illuminate\Support\Str::plural('coin', $smp) }})
-                            </span>
-                            @endif
-                        </p>
-                    </label>
-                </div>
+{{--                <div class="d-flex opt">--}}
+{{--                    <input type="checkbox"--}}
+{{--                           name="filter[signals][]"--}}
+{{--                           onchange="return document.getElementById('filter_form').submit()"--}}
+{{--                           {{ array_search('signal_max_diff', $filter->signals) !== false ? 'checked' : null }}--}}
+{{--                           value="signal_max_diff"--}}
+{{--                           id="signal_max_diff"--}}
+{{--                    >--}}
+{{--                    <label for="signal_max_diff">--}}
+{{--                        <p>--}}
+{{--                            Самый большой прирост в последнем обновлении--}}
+{{--                            @if ($smt = $signals->where('signal_max_diff')->count())--}}
+{{--                                <span>--}}
+{{--                                ({{ $smt }}--}}
+{{--                                    {{ \Illuminate\Support\Str::plural('coin', $smt) }})--}}
+{{--                            </span>--}}
+{{--                            @endif--}}
+{{--                        </p>--}}
+{{--                    </label>--}}
+{{--                </div>--}}
+{{--                <div class="d-flex opt">--}}
+{{--                    <input type="checkbox"--}}
+{{--                           name="filter[signals][]"--}}
+{{--                           onchange="return document.getElementById('filter_form').submit()"--}}
+{{--                           {{ array_search('signal_max_period', $filter->signals) !== false ? 'checked' : null }}--}}
+{{--                           id="signal_max_period"--}}
+{{--                           value="signal_max_period"--}}
+{{--                    >--}}
+{{--                    <label for="signal_max_period">--}}
+{{--                        <p>--}}
+{{--                            Самый большой прирост за {{ $filter->days }} дней--}}
+{{--                            @if ($smp = $signals->where('signal_max_period')->count())--}}
+{{--                                <span>--}}
+{{--                                ({{ $smp }}--}}
+{{--                                    {{ \Illuminate\Support\Str::plural('coin', $smp) }})--}}
+{{--                            </span>--}}
+{{--                            @endif--}}
+{{--                        </p>--}}
+{{--                    </label>--}}
+{{--                </div>--}}
 
-                <div class="d-flex opt">
-                    <input type="checkbox"
-                           name="filter[signals][]"
-                           onchange="return document.getElementById('filter_form').submit()"
-                           {{ array_search('signal_more_change_rank', $filter->signals) !== false ? 'checked' : null }}
-                           id="signal_more_change_rank"
-                           value="signal_more_change_rank"
-                    >
-                    <label for="signal_more_change_rank">
-                        <p>
-                            {{ $filter->min_rank }} и больше позиций за период
-                            @if ($smcr = $signals->where('signal_more_change_rank')->count())
-                                <span>
-                                ({{ $smcr }}
-                                    {{ \Illuminate\Support\Str::plural('coin', $smcr) }})
-                            </span>
-                            @endif
-                        </p>
-                    </label>
-                </div>
-            </div>
+{{--                <div class="d-flex opt">--}}
+{{--                    <input type="checkbox"--}}
+{{--                           name="filter[signals][]"--}}
+{{--                           onchange="return document.getElementById('filter_form').submit()"--}}
+{{--                           {{ array_search('signal_more_change_rank', $filter->signals) !== false ? 'checked' : null }}--}}
+{{--                           id="signal_more_change_rank"--}}
+{{--                           value="signal_more_change_rank"--}}
+{{--                    >--}}
+{{--                    <label for="signal_more_change_rank">--}}
+{{--                        <p>--}}
+{{--                            {{ $filter->min_rank }} и больше позиций за период--}}
+{{--                            @if ($smcr = $signals->where('signal_more_change_rank')->count())--}}
+{{--                                <span>--}}
+{{--                                ({{ $smcr }}--}}
+{{--                                    {{ \Illuminate\Support\Str::plural('coin', $smcr) }})--}}
+{{--                            </span>--}}
+{{--                            @endif--}}
+{{--                        </p>--}}
+{{--                    </label>--}}
+{{--                </div>--}}
+{{--            </div>--}}
 
         </form>
     </div>
@@ -183,7 +183,7 @@
     @endif
 
     @if($coins_buying_me->count())
-        <h2 class="mt-5 mb-3">Покупаю</h2>
+        <h2 class="mt-5 mb-3">Уже купил</h2>
         @include('blackshot::signals.partials.table_new', ['coins' => $coins_buying_me, 'table_name' => 'buying'])
     @endif
 @endsection

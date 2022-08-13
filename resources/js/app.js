@@ -138,10 +138,14 @@ function buying(uuid) {
     .then(response => {
       if (response.data.ok) {
         let btn = document.querySelector('a[data-buying][data-uuid="' + uuid + '"]');
+        let icon = '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">\n' +
+          '  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />\n' +
+          '</svg>'
 
         let message = document.createElement('span')
-        message.classList.add('text-success')
-        message.innerText = 'OK'
+        message.style.color = 'rgb(0,200,0)'
+        message.style.padding = '.3rem 0 .2rem'
+        message.innerHTML = icon
         btn.after(message)
 
         btn.parentNode.removeChild(btn);

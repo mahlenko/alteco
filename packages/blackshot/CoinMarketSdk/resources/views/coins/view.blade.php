@@ -91,7 +91,7 @@
                         </div>
                         <div class="item-content__el">
                             <p class="item-content__label">
-                                Индекс AltEco
+                                Рейтинг AltEco
                             </p>
 
                             <div class="step-progress" data-value="{{ $coin->alteco ?? 0 }}">
@@ -156,6 +156,16 @@
                             <a href="javascript:void(0);" class="table__star {{ $favorite ? 'able' : null }}" title="Add to favorites" onclick="return favorites(this, '{{ $coin->uuid }}')">
                                 <img src="{{ asset('images/star-big.svg') }}" alt="" class="svg">
                             </a>
+
+                            @auth()
+                                @if (\Illuminate\Support\Facades\Auth::user()->isAdmin())
+                                    <a href="{{ route('coins.edit', $coin) }}" style="color: black" title="Редактировать">
+                                        <svg xmlns="http://www.w3.org/2000/svg" style="width: 1.5rem; height: 1.5rem" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                    </a>
+                                @endif
+                            @endif
 
 {{--                            @php($tracking = \Illuminate\Support\Facades\Auth::user()->trackings->where('uuid', $coin->uuid)->count())--}}
 {{--                            <a href="javascript:void(0);" class="table__icon {{ $tracking ? 'able' : null }}" title="tracking" onclick="return tracking(this, '{{ $coin->uuid }}')">--}}
