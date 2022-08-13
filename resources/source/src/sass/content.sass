@@ -459,8 +459,8 @@ thead .svg:hover path
 .select
    box-sizing: border-box
    appearance: none
-   background: url(img/arrow.svg) no-repeat right
-   background-position-x: calc(100% - 14px)
+   //background: url(img/arrow.svg) no-repeat right
+   //background-position-x: calc(100% - 14px)
    cursor: pointer
    display: flex
    align-items: center
@@ -580,11 +580,13 @@ thead .svg:hover path
    position: relative
 .scan-form__link
    position: absolute
+   color: white
    width: 30px
    height: 30px
    transition: 0.5s
    background: $orange
    border-radius: 50%
+   border: none
    display: flex
    align-items: center
    justify-content: center
@@ -592,11 +594,14 @@ thead .svg:hover path
    box-sizing: border-box
    right: 15px
    top: 32px
-   transition: 0.5s
+   z-index: 2
    &:hover
       background: $blue
    img
       width: auto
+   svg
+     width: 1rem
+     height: 1rem
 input
    transition: 0.5s
    &:focus

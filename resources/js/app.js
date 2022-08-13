@@ -78,9 +78,22 @@ document.addEventListener("DOMContentLoaded", function (event) {
       let subscribeLink = this.$dropdown[0].querySelector('.subscribe')
       document.location.href = subscribeLink.href
 
+      // очищаем весь список
+      // clearOptions(true)
+
       return
     },
   });
+
+  // очистка выбранных элементов выпадающего списка
+  document.querySelectorAll('[data-clear-for]').forEach(button => {
+    button.addEventListener('click', e => {
+      e.preventDefault()
+      let id = button.dataset.clearFor
+      let select = document.querySelector('#'+ id)
+      select.selectize.clear()
+    })
+  })
 
   // анимация рейтинга alteco
   stepsProgress(document.querySelectorAll('.step-progress'))
