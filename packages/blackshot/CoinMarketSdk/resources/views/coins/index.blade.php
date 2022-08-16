@@ -127,9 +127,9 @@
                         </span>
                         @include('blackshot::partials.sortable', ['column' => 'rank_period', 'default' => 'desc'])
                     </td>
-                    <td class="active {{ $sortable['column'] == 'exponential_rank' ? 'main' : null }}">
+                    <td class="active {{ $sortable['column'] == 'exponential_rank_period' ? 'main' : null }}">
                         Эксп. ранк
-                        @include('blackshot::partials.sortable', ['column' => 'exponential_rank', 'default' => 'asc'])
+                        @include('blackshot::partials.sortable', ['column' => 'exponential_rank_period', 'default' => 'asc'])
                     </td>
 {{--                    <td class="active {{ $sortable['column'] == 'rank_30d' ? 'main' : null }}">--}}
 {{--                        Ранг--}}
@@ -191,7 +191,7 @@
                     </td>
 
                     <td class="active">
-                        {{ $coin->rank ?? '---' }}
+                        {{ $coin->rank ?? '-' }}
                     </td>
 
                     <td class="active {{ $coin->rank_period > 0 ? 'green' : 'red' }}">
@@ -199,7 +199,7 @@
                     </td>
 
                     <td class="active">
-                        {{ $coin->exponential_rank_period ?? '---' }}
+                        {{ $coin->exponential_rank_period ?: '-' }}
                     </td>
 
 {{--                    <td class="active {{ $coin->rank_30d > 0 ? 'green' : 'red' }}">--}}

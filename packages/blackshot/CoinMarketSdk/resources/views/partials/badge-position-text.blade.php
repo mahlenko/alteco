@@ -3,5 +3,5 @@
         {{ $position }}
     </p>
 @else
-    ---
+    -
 @endif

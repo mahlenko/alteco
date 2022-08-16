@@ -48,8 +48,10 @@ class Index extends Controller
             self::ranks($period)
         );
 
-        // исключить записи которые не изменились (ранг, эксп. ранг например)
-        // $coins = $coins->where($sortable['column'], '<>', null);
+        // Исключить записи которые не изменились (ранг, эксп. ранг например)
+        if (in_array($sortable['column'], ['rank_30d', 'rank_60d', 'rank_period', 'exponential_rank_period'])) {
+            $coins = $coins->where($sortable['column'], '<>', null);
+        }
 
         if ($coins->count()) {
             $coins = $coins->sortBy(
@@ -96,7 +98,7 @@ class Index extends Controller
     {
         $categories = $filter->category_uuid ?? null;
 
-        $coins = Coin::select('*');
+        $coins = Coin::select('coins.*');
 
         if ($categories) {
             $coins->whereHas('categories', function ($builder) use ($user, $categories) {
