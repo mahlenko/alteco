@@ -2,15 +2,14 @@
 
 namespace Blackshot\CoinMarketSdk\Controllers\Coins;
 
+use App\Http\Controllers\Controller;
+use App\Http\Middleware\Authenticate;
 use App\Models\User;
-use Blackshot\CoinMarketSdk\Enums\BannerTypes;
-use Blackshot\CoinMarketSdk\Models\Banner;
+use Blackshot\CoinMarketSdk\Commands\ExponentialRank;
 use Blackshot\CoinMarketSdk\Models\Coin;
+use Blackshot\CoinMarketSdk\Models\Signal;
 use Blackshot\CoinMarketSdk\Repositories\CoinCategoryRepository;
-use Blackshot\CoinMarketSdk\Repositories\CoinRepository;
 use Blackshot\CoinMarketSdk\Repositories\UserSettingsRepository;
-use DateTimeImmutable;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
@@ -18,10 +17,12 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
-class Index extends \App\Http\Controllers\Controller
+class Index extends Controller
 {
+    const PER_PAGE = 25;
 
     /**
      * @param Request $request
@@ -29,218 +30,131 @@ class Index extends \App\Http\Controllers\Controller
      */
     public function index(Request $request): \Illuminate\Contracts\View\View
     {
-        $sortable = $this->sortable($request);
+        /* @var Authenticate|User $user */
+        $user = Auth::user();
 
+        /* @var object $filter */
         $filter = UserSettingsRepository::get('coins_filter');
-        $date_period = $this->filterDatePeriod($filter);
 
-        /*  */
-        $auth = Auth::user();
+        $user_key_cache = 'Coins:'.$user->id.':filter:' . md5(json_encode($filter));
 
-        /*  */
-        $per_page = 25;
+        $categories = CoinCategoryRepository::categoriesForSelect($user);
+        $sortable = self::sortable($request);
+        $period = $this->filterDatePeriod($filter);
+        $coins = self::merged(
+            Cache::remember($user_key_cache, time() + 1800, function() use ($user, $filter) {
+                return self::coins($user, $filter);
+            }),
+            self::ranks($period)
+        );
 
-        $allow_categories = CoinCategoryRepository::categoriesForSelect(Auth::user());
-
-        $coins = $this->getCoinsFiltered($allow_categories, $sortable, $filter, $auth);
-        $coins_signals = $this->getPeriodRank($coins, $date_period, $sortable, $per_page);
-        $viewCoins = $this->getViewCoins($coins, $coins_signals, $sortable, $per_page);
-
-        if (Auth::check() && Auth::user()->tariff->isFree()) {
-            $now = new DateTimeImmutable();
-            $banners = Banner::where('is_active', true)
-                ->where('type', BannerTypes::static->name)
-                ->where('start', '<=', $now)
-                ->where(function($builder) use ($now) {
-                    $builder->where('end', null);
-                    $builder->orWhere('end', '<=', $now);
-                })->get();
-
-            if ($banners) {
-                $banners = $banners->shuffle()->take(2);
-            }
+        if ($coins->count()) {
+            $coins = $coins->sortBy(
+                $sortable['column'],
+                SORT_NATURAL,
+                $sortable['direction'] == 'desc'
+            );
         }
 
         return view('blackshot::coins.index', [
-            'coins' => $viewCoins,
-            'categories' => $allow_categories,
+            'coins' => self::paginate($coins, self::PER_PAGE),
+            'categories' => $categories,
             'filter' => $filter,
             'sortable' => $sortable,
-            'favorites' => $auth->favorites,
-            'tracking' => $auth->trackings,
-            'change' => $date_period,
-            'change_diff' => $date_period[0]->diff($date_period[1]),
+            'favorites' => $user->favorites ?? collect(),
+//            'tracking' => $user->trackings,
+            'change' => $period,
+            'change_diff' => $period[0]->diff($period[1]),
             'banners' => $banners ?? collect()
         ]);
     }
 
-    /**
-     * @param Collection $allow_categories
-     * @param array $sortable
-     * @param null $filter
-     * @param User|null $user
-     * @return Builder
-     */
-    public function getCoinsFiltered(
-        Collection $allow_categories,
-        array $sortable,
-        $filter = null,
-        User $user = null
-    ): Builder
-    {
-        // @todo вынести функцию отдельно
-//        $allow_categories_uuid = $allow_categories
-//            ->only([CategoryModel::TYPE_OTHER, CategoryModel::TYPE_FOUNDS])
-//            ->mapWithKeys(function($item) {
-//                return $item;
-//            })->keys();
-//
-//        if (!empty($filter->category_uuid)) {
-//            $diff = $allow_categories_uuid->diff($filter->category_uuid);
-//            $_temp = $allow_categories_uuid->diff($diff);
-//            if ($_temp->count()) {
-//                $allow_categories_uuid = $_temp;
-//            }
-//        }
-        // end
+    private function merged(
+        \Illuminate\Database\Eloquent\Collection $coins,
+        Collection $ranks
+    ): \Illuminate\Database\Eloquent\Collection|Collection {
+        $coin_ranks = $ranks->whereIn('coin_uuid', $coins->pluck('uuid'));
 
+        return $coins->map(function($coin) use ($coin_ranks) {
+            $rank = $coin_ranks->where('coin_uuid', $coin->uuid)->first();
 
-        $coins = Coin::select('coins.*');
-
-        if (key_exists('column', $sortable) && !empty($sortable['column']) && $sortable['column'] != 'rank_period') {
-            $coins->where($sortable['column'], '<>', null);
-        }
-
-        if (empty($filter->q) && empty($filter->category_uuid)) {
-            if ($sortable['column'] != 'rank_period') {
-                return $sortable['direction'] == 'asc'
-                    ? $coins->orderBy($sortable['column'])
-                    : $coins->orderByDesc($sortable['column']);
-            }
-
-            return $coins;
-        }
-
-        // Фильтр по названию
-        if (!empty($filter->q)) {
-            $coins->where(function ($table) use ($filter) {
-                $table->where('name', 'like', '%' . $filter->q . '%');
-                $table->orWhere('symbol', '=', $filter->q);
-            });
-        }
-
-        //
-        if (!empty($filter->category_uuid)) {
-            $coins->join('coin_categories', 'coin_categories.coin_uuid', '=', 'coins.uuid');
-            $coins->distinct();
-
-            if (in_array('favorites', $filter->category_uuid)) {
-                $coins->where(function ($table) use ($filter, $user) {
-                    $table->whereIn('coin_categories.category_uuid', $filter->category_uuid);
-                    $table->orWhereIn('coins.uuid', $user->favorites->pluck('uuid'));
-                });
-            } else {
-                $coins->whereIn('coin_categories.category_uuid', $filter->category_uuid);
-            }
-        }
-
-        if ($sortable['column'] == 'rank_period') {
-            return $coins;
-        }
-
-        return $sortable['direction'] == 'asc'
-            ? $coins->orderBy('coins.'.$sortable['column'])
-            : $coins->orderByDesc('coins.'.$sortable['column']);
-    }
-
-    /**
-     * @param Builder $coins
-     * @param array $dates
-     * @param array $sortable
-     * @param int $per_page
-     * @return Collection
-     */
-    public function getPeriodRank(
-        Builder $coins,
-        array $dates,
-        array $sortable,
-        int $per_page = 25
-    ): Collection
-    {
-        $builder_signals = CoinRepository::signalsPeriodBuilder(
-            $dates[0]->format('Y-m-d'),
-            $dates[1]->format('Y-m-d')
-        );
-
-        // если не сортируем по rank_period достаточно взять данные по 25 монетам
-        if ($sortable['column'] !== 'rank_period') {
-            $coins = $coins->forPage(Paginator::resolveCurrentPage(), $per_page);
-            $builder_signals->whereIn('coin_uuid', $coins->pluck('uuid'));
-        }
-
-        $signals = $builder_signals->get();
-
-        return $signals->map(function($signal) {
-            $signal->rank_period = $signal->previous_rank - $signal->current_rank;
-            return $signal;
+            $coin->rank_period = $rank['rank'] ?? 0;
+            $coin->exponential_rank_period = $rank['exponential'] ?? 0;
+            return $coin;
         });
     }
 
     /**
-     * @param Builder $coins
-     * @param Collection $signals
-     * @param array $sortable
-     * @param int $per_page
-     * @return LengthAwarePaginator
+     * @param Authenticate|User $user
+     * @param object $filter
+     * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getViewCoins(
-        Builder $coins,
-        Collection $signals,
-        array $sortable,
-        int $per_page = 25
-    ): LengthAwarePaginator
+    private static function coins(Authenticate|User $user, object $filter): \Illuminate\Database\Eloquent\Collection
     {
-        if ($sortable['column'] !== 'rank_period') {
-            $viewCoins = $coins->with(['info'])->paginate($per_page);
+        $categories = $filter->category_uuid ?? null;
 
-            $viewCoins->getCollection()->transform(function ($item) use ($signals) {
-                $signal = $signals->where('coin_uuid', $item->uuid)->first();
+        $coins = Coin::select('*');
 
-                $item->rank_period = $signal->rank_period ?? null;
-                return $item;
+        if ($categories) {
+            $coins->whereHas('categories', function ($builder) use ($user, $categories) {
+                if (in_array('favorites', $categories)) {
+                    return $builder->where(function ($builder) use ($user, $categories) {
+                        $favorites_coin_uuid = $user->favorites->pluck('uuid');
+                        $builder->whereIn('coin_categories.category_uuid', $categories);
+                        $builder->orWhereIn('coins.uuid', $favorites_coin_uuid);
+                    });
+                }
+
+                return $builder->whereIn('category_uuid', $categories);
             });
-
-            return $viewCoins;
         }
 
-        // сортировка по rank_period
-        $viewCoins = $coins->get();
+        if (!empty(trim($filter->q))) {
+            $query = trim($filter->q);
+            $coins->where(function ($table) use ($query) {
+                $table->where('name', 'like', '%' . $query . '%');
+                $table->orWhere('symbol', '=', $query);
+            });
+        }
 
-        $viewCoins->map(function ($item) use ($signals) {
-            $signal = $signals->where('coin_uuid', $item->uuid)->first();
-            $item->rank_period = $signal ? $signal->rank_period : null;
-        });
+        return $coins->get();
+    }
 
-        $viewCoins = $sortable['direction'] == 'asc'
-            ? $viewCoins->sortBy($sortable['column'])
-            : $viewCoins->sortByDesc($sortable['column']);
+    /**
+     * Рассчитает экспоненциальный ранк за период
+     */
+    private static function ranks(array $period): Collection
+    {
+        $period_date = [
+            $period[0]->format('Y-m-d 00:00:00'),
+            $period[1]->format('Y-m-d 23:59:59')
+        ];
 
-        $pagination_items = $viewCoins->forPage(
-            $page = Paginator::resolveCurrentPage(),
-            $per_page
-        );
+        $ranks = Signal::select(['coin_uuid', 'rank', 'diff', 'date'])
+            ->whereBetween('date', $period_date)
+            ->orderBy('date')
+            ->get()
+            ->groupBy('coin_uuid');
 
-        return self::paginator($pagination_items, $viewCoins->count(), $per_page, $page, [
-            'path' => Paginator::resolveCurrentPath(),
-            'pageName' => 'page',
-        ]);
+        return Cache::remember(
+            key: 'expRank:' . implode('_', $period_date),
+            ttl: time() + (60 /** 60*/),
+            callback: function() use ($ranks) {
+                return $ranks->map(function($group) {
+                    return collect([
+                        'coin_uuid' => $group->first()->coin_uuid,
+                        'rank' => $group->first()->rank - $group->last()->rank,
+                        'exponential' => max(1, ExponentialRank::exponential($group->pluck('rank')))
+                    ]);
+                })->values();
+            });
     }
 
     /**
      * @param $filter
      * @return array<Carbon>
      */
-    public function filterDatePeriod($filter): array
+    private static function filterDatePeriod($filter): array
     {
         if (!$filter) {
             $filter_date = [
@@ -258,25 +172,10 @@ class Index extends \App\Http\Controllers\Controller
     }
 
     /**
-     * @param $items
-     * @param $total
-     * @param $perPage
-     * @param $currentPage
-     * @param $options
-     * @return LengthAwarePaginator
-     */
-    protected static function paginator($items, $total, $perPage, $currentPage, $options): LengthAwarePaginator
-    {
-        return App::make(LengthAwarePaginator::class, compact(
-            'items', 'total', 'perPage', 'currentPage', 'options'
-        ));
-    }
-
-    /**
      * @param Request $request
      * @return array
      */
-    private function sortable(Request $request): array
+    private static function sortable(Request $request): array
     {
         $column = 'rank';
         $direction = 'asc';
@@ -294,5 +193,34 @@ class Index extends \App\Http\Controllers\Controller
             'column' => $column,
             'direction' => $direction
         ];
+    }
+
+    /**
+     * @param Collection $items
+     * @param int $per_page
+     * @return LengthAwarePaginator
+     */
+    private static function paginate(Collection $items, $per_page): LengthAwarePaginator
+    {
+        $paginate = $items->forPage(
+            $current_page = Paginator::resolveCurrentPage(),
+            $per_page
+        )->values();
+
+        return App::make(
+            LengthAwarePaginator::class,
+            [
+                'items' => $paginate,
+                'total' => $items->count(),
+                'perPage' => $per_page,
+                'currentPage' =>  $current_page,
+                'options' => [
+                    'path' => Paginator::resolveCurrentPath(),
+                    'pageName' => 'page',
+                    'fragment' => null,
+                    'query' => request()->toArray()
+                ]
+            ]
+        );
     }
 }

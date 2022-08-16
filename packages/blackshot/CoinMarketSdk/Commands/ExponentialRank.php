@@ -30,6 +30,8 @@ class ExponentialRank extends Command
      */
     protected $description = 'Расчет экспоненциального ранка';
 
+    const ALPHA_SMOOTH = 0.5;
+
     /**
      * Create a new command instance.
      *
@@ -54,7 +56,7 @@ class ExponentialRank extends Command
 
         foreach ($ranks as $coin_ranks) {
             //
-            $exponential_rank = self::exponential($coin_ranks->pluck('rank'), 0.5);
+            $exponential_rank = self::exponential($coin_ranks->pluck('rank'));
 
             //
             DB::table('coins')
@@ -71,7 +73,7 @@ class ExponentialRank extends Command
      * @param float $alpha_smooth
      * @return int
      */
-    public static function exponential(Collection $series, float $alpha_smooth): int
+    public static function exponential(Collection $series, float $alpha_smooth = self::ALPHA_SMOOTH): int
     {
         if ($alpha_smooth > 1 || $alpha_smooth < 0) {
             throw new InvalidArgumentException('Alpha сглаживание должно быть в пределах от 0 до 1.');

@@ -30,6 +30,7 @@ class CoinCategoryRepository
     }
 
     /**
+     * @param Authenticatable|User $user
      * @return Collection
      */
     static function categoriesForSelect(Authenticatable|User $user): Collection
