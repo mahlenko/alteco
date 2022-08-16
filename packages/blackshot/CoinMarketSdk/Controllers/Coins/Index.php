@@ -42,7 +42,7 @@ class Index extends Controller
         $sortable = self::sortable($request);
         $period = $this->filterDatePeriod($filter);
         $coins = self::merged(
-            Cache::remember($user_key_cache, time() + 1800, function() use ($user, $filter) {
+            Cache::remember($user_key_cache, time() + 300, function() use ($user, $filter) {
                 return self::coins($user, $filter);
             }),
             self::ranks($period)
