@@ -191,7 +191,7 @@
                     </td>
 
                     <td class="active">
-                        {{ $coin->rank }}
+                        {{ $coin->rank ?? '---' }}
                     </td>
 
                     <td class="active {{ $coin->rank_period > 0 ? 'green' : 'red' }}">
@@ -199,7 +199,7 @@
                     </td>
 
                     <td class="active">
-                        {{ $coin->exponential_rank }}
+                        {{ $coin->exponential_rank_period ?? '---' }}
                     </td>
 
 {{--                    <td class="active {{ $coin->rank_30d > 0 ? 'green' : 'red' }}">--}}

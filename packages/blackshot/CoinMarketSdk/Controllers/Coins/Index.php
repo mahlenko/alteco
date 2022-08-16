@@ -48,7 +48,8 @@ class Index extends Controller
             self::ranks($period)
         );
 
-        $coins = $coins->where($sortable['column'], '<>', null);
+        // исключить записи которые не изменились (ранг, эксп. ранг например)
+        // $coins = $coins->where($sortable['column'], '<>', null);
 
         if ($coins->count()) {
             $coins = $coins->sortBy(
