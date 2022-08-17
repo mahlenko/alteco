@@ -238,11 +238,13 @@ class Index extends Controller
             ->inRandomOrder()
             ->get();
 
+        if (!$banners->count()) return null;
+
         $banner = $banners->random();
 
         $cache_key = 'promo:'. Auth::id() .':'. $banner->uuid;
 
-        if (!$banners->count() || Cache::has($cache_key)) return null;
+        if (Cache::has($cache_key)) return null;
         Cache::remember($cache_key, time() + 60 * 60 * 5, function() { return 1; });
 
         return $banner;
