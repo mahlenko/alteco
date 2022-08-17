@@ -1,0 +1,7 @@
+parameters:
+  editorUrl: "phpstorm://open?file=/Users/sergey/Work/coinmarket/%%relFile%%&line=%%line%%"
+  level: 6
+  paths:
+    - app
+    - packages
+    - tests

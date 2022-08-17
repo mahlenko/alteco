@@ -25,6 +25,8 @@
         "laravel/sail": "^1.0.1",
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^5.10",
+        "phpstan/extension-installer": "^1.1",
+        "phpstan/phpstan-beberlei-assert": "^1.0",
         "phpunit/phpunit": "^9.5.8"
     },
     "autoload": {
@@ -53,7 +55,7 @@
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
-        ]
+        ],
     },
     "extra": {
         "laravel": {
@@ -66,7 +68,10 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "phpstan/extension-installer": true
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true
