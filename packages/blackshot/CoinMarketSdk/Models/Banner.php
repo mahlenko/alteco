@@ -4,6 +4,7 @@ namespace Blackshot\CoinMarketSdk\Models;
 
 use App\Models\User;
 use DateTimeImmutable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Http\UploadedFile;
@@ -130,6 +131,24 @@ class Banner extends Model
     public function creater(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_user_id', 'id');
+    }
+
+    /**
+     * @param Builder $query
+     * @return void
+     */
+    public function scopeActiveNow(Builder $query)
+    {
+        $now = new DateTimeImmutable();
+
+        $query
+            ->where('is_active', true)
+            ->where('start', '<', $now)
+            ->where(function($query) use ($now) {
+                $query
+                    ->where('end', null)
+                    ->orWhere('end', '>', $now);
+            });
     }
 
     protected static function booted()

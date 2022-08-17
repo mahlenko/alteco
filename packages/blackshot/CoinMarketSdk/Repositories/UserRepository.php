@@ -9,16 +9,15 @@ use Blackshot\CoinMarketSdk\Models\TariffModel;
 use DateTimeImmutable;
 use DomainException;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
 use InvalidArgumentException;
 
 class UserRepository
 {
     /**
-     * @param int $user_id
      * @param string $name
      * @param string $email
      * @param string $password
+     * @param string|null $tariff_id
      * @param string $role
      * @param DateTimeImmutable|null $expired_at
      * @return User

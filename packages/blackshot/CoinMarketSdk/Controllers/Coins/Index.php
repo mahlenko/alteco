@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Middleware\Authenticate;
 use App\Models\User;
 use Blackshot\CoinMarketSdk\Commands\ExponentialRank;
+use Blackshot\CoinMarketSdk\Models\Banner;
 use Blackshot\CoinMarketSdk\Models\Coin;
 use Blackshot\CoinMarketSdk\Models\Signal;
 use Blackshot\CoinMarketSdk\Repositories\CoinCategoryRepository;
@@ -70,7 +71,7 @@ class Index extends Controller
 //            'tracking' => $user->trackings,
             'change' => $period,
             'change_diff' => $period[0]->diff($period[1]),
-            'banners' => $banners ?? collect()
+            'banners' => self::banners()
         ]);
     }
 
@@ -227,5 +228,10 @@ class Index extends Controller
                 ]
             ]
         );
+    }
+
+    public static function banners()
+    {
+        return Banner::activeNow()->get();
     }
 }
