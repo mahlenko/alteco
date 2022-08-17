@@ -68,10 +68,9 @@ class Index extends Controller
             'filter' => $filter,
             'sortable' => $sortable,
             'favorites' => $user->favorites ?? collect(),
-//            'tracking' => $user->trackings,
             'change' => $period,
             'change_diff' => $period[0]->diff($period[1]),
-            'banners' => self::banners()
+            'promo' => self::bannerActive()
         ]);
     }
 
@@ -230,8 +229,22 @@ class Index extends Controller
         );
     }
 
-    public static function banners()
+    /**
+     * @return Banner|null
+     */
+    public static function bannerActive(): ?Banner
     {
-        return Banner::activeNow()->get();
+        $banners = Banner::activeNow()
+            ->inRandomOrder()
+            ->get();
+
+        $banner = $banners->random();
+
+        $cache_key = 'promo:'. Auth::id() .':'. $banner->uuid;
+
+        if (!$banners->count() || Cache::has($cache_key)) return null;
+        Cache::remember($cache_key, time() + 60 * 60 * 5, function() { return 1; });
+
+        return $banner;
     }
 }

@@ -12,11 +12,11 @@
             </p>
         </div>
 
+        @if ($promo)
         <div class="banners">
-            @foreach($banners as $banner)
-                @include('blackshot::banners.show-item')
-            @endforeach
+            @include('blackshot::banners.show-item')
         </div>
+        @endif
 
         <a href="{{ route('signals.home') }}" class="scan__show btn btn1" style="white-space: nowrap; padding-left: 1rem; padding-right: 1rem;">
             Показать мои сигналы

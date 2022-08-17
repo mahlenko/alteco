@@ -1,47 +1,62 @@
+$light-background: #FDF3E9
+$light-title-color: #000000
+$light-text-color: #63646A
+
+$dark-background: #3C438F
+$dark-title-color: #FFFFFF
+$dark-text-color: #C4C7EA
+
+$button-background: #FF7442
+$button-color: #FFFFFF
+
 .banners
   display: flex
-  flex-direction: column
-  column-gap: 1rem
-  row-gap: .5rem
-  @media (min-width: 768px)
-    flex-direction: row
-  &.scheme-white
-    color: #f4f4f4
-
-.banner__item
-  background-color: #e9edf3
-  background-position: top right
-  background-size: cover
-  border-radius: .7rem
-  display: flex
-  flex-direction: column
-  justify-content: center
-  padding: 1rem
-  width: 50%
-  max-width: 100%
-  min-height: 100px
-  &-content
-    display: flex
-    flex-direction: column
-    align-items: flex-start
-    padding-right: 25%
-    line-height: 130%
-    row-gap: .5rem
-  &-title
-    margin: 0
-    font-size: .8rem
-  &-body
-    font-size: .7rem
-    opacity: .85
-  &-button
-    background-color: $orange
-    border-radius: .3rem
-    color: white
-    padding: .2rem .5rem .25rem
-    font-size: .7rem
-    text-align: center
-    width: 80%
-    text-overflow: ellipsis
-    &:hover
-      background-color: lighten($orange, 5)
-      color: white
+  margin-top: 1rem
+  margin-bottom: .5rem
+  .banner__item
+    background-color: transparent
+    background-position: bottom right
+    background-repeat: no-repeat
+    background-size: contain
+    border-radius: 1rem
+    font-family: 'Manrope', sans-serif
+    padding: 1.5rem
+    @media (max-width: 480px)
+      background-size: 80%
+    &.light
+      background-color: $light-background
+      color: $light-text-color
+    &.dark
+      background-color: $dark-background
+      color: $dark-text-color
+    &-content
+      display: flex
+      flex-direction: column
+      row-gap: .7rem
+      @media (min-width: 480px)
+        align-items: flex-start
+      @media (max-width: 480px)
+        margin: .5rem
+    &-body
+      margin-right: 30%
+    &-title
+      color: $light-title-color
+      font-family: 'Merriweather', serif
+      font-weight: 700
+      font-style: italic
+      font-size: 1.05rem
+      line-height: 140%
+      padding: 0
+      margin: 0
+      @media (max-width: 480px)
+        margin: 0 20% 0 0
+    &-button
+      background-color: $button-background
+      border-radius: 1.5rem
+      color: $button-color
+      padding: .5rem 1.5rem
+      text-align: center
+      &:hover
+        background-color: darken($button-background, 5%)
+      @media (max-width: 480px)
+        margin-top: 3rem

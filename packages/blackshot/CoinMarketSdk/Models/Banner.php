@@ -149,6 +149,8 @@ class Banner extends Model
                     ->where('end', null)
                     ->orWhere('end', '>', $now);
             });
+
+        return $query;
     }
 
     protected static function booted()

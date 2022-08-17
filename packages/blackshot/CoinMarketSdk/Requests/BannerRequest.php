@@ -32,7 +32,7 @@ class BannerRequest extends FormRequest
             'picture' => ['nullable', 'image'],
             'title' => ['required', 'string'],
             'body' => ['nullable', 'string'],
-            'color_scheme' => ['required', 'string', 'in:default,white'],
+            'color_scheme' => ['required', 'string', 'in:light,dark'],
             'button_text' => ['nullable', 'string'],
             'button_url' => ['required_with:button_text', 'string'],
             'start' => ['required', 'date'],

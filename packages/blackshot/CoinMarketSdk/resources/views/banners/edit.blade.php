@@ -11,6 +11,11 @@
                 <input type="hidden" name="uuid" value="{{ $banner->uuid ?? null }}">
                 <input type="hidden" name="type" value="{{ \Blackshot\CoinMarketSdk\Enums\BannerTypes::static->name }}">
 
+                <p style="padding: 1rem; border-radius: .5rem; background-color: #fff9e6">
+                    Скачать шаблон для создания баннеров (figma file):
+                    <a href="{{ \Illuminate\Support\Facades\Storage::url('alteco-banners-example.fig') }}">alteco-banners-example.fig</a>
+                </p>
+
                 <table class="table-setting">
                     <tbody>
 {{--                        <tr>--}}
@@ -54,6 +59,42 @@
 {{--                        </tr>--}}
 
                         <tr>
+                            <td style="line-height: .9rem">
+                                <strong>Цветовая схема</strong>
+                                <span class="required">*</span><br>
+                                <small style="display: block; padding-top: .5rem;">
+                                    От выбора цветовой схемы зависит цвет фона баннера и цвет текста.
+                                    Например: светлая тема имеет светлый фон и темный текст.
+                                </small>
+                            </td>
+                            <td>
+                                <div class="d-flex" style="column-gap: 1.5rem; align-items: center">
+                                    <div class="d-flex" style="flex-grow: 1; align-items: flex-start; column-gap: .5rem">
+                                        <input type="radio"
+                                               name="color_scheme"
+                                               id="color_scheme_default"
+                                               {{ old('color_scheme', $banner->color_scheme ?? 'light') == 'light' ? 'checked' : null }}
+                                               value="light">
+                                        <label for="color_scheme_default" style="display: flex; flex-direction: column; line-height: 1rem">
+                                            Светлая (по-умолчанию)
+                                        </label>
+                                    </div>
+
+                                    <div class="d-flex" style="flex-grow: 1; align-items: flex-start; column-gap: .5rem">
+                                        <input type="radio"
+                                               name="color_scheme"
+                                               id="color_scheme_white"
+                                               {{ old('color_scheme', $banner->color_scheme) == 'dark' ? 'checked' : null }}
+                                               value="dark">
+                                        <label for="color_scheme_white" style="display: flex; flex-direction: column; line-height: 1rem">
+                                            Темная
+                                        </label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
                             <td>
                                 <label for="amount">Изображение</label><br>
                                 <small>Не обязательно если планируется текстовый баннер</small>
@@ -88,38 +129,6 @@
                         <tr>
                             <td colspan="2">
                                 <textarea name="body" id="editor" rows="10">{!! old('body', $banner->body) !!}</textarea>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <strong>Цвет текста на баннере</strong>
-                                <span class="required">*</span>
-                            </td>
-                            <td>
-                                <div class="d-flex" style="column-gap: 1.5rem; align-items: center">
-                                    <div class="d-flex" style="flex-grow: 1; align-items: flex-start; column-gap: .5rem">
-                                        <input type="radio"
-                                               name="color_scheme"
-                                               id="color_scheme_default"
-                                               {{ old('color_scheme', $banner->color_scheme ?? 'default') == 'default' ? 'checked' : null }}
-                                               value="default">
-                                        <label for="color_scheme_default" style="display: flex; flex-direction: column; line-height: 1rem">
-                                            Темный (по-умолчанию)
-                                        </label>
-                                    </div>
-
-                                    <div class="d-flex" style="flex-grow: 1; align-items: flex-start; column-gap: .5rem">
-                                        <input type="radio"
-                                               name="color_scheme"
-                                               id="color_scheme_white"
-                                               {{ old('color_scheme', $banner->color_scheme) == 'white' ? 'checked' : null }}
-                                               value="white">
-                                        <label for="color_scheme_white" style="display: flex; flex-direction: column; line-height: 1rem">
-                                            Светлый
-                                        </label>
-                                    </div>
-                                </div>
                             </td>
                         </tr>
 
