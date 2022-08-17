@@ -150,7 +150,7 @@ class Index extends Controller
                     return collect([
                         'coin_uuid' => $group->first()->coin_uuid,
                         'rank' => $group->first()->rank - $group->last()->rank,
-                        'exponential' => max(1, ExponentialRank::exponential($group->pluck('rank')))
+                        'exponential' => ceil(ExponentialRank::exponentialUp($group->pluck('rank')))
                     ]);
                 })->values();
             });

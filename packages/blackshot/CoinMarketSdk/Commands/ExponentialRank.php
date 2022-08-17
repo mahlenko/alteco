@@ -56,7 +56,8 @@ class ExponentialRank extends Command
 
         foreach ($ranks as $coin_ranks) {
             //
-            $exponential_rank = self::exponential($coin_ranks->pluck('rank'));
+//            $exponential_rank = self::exponential($coin_ranks->pluck('rank'));
+            $exponential_rank = self::exponentialUp($coin_ranks->pluck('rank'));
 
             //
             DB::table('coins')
@@ -87,5 +88,45 @@ class ExponentialRank extends Command
         }
 
         return intval($predict_value);
+    }
+
+    /**
+     * Расчет экспоненциального роста
+     * @see https://www.rapidtables.org/ru/calc/math/exponential-growth-calculator.html
+     * @param Collection $series
+     * @return float|int
+     */
+    public static function exponentialUp(Collection $series): float|int
+    {
+        // начальное значение
+        $begin = $series->first();
+
+        // темп роста
+        $growthRate = self::growthRate($series);
+
+        // статистика хранит информацию за 1 день,
+        // поэтому период можем взять просто по количеству записей
+        $period = $series->count();
+
+        // Формула расчета:
+        // х(t) = х0 × (1 + r)t
+        // --------------------------------------------------
+        // x(t) - значение в момент времени t
+        // x0 - начальное значение в момент времени t = 0
+        // r - скорость роста, когда r/0, или скорость распада, когда r<0, в процентах
+        // t - время в дискретных интервалах и выбранных единицах времени.
+
+        return $begin * pow(1 + $growthRate, $period);
+    }
+
+    /**
+     * Расчет темпа роста
+     * @see http://ru.solverbook.com/spravochnik/formuly-po-ekonomike/formula-tempa-rosta
+     * @param Collection $series
+     * @return float
+     */
+    private static function growthRate(Collection $series): float
+    {
+        return $series->first() / $series->last();
     }
 }
