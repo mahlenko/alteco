@@ -70,7 +70,9 @@ class Index extends Controller
             'favorites' => $user->favorites ?? collect(),
             'change' => $period,
             'change_diff' => $period[0]->diff($period[1]),
-            'promo' => self::bannerActive()
+            'promo' => $user->tariff->isFree()
+                ? self::bannerActive()
+                : null
         ]);
     }
 
@@ -234,6 +236,7 @@ class Index extends Controller
      */
     public static function bannerActive(): ?Banner
     {
+
         $banners = Banner::activeNow()
             ->inRandomOrder()
             ->get();
