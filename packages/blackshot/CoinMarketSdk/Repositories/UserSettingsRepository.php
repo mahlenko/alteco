@@ -21,18 +21,7 @@ class UserSettingsRepository
             ->settings->where('name', $name)
             ->first();
 
-        if (!$setting) {
-            $now = new DateTimeImmutable();
-
-            $value = new stdClass();
-            $value->q = null;
-            $value->date = [
-                $now->modify('-6 days')->format('Y-m-d 00:00:00'),
-                $now->format('Y-m-d 23:59:59'),
-            ];
-
-            return $value;
-        }
+        if (!$setting) return null;
 
         $value = json_decode($setting->value);
         if (!json_last_error()) {

@@ -11,6 +11,7 @@ use Blackshot\CoinMarketSdk\Models\Coin;
 use Blackshot\CoinMarketSdk\Models\Signal;
 use Blackshot\CoinMarketSdk\Repositories\CoinCategoryRepository;
 use Blackshot\CoinMarketSdk\Repositories\UserSettingsRepository;
+use DateTimeImmutable;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
@@ -20,6 +21,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
+use stdClass;
 
 class Index extends Controller
 {
@@ -35,7 +37,7 @@ class Index extends Controller
         $user = Auth::user();
 
         /* @var object $filter */
-        $filter = UserSettingsRepository::get('coins_filter');
+        $filter = UserSettingsRepository::get('coins_filter') ?? self::filterDefault();
 
         $user_key_cache = 'Coins:'.$user->id.':filter:' . md5(json_encode($filter));
 
@@ -251,5 +253,19 @@ class Index extends Controller
         Cache::remember($cache_key, time() + 60 * 60 * 5, function() { return 1; });
 
         return $banner;
+    }
+
+    private function filterDefault(): object
+    {
+        $now = new DateTimeImmutable();
+
+        $value = new stdClass();
+        $value->q = null;
+        $value->date = [
+            $now->modify('-6 days')->format('Y-m-d 00:00:00'),
+            $now->format('Y-m-d 23:59:59'),
+        ];
+
+        return $value;
     }
 }

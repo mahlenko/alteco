@@ -196,16 +196,9 @@ class Index extends Controller
      */
     private function getFilter(): ?stdClass
     {
-        $filter = UserSettingsRepository::get('signal_filter') ?? null;
+        $filter = UserSettingsRepository::get('signal_filter') ?? self::filterDefault();
 
-        if (!$filter) {
-            $filter = new stdClass();
-            $filter->days = 7;
-            $filter->min_rank = 30;
-            $filter->signals = [];
-            $filter->categories_uuid = [];
-            UserSettingsRepository::saveJson('signal_filter', (array) $filter);
-        } elseif ($filter->signals) {
+        if ($filter->signals) {
             // Сбрасываем выбранные сигналы пользователя
             // т.к. убрали чекбоксы со страницы.
             // Иначе он не увидит все сигналы
@@ -275,6 +268,19 @@ class Index extends Controller
             'column' => $column,
             'direction' => $direction
         ]);
+    }
+
+    private function filterDefault(): object
+    {
+        $filter = new stdClass();
+        $filter->days = 7;
+        $filter->min_rank = 30;
+        $filter->signals = [];
+        $filter->categories_uuid = [];
+
+        UserSettingsRepository::saveJson('signal_filter', (array) $filter);
+
+        return $filter;
     }
 
 }
