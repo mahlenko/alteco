@@ -4,22 +4,35 @@ namespace Blackshot\CoinMarketSdk\Repositories;
 
 use App\Models\User;
 use Blackshot\CoinMarketSdk\Models\UserSetting;
+use DateTimeImmutable;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Auth;
+use stdClass;
 
 class UserSettingsRepository
 {
     /**
      * @param string $name
-     * @return null
+     * @return object|null
      */
-    public static function get(string $name)
+    public static function get(string $name): ?object
     {
         $setting = self::getUser()
             ->settings->where('name', $name)
             ->first();
 
-        if (!$setting) return null;
+        if (!$setting) {
+            $now = new DateTimeImmutable();
+
+            $value = new stdClass();
+            $value->q = null;
+            $value->date = [
+                $now->modify('-6 days')->format('Y-m-d 00:00:00'),
+                $now->format('Y-m-d 23:59:59'),
+            ];
+
+            return $value;
+        }
 
         $value = json_decode($setting->value);
         if (!json_last_error()) {

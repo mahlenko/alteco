@@ -93,12 +93,12 @@ class Index extends Controller
 
     /**
      * @param Authenticate|User $user
-     * @param object $filter
+     * @param object|null $filter
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    private static function coins(Authenticate|User $user, object $filter): \Illuminate\Database\Eloquent\Collection
+    private static function coins(Authenticate|User $user, object $filter = null): \Illuminate\Database\Eloquent\Collection
     {
-        $categories = $filter->category_uuid ?? null;
+        $categories = $filter?->category_uuid ?? null;
 
         $coins = Coin::select('coins.*');
 
