@@ -153,7 +153,8 @@ class Ratio extends Command
      */
     public static function squid(Collection $price_collection): float
     {
-        $profit = $price_collection->pluck('price')
+        $profit = $price_collection
+            ->pluck('price')
             ->map(function($price) {
                 return round($price, 2);
             });

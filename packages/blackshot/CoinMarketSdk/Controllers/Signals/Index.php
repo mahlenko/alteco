@@ -9,6 +9,7 @@ use Blackshot\CoinMarketSdk\Repositories\SignalRepository;
 use Blackshot\CoinMarketSdk\Repositories\UserSettingsRepository;
 use Exception;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
@@ -34,8 +35,12 @@ class Index extends Controller
      * @return View
      * @throws Exception
      */
-    public function index(Request $request): View
+    public function index(Request $request): View|RedirectResponse
     {
+        if (Auth::check() && Auth::user()->tariff->isFree()) {
+            return redirect('subscribe');
+        }
+
         $this->updateFilterAndSortable($request);
 
         /*  */

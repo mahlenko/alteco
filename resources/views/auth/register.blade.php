@@ -22,7 +22,7 @@
                 <div class="form-control-row">
                     <label for="name">{{ __('Имя') }}</label>
                     <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus>
-                    @error('email')
+                    @error('name')
                     <p class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
                     </p>
