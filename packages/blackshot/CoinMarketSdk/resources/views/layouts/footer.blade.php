@@ -15,7 +15,7 @@
                         </li>
                         <li class="{{ Request::routeIs('coins.home') ? 'active' : null }}">
                             <a href="{{ route('coins.home') }}">
-                                Монеты
+                                Криптосканер
                             </a>
                         </li>
                         <li class="{{ Request::routeIs('signals.home') ? 'active' : null }}">

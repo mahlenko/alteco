@@ -35,10 +35,10 @@ class Index extends Controller
      * @return View
      * @throws Exception
      */
-    public function index(Request $request): View|RedirectResponse
+    public function index(Request $request): View
     {
         if (Auth::check() && Auth::user()->tariff->isFree()) {
-            return redirect('subscribe');
+            return $this->noAccess();
         }
 
         $this->updateFilterAndSortable($request);
@@ -235,29 +235,6 @@ class Index extends Controller
         return $settings;
     }
 
-//    private function trackingCoins(stdClass $filter = null)
-//    {
-//        $coins = Coin::select('coins.*')
-//            ->with(['info', 'quotes'])
-////            ->whereIn('uuid', Auth::user()->favorites()->pluck('coin_uuid'))
-//            ->whereIn('uuid', TrackingCoin::where('user_id', Auth::id())->pluck('coin_uuid'));
-//
-////        $coins = Coin::select('coins.*')->limit(10)->with(['info', 'quotes']);
-//
-//        if (isset($filter->category_uuid) && $filter->category_uuid) {
-//            $coins->join('coin_categories', 'coins.uuid', 'coin_categories.coin_uuid');
-//            $coins->whereIn('coin_categories.category_uuid', $filter->category_uuid);
-//
-//            if (in_array('favorites', $filter->category_uuid)) {
-//                $favorites = Auth::user()->favorites;
-//                $coins->orWhereIn('uuid', $favorites->pluck('uuid'));
-//                $coins->distinct();
-//            }
-//        }
-//
-//        return $coins->get();
-//    }
-
     /**
      * @param string $key
      * @param string $column
@@ -286,6 +263,15 @@ class Index extends Controller
         UserSettingsRepository::saveJson('signal_filter', (array) $filter);
 
         return $filter;
+    }
+
+    /**
+     * Страница когда нет доступа
+     * @return void
+     */
+    private function noAccess(): View
+    {
+        return view('blackshot::signals.no-access');
     }
 
 }
