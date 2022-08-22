@@ -7,6 +7,7 @@ use DateTimeImmutable;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -94,6 +95,10 @@ class ExponentialRank extends Command
             $result->add($exp_data['exp']);
         }
 
-        return $result->filter()->avg();
+        $count = Cache::remember('countCoins', time() + 360, function() {
+            return DB::table('coins')->count();
+        });
+
+        return $count - $result->filter()->avg();
     }
 }
