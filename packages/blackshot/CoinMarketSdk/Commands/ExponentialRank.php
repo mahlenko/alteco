@@ -97,4 +97,9 @@ class ExponentialRank extends Command
 
         return 1001 - $result->filter()->avg();
     }
+
+    public static function ema(array $numbers, int $timePeriod = 2): array|bool
+    {
+        return trader_ema($numbers, $timePeriod);
+    }
 }

@@ -20,7 +20,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use stdClass;
 
@@ -88,10 +87,17 @@ class Index extends Controller
         return $coins->map(function($coin) use ($coin_ranks) {
             $rank = $coin_ranks->where('coin_uuid', $coin->uuid)->first();
 
+            if (!$rank || !$rank['exponential'] || !count($rank['exponential'])) {
+                return $coin;
+            }
+
             $coin->rank_period = $rank['rank'] ?? 0;
-            $coin->exponential_rank_period = $rank['exponential'] ?? 0;
+            $coin->exponential_rank_period = $rank['exponential']
+//                ? ceil($rank['exponential'][count($rank['exponential'])])
+                ? ceil(array_sum($rank['exponential']) / count($rank['exponential']))
+                : null;
             return $coin;
-        })->where('exponential_rank_period', '<=', 1000);
+        })->where('exponential_rank_period', '<>', null);
     }
 
     /**
@@ -156,11 +162,10 @@ class Index extends Controller
                     ->groupBy('coin_uuid');
 
                 return $ranks->map(function($group) {
-//                    dd($group);
                     return collect([
                         'coin_uuid' => $group->first()->coin_uuid,
                         'rank' => $group->first()->rank - $group->last()->rank,
-                        'exponential' => ceil(ExponentialRank::exponentialRank($group->pluck('rank')))
+                        'exponential' => ExponentialRank::ema($group->pluck('rank')->toArray())
                     ]);
                 })->values();
             });
