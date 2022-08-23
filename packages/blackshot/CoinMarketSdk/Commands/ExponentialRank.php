@@ -68,7 +68,7 @@ class ExponentialRank extends Command
     /**
      * @param Collection $collection
      * @param float $alpha
-     * @return float
+     * @return float|null
      * @see https://excel2.ru/articles/eksponentsialnoe-sglazhivanie-v-ms-excel
      */
     public static function exponentialRank(Collection $collection, float $alpha = 0.6): ?float
@@ -95,10 +95,6 @@ class ExponentialRank extends Command
             $result->add($exp_data['exp']);
         }
 
-        $count = Cache::remember('countCoins', time() + 360, function() {
-            return DB::table('coins')->count();
-        });
-
-        return $count - $result->filter()->avg();
+        return 1001 - $result->filter()->avg();
     }
 }

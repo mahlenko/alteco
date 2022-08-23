@@ -20,6 +20,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use stdClass;
 
@@ -39,7 +40,7 @@ class Index extends Controller
         /* @var object $filter */
         $filter = UserSettingsRepository::get('coins_filter') ?? self::filterDefault();
 
-        $user_key_cache = 'Coins:'.$user->id.':filter:' . md5(json_encode($filter));
+        $user_key_cache = 'coins:user_'.$user->id.':filter_' . md5(json_encode($filter));
 
         $categories = CoinCategoryRepository::categoriesForSelect($user);
         $sortable = self::sortable($request);
@@ -103,6 +104,8 @@ class Index extends Controller
         $categories = $filter?->category_uuid ?? null;
 
         $coins = Coin::select('coins.*');
+        $coins->whereBetween('coins.rank', [1, 1000]);
+        $coins->limit(1000);
 
         if ($categories) {
             $coins->whereHas('categories', function ($builder) use ($user, $categories) {
@@ -139,17 +142,21 @@ class Index extends Controller
             $period[1]->format('Y-m-d 23:59:59')
         ];
 
-        $ranks = Signal::select(['coin_uuid', 'rank', 'diff', 'date'])
-            ->whereBetween('date', $period_date)
-            ->orderBy('date')
-            ->get()
-            ->groupBy('coin_uuid');
-
         return Cache::remember(
-            key: 'expRank:' . implode('_', $period_date),
-            ttl: time() + (60 /** 60*/),
-            callback: function() use ($ranks) {
+            key: 'exponential_ranks:' . md5(json_encode($period_date)),
+            ttl: time() + (60 * 60),
+            callback: function() use ($period_date) {
+
+                $ranks = Signal::select(['signals.coin_uuid', 'signals.rank', 'signals.diff', 'signals.date'])
+                    ->join('coins', 'coins.uuid', 'signals.coin_uuid')
+                    ->whereBetween('coins.rank', [1, 1000])
+                    ->whereBetween('date', $period_date)
+                    ->orderBy('date')
+                    ->get()
+                    ->groupBy('coin_uuid');
+
                 return $ranks->map(function($group) {
+//                    dd($group);
                     return collect([
                         'coin_uuid' => $group->first()->coin_uuid,
                         'rank' => $group->first()->rank - $group->last()->rank,
@@ -214,7 +221,7 @@ class Index extends Controller
         $paginate = $items->forPage(
             $current_page = Paginator::resolveCurrentPage(),
             $per_page
-        )->values();
+        )->load('info')->values();
 
         return App::make(
             LengthAwarePaginator::class,

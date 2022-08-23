@@ -55,6 +55,9 @@ class Kernel extends ConsoleKernel
 
         /* Получение CRIX индекса */
         $schedule->command('blackshot:crix:indices')->daily();
+
+        //
+        $schedule->command('telescope:prune')->daily();
     }
 
     /**
