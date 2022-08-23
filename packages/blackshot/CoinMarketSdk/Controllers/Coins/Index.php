@@ -87,15 +87,15 @@ class Index extends Controller
         return $coins->map(function($coin) use ($coin_ranks) {
             $rank = $coin_ranks->where('coin_uuid', $coin->uuid)->first();
 
-            if (!$rank || !$rank['exponential'] || !count($rank['exponential'])) {
+            if (!$rank || !$rank['exponential']) {
                 return $coin;
             }
 
             $coin->rank_period = $rank['rank'] ?? 0;
-            $coin->exponential_rank_period = $rank['exponential']
+            $coin->exponential_rank_period = $rank['exponential'];
 //                ? ceil($rank['exponential'][count($rank['exponential'])])
-                ? ceil(array_sum($rank['exponential']) / count($rank['exponential']))
-                : null;
+//                ? ceil(array_sum($rank['exponential']) / count($rank['exponential']))
+//                : null;
             return $coin;
         })->where('exponential_rank_period', '<>', null);
     }
@@ -161,13 +161,22 @@ class Index extends Controller
                     ->get()
                     ->groupBy('coin_uuid');
 
-                return $ranks->map(function($group) {
+                $result = $ranks->map(function($group) {
+                    $ema_data = ExponentialRank::ema($group->pluck('rank')->toArray());
+                    $ema_avg = $ema_data ? ceil(array_sum($ema_data) / count($ema_data)) : null;
+
                     return collect([
                         'coin_uuid' => $group->first()->coin_uuid,
                         'rank' => $group->first()->rank - $group->last()->rank,
-                        'exponential' => ExponentialRank::ema($group->pluck('rank')->toArray())
+                        'exponential' => $ema_avg
                     ]);
-                })->values();
+                })->filter(function($item) {
+                    return $item['exponential'];
+                });
+
+                return $result->sortBy('exponential')->values()->each(function($item, $index) {
+                    $item['exponential'] = min(1001 - $item['exponential'], 1000);
+                });
             });
     }
 
