@@ -91,7 +91,7 @@ class Index extends Controller
             $coin->rank_period = $rank['rank'] ?? 0;
             $coin->exponential_rank_period = $rank['exponential'] ?? 0;
             return $coin;
-        });
+        })->where('exponential_rank_period', '<=', 1000);
     }
 
     /**

@@ -16,7 +16,9 @@
                 <span class="item__description">{!! $tariff->description !!}</span>
 
                 <a href="javascript:void(0);" class="btn btn1" onclick="return alert('Ожидаем скрипты виджетов, для подключения.')">Купить доступ</a>
+                {!! $tariff->payment_widget !!}
             </div>
         @endforeach
     </div>
+
 @endsection
