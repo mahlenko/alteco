@@ -6,6 +6,9 @@ import * as am5xy from "@amcharts/amcharts5/xy";
 import animated from "@amcharts/amcharts5/themes/Animated";
 
 document.addEventListener("DOMContentLoaded", function (event) {
+  // диалоговые окна
+  Dialog.registerShortcut()
+
   // графики
   let graphs = document.querySelectorAll('[data-graph-json]')
   graphs.forEach(graph => {
@@ -421,3 +424,42 @@ let Tabs = {
     })
   }
 }
+
+let Dialog = {
+  registerShortcut: () => {
+    document.body.addEventListener('keypress', function(e) {
+      if (e.key === "Escape") {
+        return Dialog.close()
+      }
+    })
+
+    document.querySelectorAll('[data-dialog-el="close"]').forEach(el => {
+      el.addEventListener('click', (e) => {
+        e.preventDefault()
+        return Dialog.close()
+      })
+    })
+  },
+
+  show: id => {
+    let dialog = document.querySelector('div[data-dialog-id="'+ id +'"]')
+    if (!dialog) return
+
+    dialog.dataset.show = true
+    Dialog.bodyScroll(false)
+  },
+
+  close: () => {
+    document.querySelectorAll('div[data-dialog-id][data-show]').forEach(dialog => {
+      dialog.dataset.show = false
+    })
+
+    Dialog.bodyScroll(true)
+  },
+
+  bodyScroll: visible => {
+    document.body.style.overflow = visible ? 'auto' : 'hidden'
+  }
+}
+
+window.AppDialog = Dialog

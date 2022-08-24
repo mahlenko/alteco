@@ -1,0 +1,43 @@
+.dialog
+  background-color: rgba(0,0,0,.3)
+  backdrop-filter: blur(2px)
+  display: flex
+  align-items: flex-start
+  justify-content: center
+  position: fixed
+  left: 0
+  top: 0
+  width: 100vw
+  height: 100vh
+  z-index: 99999999
+  overflow: auto
+
+  opacity: 0
+  pointer-events: none
+  transition: opacity .2s ease-in-out
+
+  &[data-show="true"]
+    opacity: 1
+    pointer-events: auto
+
+  &__container
+    background-color: white
+    width: 100%
+    max-width: 600px
+    padding: 1rem
+    position: relative
+    margin: auto
+
+    @media (min-width: 768px)
+      border-radius: 1rem
+      box-shadow: 0 .2rem 3rem rgba(0,0,0,.4)
+
+    [data-dialog-el="close"]
+      color: #b6c3d0
+      position: absolute
+      top: 1rem
+      right: 1rem
+
+      svg
+        height: 2rem
+
