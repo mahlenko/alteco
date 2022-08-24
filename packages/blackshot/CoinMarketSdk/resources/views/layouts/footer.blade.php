@@ -41,7 +41,7 @@
 
                             <li class="{{ Request::routeIs('subscribe') ? 'active' : null }}">
                                 <a href="{{ route('subscribe') }}">
-                                    @if (\Illuminate\Support\Facades\Auth::user()->tariff->isFree())
+                                    @if (\Illuminate\Support\Facades\Auth::user()->tariff?->isFree())
                                         Улучшить тариф
                                     @else
                                         Продлить подписку

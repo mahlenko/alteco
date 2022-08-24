@@ -88,7 +88,7 @@
 
                                 <li class="dropdown-item {{ Request::routeIs('subscribe') ? 'active' : null }}">
                                     <a href="{{ route('subscribe') }}">
-                                        @if (\Illuminate\Support\Facades\Auth::user()->tariff->isFree())
+                                        @if (\Illuminate\Support\Facades\Auth::user()->tariff?->isFree())
                                             Улучшить тариф
                                         @else
                                             Продлить подписку
@@ -152,7 +152,7 @@
                         <p class="header-pages__text">
                             У вас <span>{{ Auth::user()->expiredAtText() }}</span>
 
-                            @if (\Illuminate\Support\Facades\Auth::user()->tariff->isFree())
+                            @if (\Illuminate\Support\Facades\Auth::user()->tariff?->isFree())
                                 <br>бесплатного доступа
                             @endif
                         </p>
