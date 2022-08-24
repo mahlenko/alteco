@@ -38,7 +38,7 @@ $(document).ready(function () {
       selectOption = _this.find('option'),
       selectOptionLength = selectOption.length,
       selectedOption = selectOption.filter(':selected'),
-      duration = 450; // длительность анимации 
+      duration = 450; // длительность анимации
 
     _this.hide();
     _this.wrap('<div class="select"></div>');
@@ -169,3 +169,40 @@ jQuery('img.svg').each(function () {
   }, 'xml');
 
 });
+
+let Dialog = {
+  registerShortcut: () => {
+    document.body.addEventListener('keypress', function(e) {
+      if (e.key === "Escape") {
+        return Dialog.close()
+      }
+    })
+
+    document.querySelectorAll('[data-dialog-el="close"]').forEach(el => {
+      el.addEventListener('click', (e) => {
+        e.preventDefault()
+        return Dialog.close()
+      })
+    })
+  },
+
+  show: id => {
+    let dialog = document.querySelector('div[data-dialog-id="'+ id +'"]')
+    if (!dialog) return
+
+    dialog.dataset.show = true
+    Dialog.bodyScroll(false)
+  },
+
+  close: () => {
+    document.querySelectorAll('div[data-dialog-id][data-show]').forEach(dialog => {
+      dialog.dataset.show = false
+    })
+
+    Dialog.bodyScroll(true)
+  },
+
+  bodyScroll: visible => {
+    document.body.style.overflow = visible ? 'auto' : 'hidden'
+  }
+}

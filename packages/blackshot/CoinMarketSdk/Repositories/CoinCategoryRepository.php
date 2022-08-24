@@ -35,7 +35,7 @@ class CoinCategoryRepository
      */
     static function categoriesForSelect(Authenticatable|User $user): Collection
     {
-        $isFree = !$user->isAdmin() && $user->tariff->isFree();
+        $isFree = !$user->isAdmin() && (is_null($user->tariff) || $user->tariff->isFree());
 //        $isFree = true;
 
         $categories = self::allCategories()

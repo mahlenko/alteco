@@ -273,7 +273,10 @@ class User extends Authenticatable
      */
     public function tariff(): BelongsTo
     {
-        return $this->belongsTo(TariffModel::class);
+        return $this->belongsTo(TariffModel::class)->withDefault(function() {
+            return TariffModel::where('default', true)
+                ->first();
+        });
     }
 
     /**

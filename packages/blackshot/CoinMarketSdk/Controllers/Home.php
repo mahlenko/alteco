@@ -19,8 +19,8 @@ class Home extends \App\Http\Controllers\Controller
      */
     public static function tariffs(): Collection
     {
-        return TariffModel::where('free', 0)
-            ->where('amount', '>', 0)
+        return TariffModel::where('free', true)
+            ->orWhere('amount', '>', 0)
             ->get()
             ->sortBy('amount');
     }

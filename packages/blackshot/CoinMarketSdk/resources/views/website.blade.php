@@ -26,7 +26,8 @@
         rel="stylesheet">
 
     <link rel="stylesheet" href="css/jquery.arcticmodal-0.3.css">
-    <link rel="stylesheet" type="text/css" href="css/landing/main.css">
+    <link rel="stylesheet" type="text/css" href="css/landing/main.css?v=1.0.0">
+    <link rel="stylesheet" type="text/css" href="{{ mix('css/dialog.css') }}">
 
 </head>
 
@@ -560,11 +561,28 @@
             <div class="our__box d-flex" style="flex-wrap: wrap; row-gap: 1rem">
                 @foreach($tariffs as $tariff)
                     <div class="our__item">
-                        <p class="our__time">{{ $tariff->name }}</p>
-                        <p class="our__sum">{{ $tariff->amount }} руб.</p>
-                        <p class="our__res">{!! $tariff->description !!}</p>
+                        <div>
+                            <p class="our__time">{{ $tariff->name }}</p>
+                            <p class="our__sum">{{ $tariff->amount }} руб.</p>
+                        </div>
 
-                        <a href="#" class="our__btn btn btn2">Стать резидентом</a>
+                        <div class="our__res">
+                            {!! strip_tags($tariff->description, ['b', 'strong', 'ul', 'ol', 'li', 'br']) !!}
+                        </div>
+
+                        <a href="#" class="our__btn btn btn2" onclick="Dialog.show({{ $tariff->id }}); return false">Стать резидентом</a>
+                    </div>
+
+                    <div class="dialog" data-dialog-id="{{ $tariff->id }}">
+                        <div class="dialog__container">
+                            <a href="#" data-dialog-el="close" onclick="return false">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m-15 0l15 15" />
+                                </svg>
+                            </a>
+
+                            {!! $tariff->payment_widget !!}
+                        </div>
                     </div>
                 @endforeach
             </div>
@@ -948,13 +966,13 @@
         <div class="box-modal pop1" id="pop6">
             <div class="popup">
                 <div class="popup-call__box">
-                    <div class="box-modal__close articmodal-close">
-                        <img src="css/img/close.svg" alt="" class="svg">
-                    </div>
+{{--                    <div class="box-modal__close articmodal-close">--}}
+{{--                        <img src="{{ asset('css/img/close.svg') }}" alt="" class="svg">--}}
+{{--                    </div>--}}
                     <div class="popup__flex d-flex">
                         <div class="popup__left">
-                            <img src="css/img/logo.svg" alt="" class="popup__logo">
-                            <img src="css/img/popup.png" alt="" class="popup__pic">
+                            <img src="{{ asset('css/img/logo.svg') }}" alt="" class="popup__logo">
+                            <img src="{{ asset('css/img/popup.png') }}" alt="" class="popup__pic">
                         </div>
                         <div class="popup__right">
                             <p class="popup__title">
@@ -984,7 +1002,10 @@
     </div>
 </div>
 <script src="//yandex.st/jquery/1.9.1/jquery.min.js"></script>
-<script src="js/landing.js"></script>
+<script src="js/landing.js?v=1.0.0"></script>
+<script>
+    Dialog.registerShortcut()
+</script>
 </body>
 
 </html>
