@@ -38,7 +38,7 @@ class Index extends Controller
     public function index(Request $request): View
     {
         if (Auth::check() && Auth::user()->tariff->isFree()) {
-            return $this->noAccess();
+            abort(503, 'Сигналы недоступны для вашего тарифа. Улучшите тариф, чтобы иметь к ней доступ.');
         }
 
         $this->updateFilterAndSortable($request);
@@ -264,14 +264,4 @@ class Index extends Controller
 
         return $filter;
     }
-
-    /**
-     * Страница когда нет доступа
-     * @return void
-     */
-    private function noAccess(): View
-    {
-        return view('blackshot::signals.no-access');
-    }
-
 }

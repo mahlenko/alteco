@@ -3,15 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use App\Providers\RouteServiceProvider;
-use DateTimeImmutable;
-use Exception;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
@@ -43,29 +37,6 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
-    }
-
-    /**
-     * @param Request $request
-     * @param User $user
-     * @return RedirectResponse|void
-     * @throws Exception
-     */
-    public function authenticated(Request $request, User $user)
-    {
-        if (!$user->checkExpiredAt(new DateTimeImmutable('now'))) {
-            $this->logout($request);
-
-            flash('Ваш аккаунт деактивирован. Продлите подписку для включения доступа.')
-                ->warning();
-
-            return redirect()->route('login');
-        } else {
-            Log::debug(sprintf(
-                'Пользователь "%s": аккаунт активен. Доступ открыт.',
-                $user->{$this->username()}
-            ));
-        }
     }
 
     /**

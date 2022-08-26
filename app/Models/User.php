@@ -228,15 +228,15 @@ class User extends Authenticatable
     public function checkExpiredAt(DateTimeImmutable $date): bool
     {
         if ($this->role === self::ROLE_ADMIN) {
-            return true;
-        }
-
-        if (!$this->expired_at || !$this->tariff_id) {
             return false;
         }
 
+        if (!$this->expired_at || !$this->tariff) {
+            return true;
+        }
+
         $expired_at = new DateTimeImmutable($this->expired_at);
-        return $date->format('Y-m-d') <= $expired_at->format('Y-m-d');
+        return $date->format('Y-m-d') > $expired_at->format('Y-m-d');
     }
 
     /**

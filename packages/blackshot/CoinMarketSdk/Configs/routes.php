@@ -4,21 +4,17 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('web')->group(function() {
     //
-    Route::get('/', [\Blackshot\CoinMarketSdk\Controllers\Home::class, 'index'])->name('home');
-//    Route::get('/', function() {
-//        return redirect()->route('login');
-//    });
+    Route::get('/', function() {
+        return redirect('https://alteco-school.ru/cryptoscanner');
+    })->name('home');
 
-//    Route::get('/sync', [\Blackshot\CoinMarketSdk\Controllers\SyncGetCources::class, 'index']);
     Route::post('/sync/webhook/payment', [\Blackshot\CoinMarketSdk\Controllers\SyncGetCources::class, 'webhook'])->name('webhook.payment');
-
-    //
     Route::get('/subscribe', [\Blackshot\CoinMarketSdk\Controllers\Subscribe::class, 'index'])->name('subscribe');
 
     //
     Route::middleware('auth')->group(function() {
         //
-        Route::prefix('coins')->name('coins.')->group(function() {
+        Route::prefix('coins')->middleware('subscribe')->name('coins.')->group(function() {
             Route::get('/', [\Blackshot\CoinMarketSdk\Controllers\Coins\Index::class, 'index'])->name('home');
             Route::get('/view/{uuid}', [\Blackshot\CoinMarketSdk\Controllers\Coins\View::class, 'index'])->name('view');
             Route::post('/filter/store', [\Blackshot\CoinMarketSdk\Controllers\Coins\SaveFilter::class, 'index'])->name('filter.store');
@@ -34,7 +30,7 @@ Route::middleware('web')->group(function() {
         });
 
         //
-        Route::prefix('signals')->name('signals.')->group(function() {
+        Route::prefix('signals')->middleware('subscribe')->name('signals.')->group(function() {
             Route::get('/', [\Blackshot\CoinMarketSdk\Controllers\Signals\Index::class, 'index'])->name('home');
             Route::post('/filter/store', [\Blackshot\CoinMarketSdk\Controllers\Signals\SaveFilter::class, 'index'])->name('filter.store');
         });
