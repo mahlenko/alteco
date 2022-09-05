@@ -39,15 +39,11 @@ class Index extends Controller
         /* @var object $filter */
         $filter = UserSettingsRepository::get('coins_filter') ?? self::filterDefault();
 
-        $user_key_cache = 'coins:user_'.$user->id.':filter_' . md5(json_encode($filter));
-
         $categories = CoinCategoryRepository::categoriesForSelect($user);
         $sortable = self::sortable($request);
         $period = $this->filterDatePeriod($filter);
         $coins = self::merged(
-            Cache::remember($user_key_cache, time() + 300, function() use ($user, $filter) {
-                return self::coins($user, $filter);
-            }),
+            self::coins($user, $filter),
             self::ranks($period)
         );
 
