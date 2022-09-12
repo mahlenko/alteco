@@ -84,6 +84,7 @@ class Index extends Controller
             return $signal->diff >= $filter->min_rank;
         });
 
+        /* todo: тут скорее нужна оптимизация исходя из нового кеша сигналов */
         /* @var Collection<object> $buying */
         $buying = SignalRepository::buyingCollection($filter, $buying_uuid);
 
