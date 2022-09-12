@@ -57,7 +57,7 @@ class Index extends Controller
 
         /* @var Collection<Coin> $buying_coins */
         $buying_coins = $user->buyingCoins;
-        $i_buy_uuid = $buying_coins?->pluck('uuid');
+        $buying_uuid = $buying_coins?->pluck('uuid');
 
 //        $signals = SignalRepository::coinCollection($filter, $signals_sortable, $i_buy_uuid);
 
@@ -66,6 +66,9 @@ class Index extends Controller
          | Данные кешируются, поэтому можно смело вызывать метод каждый раз.
          */
         $allSignals = SignalRepository::inDays($filter->days);
+        if ($buying_uuid) {
+            $allSignals->where('coin_uuid', '<>', $buying_uuid);
+        }
 
         /*
          | Фильтруем сигналы
@@ -81,16 +84,13 @@ class Index extends Controller
             return $signal->diff >= $filter->min_rank;
         });
 
-        $coins = $this->viewCoins($signals, $signals_sortable);
-
         /* @var Collection<object> $buying */
-        $buying = SignalRepository::buyingCollection($filter, $i_buy_uuid);
-        $coins_buy = $this->viewBuyCoins($buying, $buying_sortable);
+        $buying = SignalRepository::buyingCollection($filter, $buying_uuid);
 
         return view('blackshot::signals.index_new', [
             'signals' => $signals,
-            'coins' => $coins,
-            'coins_buying_me' => $coins_buy,
+            'coins' => $this->viewCoins($signals, $signals_sortable),
+            'coins_buying_me' => $this->viewBuyCoins($buying, $buying_sortable),
             'categories' => $categories,
             'filter' => $filter,
             'sortable' => [
