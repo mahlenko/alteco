@@ -120,11 +120,13 @@ class Index extends Controller
                 ->paginate($per_page);
 
             // add `diff` data
-            return $coins->getCollection()->transform(function ($item) use ($signals) {
+            $coins->getCollection()->transform(function ($item) use ($signals) {
                 $signal = $signals->where('coin_uuid', $item->uuid)->first();
                 $item->diff = $signal?->diff;
                 return $item;
             });
+
+            return $coins;
         }
 
         // add `diff` data
