@@ -37,27 +37,50 @@ class Index extends Controller
      */
     public function index(Request $request): View
     {
-        if (Auth::check() && Auth::user()->tariff->isFree()) {
+        $user = Auth::check() ? Auth::user() : null;
+
+        if (!$user || $user->tariff->isFree()) {
             abort(503, 'Сигналы недоступны для вашего тарифа. Улучшите тариф, чтобы иметь к ней доступ.');
         }
 
         $this->updateFilterAndSortable($request);
 
-        /*  */
+        /* Сортировки таблиц */
         $signals_sortable = $this->getSettingSortable(self::SORTABLE_SIGNAL_SETTINGS_KEY);
         $buying_sortable = $this->getSettingSortable(self::SORTABLE_BUYING_SETTINGS_KEY);
 
-        /*  */
+        /* Фильтры для сигналов */
         $filter = $this->getFilter();
 
-        /*  */
+        /* Доступные категории пользователя */
         $categories = CoinCategoryRepository::categoriesForSelect(Auth::user());
 
         /* @var Collection<Coin> $buying_coins */
-        $buying_coins = Auth::user()->buyingCoins;
+        $buying_coins = $user->buyingCoins;
         $i_buy_uuid = $buying_coins?->pluck('uuid');
 
-        $signals = SignalRepository::coinCollection($filter, $signals_sortable, $i_buy_uuid);
+//        $signals = SignalRepository::coinCollection($filter, $signals_sortable, $i_buy_uuid);
+
+        /*
+         | Все сигналы, всех монет за период указанных дней
+         | Данные кешируются, поэтому можно смело вызывать метод каждый раз.
+         */
+        $allSignals = SignalRepository::inDays($filter->days);
+
+        /*
+         | Фильтруем сигналы
+         | --------------------------------------------------------------------
+         | Если категории не выбраны, вернется тот же список.
+         | После чего фильтруем по минимальному изменению ранка.
+         */
+        $signals = SignalRepository::filterByCategory(
+            $allSignals,
+            $filter->categories_uuid,
+            $user
+        )->filter(function ($signal) use ($filter) {
+            return $signal->diff >= $filter->min_rank;
+        });
+
         $coins = $this->viewCoins($signals, $signals_sortable);
 
         /* @var Collection<object> $buying */
@@ -81,32 +104,47 @@ class Index extends Controller
      * @param Collection|null $signals
      * @param object|null $sortable
      * @param int $per_page
-     * @return LengthAwarePaginator|null
+     * @return \Illuminate\Database\Eloquent\Collection|LengthAwarePaginator|null
      */
-    protected function viewCoins(Collection $signals = null, object $sortable = null, int $per_page = 25): ?LengthAwarePaginator
+    protected function viewCoins(Collection $signals = null, object $sortable = null, int $per_page = 25): null|Collection|LengthAwarePaginator
     {
         if (!$signals) return null;
 
-        $signals_pagination = SignalRepository::pagination(
-            $signals,
-            $page = Paginator::resolveCurrentPage(),
-            $per_page
-        );
+        $uuid = $signals->pluck('coin_uuid');
 
-        $coins = Coin::whereIn('uuid', $signals_pagination->pluck('coin_uuid'))
-            ->with(['info'])
-            ->get();
-        $coins = $this->mergeSignalsData($coins, $signals_pagination);
+        /* todo: рефакторнуть "add diff data" */
+        if ($sortable->column !== 'diff') {
+            $coins = Coin::with(['info'])
+                ->whereIn('uuid', $uuid)
+                ->orderBy($sortable->column, $sortable->direction)
+                ->paginate($per_page);
 
-        if ($sortable) {
-            $coins = $this->sortable($coins, $sortable);
+            // add `diff` data
+            return $coins->getCollection()->transform(function ($item) use ($signals) {
+                $signal = $signals->where('coin_uuid', $item->uuid)->first();
+                $item->diff = $signal?->diff;
+                return $item;
+            });
         }
 
+        // add `diff` data
+        $coins = Coin::with(['info'])
+            ->whereIn('uuid', $uuid)
+            ->get()
+            ->map(function($item) use ($signals) {
+                $signal = $signals->where('coin_uuid', $item->uuid)->first();
+                $item->diff = $signal?->diff;
+                return $item;
+            })->sortBy($sortable->column, descending: $sortable->direction === 'desc');
 
-        return self::paginator($coins, $signals->count(), $per_page, $page, [
-            'path' => Paginator::resolveCurrentPath(),
-            'pageName' => 'page',
-        ]);
+        $page = Paginator::resolveCurrentPage();
+
+        return self::paginator(
+            SignalRepository::pagination($coins, $page, $per_page),
+            $signals->count(),
+            $per_page,
+            $page,
+            ['path' => Paginator::resolveCurrentPath()]);
     }
 
     /**
@@ -136,12 +174,7 @@ class Index extends Controller
     {
         return $coins->map(function ($coin) use ($signals) {
             $signal = $signals->where('coin_uuid', $coin->uuid)->first();
-            foreach ($signal as $key => $value) {
-                if ($key != 'coin_uuid') {
-                    $coin->$key = $value;
-                }
-            }
-
+            $coin->diff = $signal->diff;
             return $coin;
         });
     }

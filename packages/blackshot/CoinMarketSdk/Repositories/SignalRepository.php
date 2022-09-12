@@ -2,17 +2,81 @@
 
 namespace Blackshot\CoinMarketSdk\Repositories;
 
+use App\Models\User;
 use Blackshot\CoinMarketSdk\Models\Signal;
 use DateTimeImmutable;
 use Exception;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Сигналы - изменения позиций монет за определенный промежуток времени.
+ */
 class SignalRepository
 {
+    /**
+     * Вернет изменение монет за промежуток времени
+     * @param int $days
+     * @return Collection
+     */
+    public static function inDays(int $days): Collection
+    {
+        $today = new DateTimeImmutable();
+
+        // Начальная дата
+        $start_period = $today->modify('-'. $days .' days');
+
+        // Используем кеширование, до начала следующего часа.
+        $cache_ttl = time() + (60 - $today->format('i')) * 60;
+
+        return Cache::remember('signals:' . $days, $cache_ttl, function() use ($start_period, $today) {
+            return self::queryBuilder()
+                ->whereBetween('date', [
+                    $start_period->format('Y-m-d'),
+                    $today->format('Y-m-d'),
+                ])->get()->each(function ($item) {
+                    $item->diff = $item->previous_rank - $item->current_rank;
+                });
+        });
+    }
+
+    /**
+     * Фильтр сигналов по категориям
+     * @param Collection $signals
+     * @param array $categories
+     * @param User $user
+     * @return Collection
+     */
+    public static function filterByCategory(Collection $signals, array $categories, User $user): Collection
+    {
+        $favoriteTokens = [];
+
+        // Получим избранные монеты, если выбран поиск по избранному
+        if (in_array('favorites', $categories)) {
+            $favoriteTokens = $user->favorites->pluck('uuid')->toArray();
+            unset($categories[array_search('favorites', $categories)]);
+        }
+
+        // Фильтруем монету по категориям и избранному пользователя
+        if ($favoriteTokens || $categories) {
+            $signals = $signals->filter(function ($signal) use ($favoriteTokens, $categories) {
+                $isFavorite = in_array($signal->coin_uuid, $favoriteTokens);
+                $isHasCategory = in_array($signal->category_uuid, $categories);
+
+                return $isFavorite || $isHasCategory;
+            });
+        }
+
+        /*
+         | Если монета находится в нескольких категориях она будет присутствовать
+         | несколько раз в коллекции в каждой категории. Нам же, после фильтрации
+         | важно вернуть только монету, поэтому возвращаем уникальные `coin_uuid`.
+        */
+        return $signals->unique('coin_uuid');
+    }
+
     /**
      * @param object $filter
      * @param object $sortable
@@ -20,67 +84,67 @@ class SignalRepository
      * @return Collection
      * @throws Exception
      */
-    public static function coinCollection(
-        object $filter,
-        object $sortable,
-        Collection $except_uuid = null
-    ): Collection
-    {
-        // cache hash
-        $hash_filter = (array) $filter;
-        $hash_filter['user_id'] = Auth::id();
-        if (key_exists('categories_uuid', $hash_filter) && in_array('favorites', $hash_filter['categories_uuid'])) {
-            $index = array_search('favorites', $filter->categories_uuid);
-            $hash_filter['categories_uuid'][$index] = Auth::user()->id;
-        }
-
-        $hash = md5(http_build_query(array_merge($hash_filter, (array)$sortable, $except_uuid->toArray())));
-
-        $cache_ttl = time() + 1200; // cache ttl: 20 minutes
-        return Cache::remember($hash, $cache_ttl, function() use ($filter, $sortable, $except_uuid) {
-            $builder = self::queryBuilder();
-
-            $end_date = new DateTimeImmutable(Signal::max('date'));
-            $start_date = $end_date->modify('-'. $filter->days .' days');
-
-            $builder->whereBetween('date', [
-                $start_date->format('Y-m-d'),
-                $end_date->format('Y-m-d')
-            ]);
-
-            if ($filter->categories_uuid) {
-                $builder->join('coin_categories', 'coin_categories.coin_uuid', '=', 'signals.coin_uuid');
-                $builder->whereIn('coin_categories.category_uuid', $filter->categories_uuid);
-
-                if (in_array('favorites', $filter->categories_uuid)) {
-                    $builder->leftJoin('user_favorites', 'user_favorites.coin_uuid', '=', 'signals.coin_uuid');
-                    $builder->orWhere('user_favorites.user_id', Auth::id());
-                }
-            }
-
-            if ($except_uuid) {
-                $builder->whereNotIn('signals.coin_uuid', $except_uuid);
-            }
-
-            $signals = $builder->get();
-    //        $signals = self::rankChangeCalculate($signals, $filter->signals);
-            $signals = self::rankChangeCalculate($signals, 0);
-            if (!$signals->count()) return $signals;
-
-            $changed_to = self::maxChangedRankByDay($signals, $end_date);
-            $signals_uuid = self::signalsChangedByRankByDate($changed_to, $end_date);
-
-            self::appendSignals($signals, $signals_uuid->toArray(), $signals->max('diff'), $filter->min_rank);
-
-            $signals = self::filterBySignals($signals, $filter->signals);
-
-            return self::sortBy(
-                $signals,
-                $sortable->column,
-                $sortable->direction
-            );
-        });
-    }
+//    public static function coinCollection(
+//        object $filter,
+//        object $sortable,
+//        Collection $except_uuid = null
+//    ): Collection
+//    {
+//        // cache hash
+//        $hash_filter = (array) $filter;
+//        $hash_filter['user_id'] = Auth::id();
+//        if (key_exists('categories_uuid', $hash_filter) && in_array('favorites', $hash_filter['categories_uuid'])) {
+//            $index = array_search('favorites', $filter->categories_uuid);
+//            $hash_filter['categories_uuid'][$index] = Auth::user()->id;
+//        }
+//
+//        $hash = md5(http_build_query(array_merge($hash_filter, (array)$sortable, $except_uuid->toArray())));
+//
+//        $cache_ttl = time() + 300; // cache ttl: 20 minutes
+//        return Cache::remember($hash, $cache_ttl, function() use ($filter, $sortable, $except_uuid) {
+//            $builder = self::queryBuilder();
+//
+//            $end_date = new DateTimeImmutable(Signal::max('date'));
+//            $start_date = $end_date->modify('-'. $filter->days .' days');
+//
+//            $builder->whereBetween('date', [
+//                $start_date->format('Y-m-d'),
+//                $end_date->format('Y-m-d')
+//            ]);
+//
+//            if ($filter->categories_uuid) {
+//                $builder->join('coin_categories', 'coin_categories.coin_uuid', '=', 'signals.coin_uuid');
+//                $builder->whereIn('coin_categories.category_uuid', $filter->categories_uuid);
+//
+//                if (in_array('favorites', $filter->categories_uuid)) {
+//                    $builder->leftJoin('user_favorites', 'user_favorites.coin_uuid', '=', 'signals.coin_uuid');
+//                    $builder->orWhere('user_favorites.user_id', Auth::id());
+//                }
+//            }
+//
+//            if ($except_uuid) {
+//                $builder->whereNotIn('signals.coin_uuid', $except_uuid);
+//            }
+//
+//            $signals = $builder->get();
+//    //        $signals = self::rankChangeCalculate($signals, $filter->signals);
+//            $signals = self::rankChangeCalculate($signals, 0);
+//            if (!$signals->count()) return $signals;
+//
+//            $changed_to = self::maxChangedRankByDay($signals, $end_date);
+//            $signals_uuid = self::signalsChangedByRankByDate($changed_to, $end_date);
+//
+//            self::appendSignals($signals, $signals_uuid->toArray(), $signals->max('diff'), $filter->min_rank);
+//
+//            $signals = self::filterBySignals($signals, $filter->signals);
+//
+//            return self::sortBy(
+//                $signals,
+//                $sortable->column,
+//                $sortable->direction
+//            );
+//        });
+//    }
 
     /**
      * @param object $filter
@@ -224,13 +288,14 @@ class SignalRepository
      * @return Builder
      * @throws Exception
      */
-    public static function queryBuilder(): Builder
+    private static function queryBuilder(): Builder
     {
         return DB::table('signals')
+            ->join('coin_categories', 'coin_categories.coin_uuid', '=', 'signals.coin_uuid')
             ->distinct()
-            ->select('signals.coin_uuid')
-            ->selectRaw('FIRST_VALUE(`rank`) OVER (PARTITION BY coin_uuid ORDER BY date ASC) previous_rank')
-            ->selectRaw('FIRST_VALUE(`rank`) OVER (PARTITION BY coin_uuid ORDER BY date DESC) current_rank');
+            ->select(['signals.coin_uuid', 'coin_categories.category_uuid'])
+            ->selectRaw('FIRST_VALUE(`rank`) OVER (PARTITION BY signals.coin_uuid ORDER BY date ASC) previous_rank')
+            ->selectRaw('FIRST_VALUE(`rank`) OVER (PARTITION BY signals.coin_uuid ORDER BY date DESC) current_rank');
     }
 
 }
