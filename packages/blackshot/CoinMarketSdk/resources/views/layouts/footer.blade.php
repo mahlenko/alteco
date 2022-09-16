@@ -63,8 +63,8 @@
                     </ul>
                     <ul class="nav__list">
                         <li>
-                            <a href="#">
-                                Условия и услуги
+                            <a href="{{ route('offer') }}">
+                                Оферта
                             </a>
                         </li>
                         <li>

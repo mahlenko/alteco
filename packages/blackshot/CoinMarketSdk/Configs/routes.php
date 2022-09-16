@@ -3,10 +3,16 @@
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('web')->group(function() {
-    //
+    // Home page
     Route::get('/', function() {
+        if (config('app.env') == 'local') {
+            return redirect()->route('login');
+        }
         return redirect('https://alteco-school.ru/cryptoscanner');
     })->name('home');
+
+    // Offer
+    Route::get('offer', [\Blackshot\CoinMarketSdk\Controllers\OfferController::class, 'index'])->name('offer');
 
     Route::post('/sync/webhook/payment', [\Blackshot\CoinMarketSdk\Controllers\SyncGetCources::class, 'webhook'])->name('webhook.payment');
     Route::get('/subscribe', [\Blackshot\CoinMarketSdk\Controllers\Subscribe::class, 'index'])->name('subscribe');
