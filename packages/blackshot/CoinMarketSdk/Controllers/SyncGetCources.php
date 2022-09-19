@@ -54,6 +54,7 @@ class SyncGetCources extends \App\Http\Controllers\Controller
             $expired_at = $user->expired_at->modify('+'. $tariff->days .' days');
 
 //            $user->setExpiredAt($expired_at);
+            $user->tariff_id = $tariff->id;
             $user->expired_at = $expired_at;
             $user->save();
         } else {
