@@ -9,12 +9,29 @@ use DateTimeImmutable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Ramsey\Uuid\Uuid;
 
 class CoinRepository
 {
+    /**
+     * Вернет список актуальных монет
+     * @param int $max_rank
+     * @param array $with
+     * @return mixed
+     */
+    public static function handle(int $max_rank = 1000, array $with = ['categories', 'info']): Collection
+    {
+        return Cache::remember('coins', time() + 900, function() use ($max_rank, $with) {
+            return Coin::query()
+                ->with($with)
+                ->whereBetween('rank', [1, $max_rank])
+                ->get();
+        });
+    }
+
     /**
      * @param int $id
      * @return Coin|null

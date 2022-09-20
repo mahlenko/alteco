@@ -18,13 +18,8 @@ class CoinCategoryRepository
      */
     static function allCategories(): Collection
     {
-//        return CategoryModel::join('coin_categories', 'coin_categories.category_uuid', '=', 'categories.uuid')
-//            ->select('categories.*')
-//            ->groupBy('coin_categories.category_uuid')
-//            ->get();
-
-        // 30 минут
-        return Cache::remember('allCategories', time() + 1200, function() {
+        // 12 часов
+        return Cache::remember('categories', time() + 60 * 60 * 12, function() {
             return CategoryModel::all();
         });
     }
@@ -35,8 +30,7 @@ class CoinCategoryRepository
      */
     static function categoriesForSelect(Authenticatable|User $user): Collection
     {
-        $isFree = !$user->isAdmin() && (is_null($user->tariff) || $user->tariff->isFree());
-//        $isFree = true;
+        $isFree = !$user->isAdmin() || $user->tariff->isFree();
 
         $categories = self::allCategories()
             ->groupBy('type')
@@ -47,7 +41,6 @@ class CoinCategoryRepository
             });
 
         // Закрытие фондов в бесплатном тарифе
-//        $isFree = true; // test
         if ($isFree) {
             /* @var Collection $founds */
             $founds = $categories[CategoryModel::TYPE_FOUNDS]->take(3);

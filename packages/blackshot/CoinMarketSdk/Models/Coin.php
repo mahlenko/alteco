@@ -10,8 +10,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use InvalidArgumentException;
 
 /**
  *
@@ -82,13 +86,17 @@ class Coin extends Model
             ->orderBy('last_updated');
     }
 
+    public function signals(): HasMany {
+        return $this->hasMany(Signal::class);
+    }
+
     /**
      * @param string $currency
-     * @return Quote
+     * @return Builder|Model|object|null
      */
-    public function current(string $currency = 'USD'): Quote
+    public function current(string $currency = 'USD')
     {
-        $quotes = Cache::get($this->cache_quotes_key, function() {
+        $quotes = Cache::remember('quotes:current:' . $this->uuid, time() + (60 * 5), function() {
             return $this->quotes;
         });
 
@@ -248,40 +256,29 @@ class Coin extends Model
     }
 
     /**
-     * @param Quote $quote
+     * @param array $data
      * @return Quote
-     * @throws Exception
      */
-    public function attachQuote(Quote $quote): Quote
+    public function attachQuote(array $data): Quote
     {
-        $quote->last_updated = $quote->last_updated instanceof DateTimeImmutable
-            ? $quote->last_updated->format('Y-m-d H:i:s')
-            : (new DateTimeImmutable($quote->last_updated))->format('Y-m-d H:i:s');
-
-        $last_update_quote = Quote::where([
-            'coin_uuid' => $this->uuid,
-            'currency' => $quote->currency
-        ])
-            ->where('last_updated', '>=', $quote->last_updated->format('Y-m-d 00:00:00'))
-            ->where('last_updated', '<=', $quote->last_updated->format('Y-m-d 23:59:59'))
-            ->first();
-
-
-        if ($last_update_quote) {
-            $store = $last_update_quote->fill($quote->toArray());
-        } else {
-            $store = $quote;
-            $store->coin_uuid = $this->uuid;
+        if (!$data['cmc_rank']) {
+            throw new InvalidArgumentException('Нет данных по ранку.');
         }
 
-        $store->save();
+        /*  */
+        $quote = $this->quotes()->create($data);
 
-        $this->rank = $quote->cmc_rank;
+        /*  */
+        $this->rank = $data['cmc_rank'];
+        $this->price = $data['price'];
+        $this->percent_change_1h = $data['percent_change_1h'];
+
         $this->save();
 
+        /*  */
         $this->forgetCache();
 
-        return $store;
+        return $quote;
     }
 
     public function forgetCache(): void

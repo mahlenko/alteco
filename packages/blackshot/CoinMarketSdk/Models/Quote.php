@@ -4,6 +4,7 @@ namespace Blackshot\CoinMarketSdk\Models;
 
 use DateTimeImmutable;
 use Exception;
+use Ramsey\Uuid\Uuid;
 
 class Quote extends \Illuminate\Database\Eloquent\Model
 {
@@ -44,5 +45,16 @@ class Quote extends \Illuminate\Database\Eloquent\Model
             $from->format('Y-m-d H:i:s'),
             $to->format('Y-m-d H:i:s')
         ]);
+    }
+
+    protected static function booted()
+    {
+        parent::booted();
+
+        parent::creating(function($quote) {
+            if (!$quote->uuid) {
+                $quote->uuid = Uuid::uuid4()->toString();
+            }
+        });
     }
 }

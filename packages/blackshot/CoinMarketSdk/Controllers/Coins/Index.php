@@ -8,10 +8,12 @@ use App\Models\User;
 use Blackshot\CoinMarketSdk\Commands\ExponentialRank;
 use Blackshot\CoinMarketSdk\Models\Banner;
 use Blackshot\CoinMarketSdk\Models\Coin;
-use Blackshot\CoinMarketSdk\Models\Signal;
 use Blackshot\CoinMarketSdk\Repositories\CoinCategoryRepository;
+use Blackshot\CoinMarketSdk\Repositories\CoinRepository;
+use Blackshot\CoinMarketSdk\Repositories\SignalRepository;
 use Blackshot\CoinMarketSdk\Repositories\UserSettingsRepository;
 use DateTimeImmutable;
+use DB;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
@@ -30,70 +32,49 @@ class Index extends Controller
     /**
      * @param Request $request
      * @return \Illuminate\Contracts\View\View
+     * @throws \Exception
      */
     public function index(Request $request): \Illuminate\Contracts\View\View
     {
         /* @var Authenticate|User $user */
         $user = Auth::user();
+        $favorites = $user->favorites()
+            ->select('coin_uuid')
+            ->pluck('coin_uuid');
 
-        /* @var object $filter */
-        $filter = UserSettingsRepository::get('coins_filter') ?? self::filterDefault();
+        $filter = $this->userFilter();
 
         $categories = CoinCategoryRepository::categoriesForSelect($user);
         $sortable = self::sortable($request);
-        $period = $this->filterDatePeriod($filter);
-        $coins = self::merged(
-            self::coins($user, $filter),
-            self::ranks($period)
+
+        $coins = self::emaCalculate(
+            self::filterCoinsList($user, $filter),
+            self::signalsCache($filter->date)
         );
 
-        // Исключить записи которые не изменились (ранг, эксп. ранг например)
-        if (in_array($sortable['column'], ['rank_30d', 'rank_60d', 'rank_period', 'exponential_rank_period'])) {
-            $coins = $coins->where($sortable['column'], '<>', null);
+        if (in_array($sortable['column'], ['rank_30d', 'rank_60d', 'rank_period', 'alpha', 'squid', 'beta', 'exponential_rank_period'])) {
+            $coins = $coins->whereNotNull($sortable['column']);
         }
 
+        /* Сортировка монет */
         if ($coins->count()) {
             $coins = $coins->sortBy(
                 $sortable['column'],
-                SORT_NATURAL,
+                SORT_REGULAR,
                 $sortable['direction'] == 'desc'
             );
         }
 
         return view('blackshot::coins.index', [
-            'coins' => self::paginate($coins, self::PER_PAGE),
+            'coins' => self::paginate($coins),
             'categories' => $categories,
             'filter' => $filter,
             'sortable' => $sortable,
-            'favorites' => $user->favorites ?? collect(),
-            'change' => $period,
-            'change_diff' => $period[0]->diff($period[1]),
+            'favorites' => $favorites,
             'promo' => $user->tariff->isFree()
                 ? self::bannerActive()
                 : null
         ]);
-    }
-
-    private function merged(
-        \Illuminate\Database\Eloquent\Collection $coins,
-        Collection $ranks
-    ): \Illuminate\Database\Eloquent\Collection|Collection {
-        $coin_ranks = $ranks->whereIn('coin_uuid', $coins->pluck('uuid'));
-
-        return $coins->map(function($coin) use ($coin_ranks) {
-            $rank = $coin_ranks->where('coin_uuid', $coin->uuid)->first();
-
-            if (!$rank || !$rank['exponential']) {
-                return $coin;
-            }
-
-            $coin->rank_period = $rank['rank'] ?? 0;
-            $coin->exponential_rank_period = $rank['exponential'];
-//                ? ceil($rank['exponential'][count($rank['exponential'])])
-//                ? ceil(array_sum($rank['exponential']) / count($rank['exponential']))
-//                : null;
-            return $coin;
-        })->where('exponential_rank_period', '<>', null);
     }
 
     /**
@@ -101,100 +82,68 @@ class Index extends Controller
      * @param object|null $filter
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    private static function coins(Authenticate|User $user, object $filter = null): \Illuminate\Database\Eloquent\Collection
+    private static function filterCoinsList(Authenticate|User $user, object $filter = null): \Illuminate\Database\Eloquent\Collection
     {
-        $categories = $filter?->category_uuid ?? null;
+        $coins = CoinRepository::handle();
 
-        $coins = Coin::select('coins.*');
-        $coins->whereBetween('coins.rank', [1, 1000]);
-        $coins->limit(1000);
-
-        if ($categories) {
-            $coins->whereHas('categories', function ($builder) use ($user, $categories) {
-                if (in_array('favorites', $categories)) {
-                    return $builder->where(function ($builder) use ($user, $categories) {
-                        $favorites_coin_uuid = $user->favorites->pluck('uuid');
-                        $builder->whereIn('coin_categories.category_uuid', $categories);
-                        $builder->orWhereIn('coins.uuid', $favorites_coin_uuid);
-                    });
-                }
-
-                return $builder->whereIn('category_uuid', $categories);
+        /* Фильтр по названию */
+        if (!is_null($filter->q) && !empty(trim($filter->q))) {
+            $query = Str::lower($filter->q);
+            $coins = $coins->filter(function(Coin $coin) use ($query) {
+                return Str::lower($coin->symbol) == $query
+                    || Str::contains(Str::lower($coin->name), $query);
             });
         }
 
-        if (!empty(trim($filter->q))) {
-            $query = trim($filter->q);
-            $coins->where(function ($table) use ($query) {
-                $table->where('name', 'like', '%' . $query . '%');
-                $table->orWhere('symbol', '=', $query);
+        /* Фильтр по категориям */
+        if (isset($filter->category_uuid)) {
+            $categories = $filter?->category_uuid ?? null;
+            $favorites_coin_uuid = [];
+
+            /* Избранные монеты */
+            if ($categories && in_array('favorites', $categories)) {
+                $favorites_coin_uuid = $user->favoritesUuids
+                    ->pluck('coin_uuid')
+                    ->toArray();
+
+                unset($categories[array_search('favorites', $categories)]);
+            }
+
+            $coins = $coins->filter(function(Coin $coin) use ($categories, $favorites_coin_uuid) {
+                return in_array($coin->uuid, $favorites_coin_uuid) // монета есть в избранном
+                    || $coin->categories->whereIn('uuid', $categories)->count(); // монета есть в категории
             });
         }
 
-        return $coins->get();
+        return $coins;
     }
 
     /**
-     * Рассчитает экспоненциальный ранк за период
+     * @param Collection $coins
+     * @param array $signals
+     * @return Collection
      */
-    private static function ranks(array $period): Collection
+    private static function emaCalculate(Collection $coins, array $signals): Collection
     {
-        $period_date = [
-            $period[0]->format('Y-m-d 00:00:00'),
-            $period[1]->format('Y-m-d 23:59:59')
-        ];
+        $coins = $coins->whereIn('uuid', array_keys($signals));
 
-        return Cache::remember(
-            key: 'exponential_ranks:' . md5(json_encode($period_date)),
-            ttl: time() + (60 * 60),
-            callback: function() use ($period_date) {
-
-                $ranks = Signal::select(['signals.coin_uuid', 'signals.rank', 'signals.diff', 'signals.date'])
-                    ->join('coins', 'coins.uuid', 'signals.coin_uuid')
-                    ->whereBetween('coins.rank', [1, 1000])
-                    ->whereBetween('date', $period_date)
-                    ->orderBy('date')
-                    ->get()
-                    ->groupBy('coin_uuid');
-
-                $result = $ranks->map(function($group) {
-                    $ema_data = ExponentialRank::ema($group->pluck('rank')->toArray());
-                    $ema_avg = $ema_data ? ceil(array_sum($ema_data) / count($ema_data)) : null;
-
-                    return collect([
-                        'coin_uuid' => $group->first()->coin_uuid,
-                        'rank' => $group->first()->rank - $group->last()->rank,
-                        'exponential' => $ema_avg
-                    ]);
-                })->filter(function($item) {
-                    return $item['exponential'];
-                });
-
-                return $result->sortBy('exponential')->values()->each(function($item, $index) {
-                    $item['exponential'] = min(1001 - $item['exponential'], 1000);
-                });
-            });
+        return $coins->each(function($coin) use ($signals) {
+            $coin->exponential_rank_period = ExponentialRank::ema($signals[$coin->uuid]);
+            return $coin;
+        });
     }
 
     /**
-     * @param $filter
-     * @return array<Carbon>
+     * @param array $period
+     * @return array
      */
-    private static function filterDatePeriod($filter): array
+    private static function signalsCache(array $period): array
     {
-        if (!$filter) {
-            $filter_date = [
-                Carbon::createFromTimestamp(strtotime('-7 day')),
-                Carbon::createFromTimestamp(strtotime('now'))
-            ];
-        } else {
-            $filter_date = [
-                Carbon::createFromTimestamp(strtotime($filter->date[0])),
-                Carbon::createFromTimestamp(strtotime($filter->date[1]))
-            ];
-        }
+        $signals = SignalRepository::handle(period: $period);
 
-        return $filter_date;
+        return $signals->sortBy('date')->mapWithKeys(function($items, $coin_uuid) {
+            return [ $coin_uuid => $items->pluck('rank') ];
+        })->toArray();
     }
 
     /**
@@ -223,23 +172,22 @@ class Index extends Controller
 
     /**
      * @param Collection $items
-     * @param int $per_page
      * @return LengthAwarePaginator
      */
-    private static function paginate(Collection $items, $per_page): LengthAwarePaginator
+    private static function paginate(Collection $items): LengthAwarePaginator
     {
         $paginate = $items->forPage(
             $current_page = Paginator::resolveCurrentPage(),
-            $per_page
-        )->load('info')->values();
+            self::PER_PAGE
+        );
 
         return App::make(
             LengthAwarePaginator::class,
             [
                 'items' => $paginate,
                 'total' => $items->count(),
-                'perPage' => $per_page,
-                'currentPage' =>  $current_page,
+                'perPage' => self::PER_PAGE,
+                'currentPage' => $current_page,
                 'options' => [
                     'path' => Paginator::resolveCurrentPath(),
                     'pageName' => 'page',
@@ -263,16 +211,46 @@ class Index extends Controller
         return $banners->random();
     }
 
-    private function filterDefault(): object
+    /**
+     * @param $filter
+     * @return array<Carbon>
+     */
+    private static function periodCarbonConverter($filter): array
     {
-        $now = new DateTimeImmutable();
+        if ($filter) {
+            return [
+                Carbon::createFromTimestamp(strtotime($filter->date[0])),
+                Carbon::createFromTimestamp(strtotime($filter->date[1]))
+            ];
+        }
+
+        return [
+            Carbon::createFromTimestamp(strtotime('-7 day')),
+            Carbon::createFromTimestamp(strtotime('now'))
+        ];
+    }
+
+    /**
+     * @return object
+     * @throws \Exception
+     */
+    private function userFilter(): object
+    {
+        $filter = UserSettingsRepository::get('coins_filter');
+        if ($filter) {
+            foreach ($filter->date as $key => $value) {
+                $filter->date[$key] = new DateTimeImmutable($value);
+            }
+
+            return $filter;
+        }
+
+        $dateStart = (new DateTimeImmutable('-6 days'))->setTime(0, 0);
+        $dateEnd = (new DateTimeImmutable('now'))->setTime(23, 59);
 
         $value = new stdClass();
         $value->q = null;
-        $value->date = [
-            $now->modify('-6 days')->format('Y-m-d 00:00:00'),
-            $now->format('Y-m-d 23:59:59'),
-        ];
+        $value->date = [ $dateStart, $dateEnd ];
 
         return $value;
     }

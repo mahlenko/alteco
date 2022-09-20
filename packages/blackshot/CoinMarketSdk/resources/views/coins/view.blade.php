@@ -135,24 +135,9 @@
                                 @endif
                             </p>
                         </div>
-{{--                        <div class="item-content__el">--}}
-{{--                            <p class="item-content__label">--}}
-{{--                                Индекс AltEco--}}
-{{--                            </p>--}}
-{{--                            <p class="item-content__info item-content__info_green">--}}
-{{--                                3.97--}}
-{{--                            </p>--}}
-{{--                        </div>--}}
-{{--                        <div class="item-content__el">--}}
-{{--                            <p class="item-content__label">--}}
-{{--                                Индекс AltEco--}}
-{{--                            </p>--}}
-{{--                            <p class="item-content__info item-content__info_green">--}}
-{{--                                1--}}
-{{--                            </p>--}}
-{{--                        </div>--}}
+
                         <div class="table__icons d-flex">
-                            @php($favorite = \Illuminate\Support\Facades\Auth::user()->favorites->where('uuid', $coin->uuid)->count())
+                            @php($favorite = \Illuminate\Support\Facades\Auth::user()->favoritesUuids->pluck('coin_uuid')->contains($coin->uuid))
                             <a href="javascript:void(0);" class="table__star {{ $favorite ? 'able' : null }}" title="Add to favorites" onclick="return favorites(this, '{{ $coin->uuid }}')">
                                 <img src="{{ asset('images/star-big.svg') }}" alt="" class="svg">
                             </a>
@@ -263,17 +248,20 @@
             </div>
 
             {{-- founds --}}
+            @php($founds = $coin->categories->where('type', \Blackshot\CoinMarketSdk\Models\CategoryModel::TYPE_FOUNDS))
+            @if ($founds->count())
             <div class="item-wrap">
                 <p class="item-wrap__title">
                     Инвестиционные Фонды:
                 </p>
 
                 <div class="item-wrap__links d-flex">
-                    @foreach($coin->categories()->founds()->get() as $category)
+                    @foreach($founds as $category)
                         <span class="portfolio-item">{{ $category->name }}</span>
                     @endforeach
                 </div>
             </div>
+            @endif
 
             {{-- Rating graph --}}
             <div class="item-graph">
@@ -286,7 +274,7 @@
             </ul>
 
             <style>.charts-container{width: 100%; height: 500px; position: relative; margin-bottom: 3rem}</style>
-            <div id="coin_chart_rank" class="charts-container" data-reverse="true" data-graph-json='@json($charts['rang'])'>
+            <div id="coin_chart_rank" class="charts-container" data-reverse="true" data-graph-json='@json($charts['rank'])'>
                 @if (\Illuminate\Support\Facades\Auth::user()->tariff->isFree())
                 <div class="blur-container">
                     <a href="{{ route('subscribe') }}" class="btn btn1">

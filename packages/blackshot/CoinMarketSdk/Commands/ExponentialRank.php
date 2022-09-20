@@ -7,8 +7,8 @@ use DateTimeImmutable;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use RuntimeException;
 
 /**
  * Расчет экспоненциального ранк
@@ -29,7 +29,7 @@ class ExponentialRank extends Command
      */
     protected $description = 'Расчет экспоненциального ранка';
 
-    const ALPHA_SMOOTH = 0.5;
+    const ALPHA_SMOOTH = 0.6;
 
     /**
      * Create a new command instance.
@@ -47,59 +47,59 @@ class ExponentialRank extends Command
      * @return int
      * @throws Exception
      */
-    public function handle()
+    public function handle(): int
     {
-        $ranks = Signal::where('date', '>', (new DateTimeImmutable('-3 month'))->format('Y-m-d'))
+        $builder = DB::table('signals');
+        $signals = $builder->select(['coin_uuid', 'rank'])
             ->get()
-            ->groupBy('coin_uuid');
+            ->mapToGroups(function($item) {
+                return [ $item->coin_uuid => $item->rank ];
+            });
 
-        foreach ($ranks as $coin_ranks) {
-            $exponential_rank = self::exponentialRank($coin_ranks->pluck('rank'));
+        foreach ($signals as $coin_uuid => $ranks) {
+            /* Рассчитаем экспоненциальный ранк */
+            try {
+                $ema = self::ema($ranks);
+            } catch (RuntimeException $exception) {
+                $this->error($exception);
+                return self::FAILURE;
+            }
 
-            //
+            if (!$ema) continue;
+
             DB::table('coins')
-                ->where('uuid', $coin_ranks->first()->coin_uuid)
-                ->update(['exponential_rank' => $exponential_rank]);
+                ->where('uuid', $coin_uuid)
+                ->update([
+                    'exponential_rank' => $ema
+                ]);
         }
 
-        return 0;
+        return self::SUCCESS;
     }
 
     /**
-     * @param Collection $collection
-     * @param float $alpha
-     * @return float|null
-     * @see https://excel2.ru/articles/eksponentsialnoe-sglazhivanie-v-ms-excel
+     * @param Collection|array $data
+     * @param int $timePeriod
+     * @return int|null
      */
-    public static function exponentialRank(Collection $collection, float $alpha = 0.6): ?float
+    public static function ema(Collection|array $data, int $timePeriod = 2): ?int
     {
-        $data = $collection->toArray();
-        $result = collect();
-
-        foreach ($collection as $index => $value) {
-            $exp_data = [
-                'index' => $index + 1,
-                'value' => $value,
-                'error' => null,
-                'exp' => null
-            ];
-
-            if ($index) {
-                $previous = $data[$index - 1];
-                if (!$previous['exp']) $previous['exp'] = $previous['value'];
-                $exp_data['exp'] = (1 - $alpha) * $previous['value'] + $alpha * $previous['exp'];
-                $exp_data['error'] = $exp_data['value'] - $exp_data['exp'];
-            }
-
-            $data[$index] = $exp_data;
-            $result->add($exp_data['exp']);
+        if (!function_exists('trader_ema')) {
+            throw new RuntimeException('Установите pecl пакет "trader".');
         }
 
-        return 1001 - $result->filter()->avg();
-    }
+        if ($data instanceof Collection) {
+            $data = $data->toArray();
+        }
 
-    public static function ema(array $numbers, int $timePeriod = 2): array|bool
-    {
-        return trader_ema($numbers, $timePeriod);
+        $result_ema = trader_ema($data, $timePeriod);
+
+        if (!$result_ema) return null;
+        $result_ema = array_values($result_ema);
+
+        // вычисляем как нужно Александру
+        $result = 1001 - $result_ema[count($result_ema) - 1];
+
+        return $result > 0 ? intval($result) : null;
     }
 }

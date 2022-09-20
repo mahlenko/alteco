@@ -83,6 +83,11 @@ class User extends Authenticatable
         );
     }
 
+    public function favoritesUuids(): HasMany
+    {
+        return $this->hasMany(UserFavorites::class);
+    }
+
     /**
      * @return HasManyThrough
      */
