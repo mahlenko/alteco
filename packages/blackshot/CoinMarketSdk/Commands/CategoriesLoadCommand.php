@@ -11,17 +11,17 @@ use GuzzleHttp\Exception\GuzzleException;
 /**
  *
  */
-class UpdateCategoriesCommand extends \Illuminate\Console\Command
+class CategoriesLoadCommand extends \Illuminate\Console\Command
 {
     /**
      * @var string
      */
-    protected $name = 'blackshot:category:update';
+    protected $name = 'blackshot:category:load';
 
     /**
      * @var string
      */
-    protected $description = 'Обновит список категорий';
+    protected $description = 'Загрузит доступные категории.';
 
     /**
      * @throws GuzzleException

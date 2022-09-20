@@ -31,7 +31,10 @@ class Kernel extends ConsoleKernel
         /* Загрузит новые монеты */
         $schedule->command('blackshot:coin:load')->hourly();
 
-        /* Загрузит категории монет */
+        /* Загрузит список категорий */
+        $schedule->command('blackshot:category:load')->daily();
+
+        /* Объединит монеты в категории */
         /* @todo Оптимизировать */
         $schedule->command('blackshot:coin:category')->everyMinute();
 
