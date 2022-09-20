@@ -5,7 +5,7 @@ namespace Blackshot\CoinMarketSdk\Controllers\Coins;
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\Authenticate;
 use App\Models\User;
-use Blackshot\CoinMarketSdk\Commands\ExponentialRank;
+use Blackshot\CoinMarketSdk\Commands\CoinExponentialRankCommand;
 use Blackshot\CoinMarketSdk\Models\Banner;
 use Blackshot\CoinMarketSdk\Models\Coin;
 use Blackshot\CoinMarketSdk\Repositories\CoinCategoryRepository;
@@ -13,7 +13,6 @@ use Blackshot\CoinMarketSdk\Repositories\CoinRepository;
 use Blackshot\CoinMarketSdk\Repositories\SignalRepository;
 use Blackshot\CoinMarketSdk\Repositories\UserSettingsRepository;
 use DateTimeImmutable;
-use DB;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
@@ -21,7 +20,6 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use stdClass;
 
@@ -128,7 +126,7 @@ class Index extends Controller
         $coins = $coins->whereIn('uuid', array_keys($signals));
 
         return $coins->each(function($coin) use ($signals) {
-            $coin->exponential_rank_period = ExponentialRank::ema($signals[$coin->uuid]);
+            $coin->exponential_rank_period = CoinExponentialRankCommand::ema($signals[$coin->uuid]);
             return $coin;
         });
     }

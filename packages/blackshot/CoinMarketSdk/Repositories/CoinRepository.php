@@ -83,8 +83,8 @@ class CoinRepository
             'slug' => $slug,
             'rank' => $rank,
             'is_active' => $is_active,
-            'first_historical_data' => $first_historical_data->format('Y-m-d H:i:s') ?: null,
-            'last_historical_data' => $last_historical_data->format('Y-m-d H:i:s') ?: null,
+            'first_historical_data' => $first_historical_data?->format('Y-m-d H:i:s'),
+            'last_historical_data' => $last_historical_data?->format('Y-m-d H:i:s'),
         ])->save();
 
         /*  */

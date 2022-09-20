@@ -2,17 +2,17 @@
 
 namespace Blackshot\CoinMarketSdk\Providers;
 
-use Blackshot\CoinMarketSdk\Commands\CategoryCommand;
-use Blackshot\CoinMarketSdk\Commands\ExponentialRank;
-use Blackshot\CoinMarketSdk\Commands\RatioCommand;
-use Blackshot\CoinMarketSdk\Commands\GetCrixIndex;
-use Blackshot\CoinMarketSdk\Commands\InfoCommand;
-use Blackshot\CoinMarketSdk\Commands\MapCommand;
-use Blackshot\CoinMarketSdk\Commands\QuotesFollowingCommand;
+use Blackshot\CoinMarketSdk\Commands\CoinCategoryCommand;
+use Blackshot\CoinMarketSdk\Commands\CoinExponentialRankCommand;
+use Blackshot\CoinMarketSdk\Commands\CoinRatioCommand;
+use Blackshot\CoinMarketSdk\Commands\ParseCrixCommand;
+use Blackshot\CoinMarketSdk\Commands\CoinInfoCommand;
+use Blackshot\CoinMarketSdk\Commands\CoinLoadCommand;
+use Blackshot\CoinMarketSdk\Commands\CoinQuotesCommand;
 use Blackshot\CoinMarketSdk\Commands\QuotesGroupDay;
-use Blackshot\CoinMarketSdk\Commands\RankChangeCommand;
-use Blackshot\CoinMarketSdk\Commands\SetCategoryTypesCommand;
-use Blackshot\CoinMarketSdk\Commands\SignalsCommand;
+use Blackshot\CoinMarketSdk\Commands\RankGroupCommand;
+use Blackshot\CoinMarketSdk\Commands\CategoryTypesCommand;
+use Blackshot\CoinMarketSdk\Commands\CoinSignalsCommand;
 use Blackshot\CoinMarketSdk\Commands\TestMailCommand;
 use Blackshot\CoinMarketSdk\Commands\UpdateCategoriesCommand;
 use Illuminate\Pagination\Paginator;
@@ -58,19 +58,17 @@ class CoinMarketProvider extends ServiceProvider
         //
         if ($this->app->runningInConsole()) {
             $this->commands([
+                CoinLoadCommand::class,
+                CoinInfoCommand::class,
+                CoinQuotesCommand::class,
+                CoinSignalsCommand::class,
+                CoinRatioCommand::class,
+                CoinExponentialRankCommand::class,
+                CoinCategoryCommand::class,
                 UpdateCategoriesCommand::class,
-                CategoryCommand::class,
-                SetCategoryTypesCommand::class,
-                InfoCommand::class,
-                MapCommand::class,
-                QuotesFollowingCommand::class,
-                QuotesGroupDay::class,
-                SignalsCommand::class,
-                ExponentialRank::class,
-                RankChangeCommand::class,
+                RankGroupCommand::class,
                 TestMailCommand::class,
-                RatioCommand::class,
-                GetCrixIndex::class,
+                ParseCrixCommand::class,
             ]);
         }
 

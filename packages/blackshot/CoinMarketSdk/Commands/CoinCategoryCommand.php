@@ -16,12 +16,12 @@ use Illuminate\Support\Str;
 /**
  *
  */
-class CategoryCommand extends \Illuminate\Console\Command
+class CoinCategoryCommand extends \Illuminate\Console\Command
 {
     /**
      * @var string
      */
-    protected $name = 'blackshot:category';
+    protected $name = 'blackshot:coin:category';
 
     /**
      * @var string

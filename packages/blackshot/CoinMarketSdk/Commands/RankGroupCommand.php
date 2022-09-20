@@ -9,21 +9,21 @@ use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 
-class RankChangeCommand extends Command
+class RankGroupCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'blackshot:rank:change {days}';
+    protected $signature = 'blackshot:rank:group {days}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Сбор изменения ранжирования за 30, 60 дней';
+    protected $description = 'Обновит ранк за 60 дней';
 
     /**
      * Create a new command instance.

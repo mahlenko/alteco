@@ -4,6 +4,7 @@ namespace Blackshot\CoinMarketSdk\Commands;
 
 use Blackshot\CoinMarketSdk\Models\CrixIndex;
 use Codenixsv\CoinGeckoApi\CoinGeckoClient;
+use Exception;
 use FastSimpleHTMLDom\Document;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
@@ -11,21 +12,21 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
-class GetCrixIndex extends Command
+class ParseCrixCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'blackshot:crix:indices';
+    protected $signature = 'blackshot:parse:crix';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Загрузит индексы Crix';
+    protected $description = 'Парсинг индексов Crix';
 
     /**
      * Create a new command instance.
@@ -51,7 +52,7 @@ class GetCrixIndex extends Command
                 $this->error('Данные не получены. Возможно нужно проверить парсинг и подправить.');
             }
 
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $this->error($exception->getMessage());
         }
 
