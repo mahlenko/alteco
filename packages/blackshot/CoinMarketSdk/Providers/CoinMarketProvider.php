@@ -9,12 +9,10 @@ use Blackshot\CoinMarketSdk\Commands\ParseCrixCommand;
 use Blackshot\CoinMarketSdk\Commands\CoinInfoCommand;
 use Blackshot\CoinMarketSdk\Commands\CoinLoadCommand;
 use Blackshot\CoinMarketSdk\Commands\CoinQuotesCommand;
-use Blackshot\CoinMarketSdk\Commands\QuotesGroupDay;
 use Blackshot\CoinMarketSdk\Commands\RankGroupCommand;
-use Blackshot\CoinMarketSdk\Commands\CategoryTypesCommand;
 use Blackshot\CoinMarketSdk\Commands\CoinSignalsCommand;
 use Blackshot\CoinMarketSdk\Commands\TestMailCommand;
-use Blackshot\CoinMarketSdk\Commands\UpdateCategoriesCommand;
+use Blackshot\CoinMarketSdk\Commands\CategoriesLoadCommand;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 
@@ -65,7 +63,7 @@ class CoinMarketProvider extends ServiceProvider
                 CoinRatioCommand::class,
                 CoinExponentialRankCommand::class,
                 CoinCategoryCommand::class,
-                UpdateCategoriesCommand::class,
+                CategoriesLoadCommand::class,
                 RankGroupCommand::class,
                 TestMailCommand::class,
                 ParseCrixCommand::class,
