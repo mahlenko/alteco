@@ -304,7 +304,7 @@ class CoinRepository
         $coin->info->save();
 
         $coin->forgetCache();
-        Artisan::call('cache:forget', ['cache:forget', ['key' => 'coins']]);
+        Artisan::call('cache:forget', ['key' => 'coins']);
 
         return $coin;
     }
