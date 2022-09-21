@@ -8,6 +8,7 @@ use Blackshot\CoinMarketSdk\Requests\CoinRequest;
 use DateTimeImmutable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -301,6 +302,9 @@ class CoinRepository
 
         $coin->info->description = $data['description'];
         $coin->info->save();
+
+        $coin->forgetCache();
+        Artisan::call('cache:forget', ['cache:forget', ['key' => 'coins']]);
 
         return $coin;
     }
