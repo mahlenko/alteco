@@ -57,7 +57,7 @@ class CoinInfoCommand extends Command
                 /* */
                 $response = (new Request())->run($method);
                 if (!$response->ok || !$response->data) {
-                    $this->warn('Сервер не вернул результат.');
+                    $this->error('CoinMarket API: '. $response->description);
                     return;
                 }
 

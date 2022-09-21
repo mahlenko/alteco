@@ -11,7 +11,8 @@ use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
- *
+ * Загрузит цены и рейтинг монет
+ * @see https://coinmarketcap.com/api/documentation/v1/#operation/getV2CryptocurrencyQuotesLatest
  */
 class CoinQuotesCommand extends Command
 {
@@ -23,7 +24,7 @@ class CoinQuotesCommand extends Command
     /**
      * @var string
      */
-    protected $description = 'Котировки валют';
+    protected $description = 'Цены и рейтинг монет';
 
     public function handle(): int
     {
@@ -39,6 +40,11 @@ class CoinQuotesCommand extends Command
 
             /* Получаем данные по ранку и стоимости */
             $response = (new Request())->run($method);
+            if (!$response->ok || !$response->data) {
+                $this->error('CoinMarket API: '. $response->description);
+                return;
+            }
+
             $result = self::store($chunk, $response->data);
 
             $this->table(array_keys($result[0]), $result);

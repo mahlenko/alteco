@@ -25,18 +25,31 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        /* Получит CRIX индекса */
-        $schedule->command('blackshot:parse:crix')->daily();
+        /*
+         | Спарсит CRIX индекс
+        */
+        $schedule->command('blackshot:parse:crix')
+            ->daily()
+            ->runInBackground();
 
-        /* Загрузит новые монеты */
-        $schedule->command('blackshot:coin:load')->hourly();
+        /*
+         | Обновит список категорий
+        */
+        $schedule
+            ->command('blackshot:category:load')
+            ->daily();
 
-        /* Загрузит список категорий */
-        $schedule->command('blackshot:category:load')->daily();
+        /*
+         | Проверяет обновления только для категорий
+         | у которых last_updated >= 1 дня.
+         | last_updated обновляется вместе с командой blackshot:category:load
+        */
+        $schedule->command('blackshot:coin:category', ['days' => 1])->daily();
 
-        /* Объединит монеты в категории */
-        /* @todo Оптимизировать */
-        $schedule->command('blackshot:coin:category')->everyMinute();
+        /*
+         | Загрузит новые монеты и сразу выполнит получение 'blackshot:coin:quotes'
+        */
+        $schedule->command('blackshot:coin:load')->daily();
 
         /*
          | 1) Получит котировки по монетам.
@@ -44,7 +57,7 @@ class Kernel extends ConsoleKernel
          | 3) Рассчитает коэффициенты alpha, squid, exponential
          |*/
         $schedule->command('blackshot:coin:quotes')
-            ->everyThirtyMinutes()
+            ->hourly()
             ->runInBackground();
 
         //

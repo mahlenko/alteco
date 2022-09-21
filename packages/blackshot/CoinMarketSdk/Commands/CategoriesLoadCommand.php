@@ -6,10 +6,11 @@ use Blackshot\CoinMarketSdk\Methods\Cryptocurrency\Categories;
 use Blackshot\CoinMarketSdk\Repositories\CategoryRepository;
 use Blackshot\CoinMarketSdk\Request;
 use DateTimeImmutable;
+use Exception;
 use GuzzleHttp\Exception\GuzzleException;
 
 /**
- *
+ * Загрузит или обновит список категорий
  */
 class CategoriesLoadCommand extends \Illuminate\Console\Command
 {
@@ -29,14 +30,14 @@ class CategoriesLoadCommand extends \Illuminate\Console\Command
     public function handle(): int
     {
         $action = new Categories();
-        $categories = (new Request())->run($action);
+        $response = (new Request())->run($action);
 
-        if (!$categories->ok) {
-            $this->error($categories->description);
+        if (!$response->ok || !$response->data) {
+            $this->error('CoinMarket API: '. $response->description);
             return self::FAILURE;
         }
 
-        foreach ($categories->data as $category)
+        foreach ($response->data as $category)
         {
             try {
                 CategoryRepository::createOrUpdate(
@@ -52,7 +53,7 @@ class CategoriesLoadCommand extends \Illuminate\Console\Command
                     $category->volume_change,
                     new DateTimeImmutable($category->last_updated)
                 );
-            } catch (\Exception $exception) {
+            } catch (Exception $exception) {
                 $this->error('ERROR: '. $category->name);
                 $this->error($exception->getMessage());
                 return self::FAILURE;

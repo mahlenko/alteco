@@ -43,6 +43,7 @@ class CoinLoadCommand extends Command
         $response = (new Request)->run($method);
 
         if (!$response->ok && !$response->data) {
+            $this->error('CoinMarket API: '. $response->description);
             return self::FAILURE;
         }
 
