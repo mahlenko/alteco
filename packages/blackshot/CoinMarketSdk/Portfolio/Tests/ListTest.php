@@ -1,14 +1,12 @@
 <?php
 
-namespace Tests\Feature;
+namespace Blackshot\CoinMarketSdk\Portfolio\Tests;
 
 use App\Models\User;
 use Blackshot\CoinMarketSdk\Portfolio\Actions\CreateAction;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class PortfolioListTest extends TestCase
+class ListTest extends TestCase
 {
     public function test_unauthorized_user()
     {

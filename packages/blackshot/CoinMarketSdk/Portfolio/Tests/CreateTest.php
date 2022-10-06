@@ -1,15 +1,14 @@
 <?php
 
-namespace Tests\Feature;
+namespace Blackshot\CoinMarketSdk\Portfolio\Tests;
 
 use App\Models\User;
 use Blackshot\CoinMarketSdk\Portfolio\Actions\CreateAction;
 use Blackshot\CoinMarketSdk\Portfolio\Models\Portfolio;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class PortfolioCreateTest extends TestCase
+class CreateTest extends TestCase
 {
     private User $user;
     private Portfolio $portfolio;

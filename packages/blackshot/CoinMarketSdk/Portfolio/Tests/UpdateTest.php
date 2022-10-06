@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Blackshot\CoinMarketSdk\Portfolio\Tests;
 
 use App\Models\User;
 use Blackshot\CoinMarketSdk\Portfolio\Actions\CreateAction;
@@ -10,7 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class PortfolioUpdateTest extends TestCase
+class UpdateTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
 

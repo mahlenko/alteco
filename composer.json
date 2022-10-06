@@ -39,7 +39,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/"
+            "Tests\\": "tests/",
+            "Blackshot\\CoinMarketSdk\\Portfolio\\Tests\\": "packages/blackshot/CoinMarketSdk/Portfolio/Tests"
         }
     },
     "scripts": {

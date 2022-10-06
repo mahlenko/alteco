@@ -11,6 +11,10 @@
         <testsuite name="Feature">
             <directory suffix="Test.php">./tests/Feature</directory>
         </testsuite>
+
+        <testsuite name="Portfolio">
+            <directory suffix="Test.php">./packages/blackshot/CoinMarketSdk/Portfolio/Tests</directory>
+        </testsuite>
     </testsuites>
     <coverage processUncoveredFiles="true">
         <include>

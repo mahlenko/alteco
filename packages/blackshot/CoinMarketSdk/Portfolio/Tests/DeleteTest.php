@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Blackshot\CoinMarketSdk\Portfolio\Tests;
 
 use App\Models\User;
 use Blackshot\CoinMarketSdk\Portfolio\Actions\CreateAction;
@@ -9,7 +9,7 @@ use Blackshot\CoinMarketSdk\Portfolio\Models\Portfolio;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class PortfolioDeleteTest extends TestCase
+class DeleteTest extends TestCase
 {
     use RefreshDatabase;
 
