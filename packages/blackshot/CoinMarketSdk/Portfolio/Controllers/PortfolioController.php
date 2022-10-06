@@ -20,15 +20,19 @@ class PortfolioController extends Controller
         return new PortfolioCollection(Auth::user()->portfolios);
     }
 
-    public function store(StoreRequest $request, Portfolio $portfolio = null): JsonResponse
+    public function store(
+        StoreRequest $request,
+        UpdateAction $update,
+        CreateAction $create,
+        Portfolio $portfolio = null): JsonResponse
     {
         $data = $request->validated();
 
         try {
             if ($portfolio) {
-                $portfolio = UpdateAction::handle(Auth::user(), $portfolio, $data);
+                $portfolio = $update::handle(Auth::user(), $portfolio, $data);
             } else {
-                $portfolio = CreateAction::handle(Auth::user(), $data['name']);
+                $portfolio = $create::handle(Auth::user(), $data['name']);
             }
         } catch (\Exception $exception) {
             return $this->fail($exception->getMessage());
@@ -37,12 +41,12 @@ class PortfolioController extends Controller
         return $this->ok(data: $portfolio);
     }
 
-    public function delete(DeleteRequest $request): JsonResponse
+    public function delete(DeleteRequest $request, DeleteAction $action): JsonResponse
     {
         $data = $request->validated();
 
         try {
-            DeleteAction::handle(Auth::user(), Portfolio::find($data['id']));
+            $action::handle(Auth::user(), Portfolio::find($data['id']));
         } catch (\Exception $exception) {
             return $this->fail($exception->getMessage());
         }

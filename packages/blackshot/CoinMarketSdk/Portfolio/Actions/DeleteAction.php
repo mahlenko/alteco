@@ -8,12 +8,12 @@ use RuntimeException;
 
 class DeleteAction
 {
-    public static function handle(User $user, Portfolio $portfolio)
+    public static function handle(User $user, Portfolio $portfolio): ?bool
     {
         if (!$portfolio->isUserTo($user) && !$user->isAdmin()) {
             throw new RuntimeException('Вы не можете удалить это портфолио.', 500);
         }
 
-        $portfolio->delete();
+        return $portfolio->delete();
     }
 }
