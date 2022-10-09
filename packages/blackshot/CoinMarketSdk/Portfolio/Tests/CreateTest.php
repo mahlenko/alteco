@@ -3,7 +3,7 @@
 namespace Blackshot\CoinMarketSdk\Portfolio\Tests;
 
 use App\Models\User;
-use Blackshot\CoinMarketSdk\Portfolio\Actions\CreateAction;
+use Blackshot\CoinMarketSdk\Portfolio\Actions\StoreAction;
 use Blackshot\CoinMarketSdk\Portfolio\Models\Portfolio;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -17,24 +17,25 @@ class CreateTest extends TestCase
 
     public function test_create()
     {
-        $portfolio = CreateAction::handle($this->user, 'default');
+        $portfolio = StoreAction::handle($this->user, 'default');
         $this->assertDatabaseCount(Portfolio::class, 1);
         $this->assertEquals($this->user->id, $portfolio->user_id);
     }
 
     public function test_ucfirst_name()
     {
-        $portfolio = CreateAction::handle($this->user, 'default');
+        $portfolio = StoreAction::handle($this->user, 'default');
         $this->assertEquals('Default', $portfolio->name);
     }
 
     public function test_limit_max_portfolios()
     {
-        $this->expectExceptionCode(613);
-
-        CreateAction::handle($this->user, 'First');
-        CreateAction::handle($this->user, 'Two');
-        CreateAction::handle($this->user, 'Three');
+        $this->expectExceptionCode(603);
+        StoreAction::handle($this->user, 'First');
+        StoreAction::handle($this->user, 'Two');
+        StoreAction::handle($this->user, 'Three'); // send exceptions
+        StoreAction::handle($this->user, 'Four');
+        StoreAction::handle($this->user, 'Five');
 
         $this->assertDatabaseCount(Portfolio::class, 2);
         $this->assertEquals('Two', Portfolio::all()->last()->name);

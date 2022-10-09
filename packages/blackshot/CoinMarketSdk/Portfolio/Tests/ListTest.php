@@ -3,7 +3,7 @@
 namespace Blackshot\CoinMarketSdk\Portfolio\Tests;
 
 use App\Models\User;
-use Blackshot\CoinMarketSdk\Portfolio\Actions\CreateAction;
+use Blackshot\CoinMarketSdk\Portfolio\Actions\StoreAction;
 use Tests\TestCase;
 
 class ListTest extends TestCase
@@ -17,7 +17,7 @@ class ListTest extends TestCase
     public function test_request()
     {
         $user = User::factory()->create();
-        $portfolio = CreateAction::handle($user, 'default');
+        $portfolio = StoreAction::handle($user, 'default');
 
         $response = $this
             ->actingAs($user)

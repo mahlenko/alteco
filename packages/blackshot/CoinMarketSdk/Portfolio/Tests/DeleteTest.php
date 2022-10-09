@@ -3,7 +3,7 @@
 namespace Blackshot\CoinMarketSdk\Portfolio\Tests;
 
 use App\Models\User;
-use Blackshot\CoinMarketSdk\Portfolio\Actions\CreateAction;
+use Blackshot\CoinMarketSdk\Portfolio\Actions\StoreAction;
 use Blackshot\CoinMarketSdk\Portfolio\Actions\DeleteAction;
 use Blackshot\CoinMarketSdk\Portfolio\Models\Portfolio;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -15,7 +15,7 @@ class DeleteTest extends TestCase
 
     public function test_delete()
     {
-        DeleteAction::handle($this->user, $this->portfolio);
+        DeleteAction::handle($this->user, $this->portfolio->id);
         $this->assertDatabaseCount(Portfolio::class, 0);
     }
 
@@ -26,13 +26,13 @@ class DeleteTest extends TestCase
         $user_other = User::factory()->create();
 
         $this->expectExceptionCode(500);
-        DeleteAction::handle($user_other, $this->portfolio);
+        DeleteAction::handle($user_other, $this->portfolio->id);
     }
 
     public function test_admin_user()
     {
         $admin = User::factory()->admin()->create();
-        DeleteAction::handle($admin, $this->portfolio);
+        DeleteAction::handle($admin, $this->portfolio->id);
 
         $this->assertDatabaseCount(Portfolio::class, 0);
     }
@@ -60,6 +60,6 @@ class DeleteTest extends TestCase
         parent::setUp();
 
         $this->user = User::factory()->create();
-        $this->portfolio = CreateAction::handle($this->user, 'test');
+        $this->portfolio = StoreAction::handle($this->user, 'test');
     }
 }

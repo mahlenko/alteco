@@ -3,8 +3,7 @@
 namespace Blackshot\CoinMarketSdk\Portfolio\Tests;
 
 use App\Models\User;
-use Blackshot\CoinMarketSdk\Portfolio\Actions\CreateAction;
-use Blackshot\CoinMarketSdk\Portfolio\Actions\UpdateAction;
+use Blackshot\CoinMarketSdk\Portfolio\Actions\StoreAction;
 use Blackshot\CoinMarketSdk\Portfolio\Models\Portfolio;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -20,14 +19,14 @@ class UpdateTest extends TestCase
     public function test_update()
     {
         $new_name = ucfirst('New name');
-        UpdateAction::handle($this->user, $this->portfolio, ['name' => $new_name]);
+        StoreAction::handle($this->user, $new_name, $this->portfolio);
 
         $this->assertEquals($new_name, $this->portfolio->name);
     }
 
     public function test_ucfirst_name()
     {
-        UpdateAction::handle($this->user, $this->portfolio, ['name' => 'new name']);
+        StoreAction::handle($this->user, 'new name', $this->portfolio);
         $this->assertEquals('New name', $this->portfolio->name);
     }
 
@@ -36,7 +35,7 @@ class UpdateTest extends TestCase
         $other_user = User::factory()->create();
 
         $this->expectExceptionCode(403);
-        UpdateAction::handle($other_user, $this->portfolio, ['name' => 'new name']);
+        StoreAction::handle($other_user, 'new name', $this->portfolio);
     }
 
     public function test_admin_user()
@@ -44,7 +43,7 @@ class UpdateTest extends TestCase
         $admin = User::factory()->admin()->create();
         $new_name = ucfirst($this->faker->word);
 
-        UpdateAction::handle($admin, $this->portfolio, ['name' => $new_name]);
+        StoreAction::handle($admin, $new_name, $this->portfolio);
 
         $this->assertEquals($new_name, $this->portfolio->name);
     }
@@ -75,6 +74,6 @@ class UpdateTest extends TestCase
         parent::setUp();
 
         $this->user = User::factory()->create();
-        $this->portfolio = CreateAction::handle($this->user, 'name');
+        $this->portfolio = StoreAction::handle($this->user, 'name');
     }
 }
