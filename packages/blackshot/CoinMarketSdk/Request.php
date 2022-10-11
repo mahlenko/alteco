@@ -80,7 +80,7 @@ class Request
         $path = Str::replace(__NAMESPACE__ . '\Methods\\', '', get_class($method));
         $path = Str::replace('\\', '/', Str::lower($path));
 
-        return rtrim($this->server, '/') .'/'. $path . $endpoint;
+        return rtrim($this->server, '/') .'/'. $method::VERSION .'/'. $path . $endpoint;
     }
 
 }

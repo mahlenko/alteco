@@ -4,6 +4,8 @@ namespace Blackshot\CoinMarketSdk\Methods;
 
 abstract class Method
 {
+    const VERSION = 'v1';
+
     /**
      * @param array $data
      */

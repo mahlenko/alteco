@@ -4,6 +4,7 @@ namespace Blackshot\CoinMarketSdk\Controllers\Coins;
 
 use App\Http\Controllers\Controller;
 use Blackshot\CoinMarketSdk\Helpers\NumberHelper;
+use Blackshot\CoinMarketSdk\Models\Coin;
 use Blackshot\CoinMarketSdk\Repositories\CoinRepository;
 use Blackshot\CoinMarketSdk\Repositories\QuoteRepository;
 use Blackshot\CoinMarketSdk\Repositories\SignalRepository;
@@ -20,7 +21,9 @@ class View extends Controller
         /*  */
         $coin = CoinRepository::handle()
             ->where('uuid', $uuid)
-            ->firstOrFail();
+            ->first();
+
+        if (!$coin) abort(404);
 
         /*  */
         $quotes = QuoteRepository::price($coin)?->first()

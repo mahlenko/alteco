@@ -13,14 +13,14 @@ use RuntimeException;
 /**
  * Расчет экспоненциального ранк
  */
-class ExponentialRank extends Command
+class CoinExponentialRankCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'blackshot:rank:exponential';
+    protected $signature = 'blackshot:coin:exponential';
 
     /**
      * The console command description.

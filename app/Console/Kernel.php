@@ -2,7 +2,7 @@
 
 namespace App\Console;
 
-use Blackshot\CoinMarketSdk\Commands\QuotesFollowingCommand;
+use Blackshot\CoinMarketSdk\Commands\CoinQuotesCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -25,36 +25,40 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        /* загрузка монет и их рейтинга */
-        $schedule->command('blackshot:coin:map')->hourly();
-
-        /* обновит информацию по монетам (логотип, описание, ссылки) */
-        $schedule->command('blackshot:coin:info')->daily()->runInBackground();
-
-        /* получит цену на монеты, проценты на сколько изменилась монета, также рейтинг как и в map */
-        $schedule->command('blackshot:coin:quotes')->everySixHours()->runInBackground();
-
-        /* цены на избранные монеты - тоже что и предыдущая функция, только для избранных и чаще */
-        $schedule->command('blackshot:coin:quotes', ['--favorite'])->hourly();
-
-        /* Категории для монет */
-        $schedule->command('blackshot:category')->everyMinute();
-
-        /* Соберет сигналы - временно, чтобы загрузить старые сигналы */
-//        $schedule->command('blackshot:signals')->dailyAt('02:00');
-
-        /* Рассчитать rank 30 дней */
-        $schedule->command('blackshot:rank:change 30')
-            ->hourly()
+        /*
+         | Спарсит CRIX индекс
+        */
+        $schedule->command('blackshot:parse:crix')
+            ->daily()
             ->runInBackground();
 
-        /* Рассчитать rank 60 дней */
-        $schedule->command('blackshot:rank:change 60')
+        /*
+         | Обновит список категорий
+        */
+        $schedule
+            ->command('blackshot:category:load')
+            ->daily();
+
+        /*
+         | Проверяет обновления только для категорий
+         | у которых last_updated >= 1 дня.
+         | last_updated обновляется вместе с командой blackshot:category:load
+        */
+        $schedule->command('blackshot:coin:category', ['days' => 1])->daily();
+
+        /*
+         | Загрузит новые монеты и сразу выполнит получение 'blackshot:coin:quotes'
+        */
+        $schedule->command('blackshot:coin:load')->daily();
+
+        /*
+         | 1) Получит котировки по монетам.
+         | 2) Обновит сигналы по монетам.
+         | 3) Рассчитает коэффициенты alpha, squid, exponential
+         |*/
+        $schedule->command('blackshot:coin:quotes')
             ->hourly()
             ->runInBackground();
-
-        /* Получение CRIX индекса */
-        $schedule->command('blackshot:crix:indices')->daily();
 
         //
         $schedule->command('telescope:prune')->daily();

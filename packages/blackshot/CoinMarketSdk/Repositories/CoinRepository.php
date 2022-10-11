@@ -8,6 +8,7 @@ use Blackshot\CoinMarketSdk\Requests\CoinRequest;
 use DateTimeImmutable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -83,8 +84,8 @@ class CoinRepository
             'slug' => $slug,
             'rank' => $rank,
             'is_active' => $is_active,
-            'first_historical_data' => $first_historical_data->format('Y-m-d H:i:s') ?: null,
-            'last_historical_data' => $last_historical_data->format('Y-m-d H:i:s') ?: null,
+            'first_historical_data' => $first_historical_data?->format('Y-m-d H:i:s'),
+            'last_historical_data' => $last_historical_data?->format('Y-m-d H:i:s'),
         ])->save();
 
         /*  */
@@ -301,6 +302,9 @@ class CoinRepository
 
         $coin->info->description = $data['description'];
         $coin->info->save();
+
+        $coin->forgetCache();
+        Artisan::call('cache:forget', ['key' => 'coins']);
 
         return $coin;
     }

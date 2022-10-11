@@ -9,6 +9,7 @@ use Blackshot\CoinMarketSdk\Models\UserCoinBuying;
 use Blackshot\CoinMarketSdk\Models\UserFavorites;
 use Blackshot\CoinMarketSdk\Models\UserPaymentsModel;
 use Blackshot\CoinMarketSdk\Models\UserSetting;
+use Blackshot\CoinMarketSdk\Portfolio\Models\Portfolio;
 use DateTimeImmutable;
 use DomainException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -291,6 +292,10 @@ class User extends Authenticatable
     public function payments(): HasMany
     {
         return $this->hasMany(UserPaymentsModel::class);
+    }
+
+    public function portfolios(): HasMany {
+        return $this->hasMany(Portfolio::class, 'user_id', 'id');
     }
 
     /**

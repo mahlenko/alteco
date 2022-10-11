@@ -262,7 +262,7 @@ class Coin extends Model
     public function attachQuote(array $data): Quote
     {
         if (!$data['cmc_rank']) {
-            throw new InvalidArgumentException('Нет данных по ранку.');
+            throw new InvalidArgumentException('Нет данных по ранку.', 604);
         }
 
         /*  */
@@ -285,6 +285,18 @@ class Coin extends Model
     {
         if (Cache::has($this->cache_quotes_key)) {
             Cache::forget($this->cache_quotes_key);
+        }
+
+        if (Cache::has('signals:'. $this->uuid)) {
+            Cache::forget('signals:'. $this->uuid);
+        }
+
+        if (Cache::has('price:'. $this->uuid)) {
+            Cache::forget('price:'. $this->uuid);
+        }
+
+        if (Cache::has('quotes:current:'. $this->uuid)) {
+            Cache::forget('quotes:current:'. $this->uuid);
         }
     }
 

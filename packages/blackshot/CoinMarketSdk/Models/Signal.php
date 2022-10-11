@@ -11,8 +11,6 @@ class Signal extends Model
     use HasFactory;
 
     protected $fillable = [
-        'coin_uuid',
-        'previous_rank',
         'rank',
         'diff',
         'date'

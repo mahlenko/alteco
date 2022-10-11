@@ -14,7 +14,7 @@ use Illuminate\Console\Command;
  * Requires an PECL PHP Trader lib
  * install: pecl install trader
  */
-class RatioCommand extends Command
+class CoinRatioCommand extends Command
 {
     /**
      * The name and signature of the console command.
@@ -42,7 +42,7 @@ class RatioCommand extends Command
 
     public function handle()
     {
-        $startTime = microtime(true);
+        $this->info($this->description);
 
         $quotes = QuoteRepository::price();
 
@@ -79,11 +79,7 @@ class RatioCommand extends Command
             ];
         }
 
-        $timeEnd = microtime(true) - $startTime;
-
         $this->table(['name', 'beta', 'alpha', 'squid'], $tableResult);
-        $this->info('Count: ' . count($tableResult));
-        $this->info('Time: ' . $timeEnd .' ms');
 
         return self::SUCCESS;
     }
