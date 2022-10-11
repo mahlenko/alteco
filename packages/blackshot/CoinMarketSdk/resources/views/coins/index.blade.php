@@ -90,7 +90,7 @@
                        name="filter[date]"
                        class="date"
                        id="change-picker"
-                       value="{{ $change[0]->format('m/d/Y') }} - {{ $change[1]->format('m/d/Y') }}"
+                       value="{{ $filter->date[0]->format('m/d/Y') }} - {{ $filter->date[1]->format('m/d/Y') }}"
                        data-type="datepicker">
             </div>
 
@@ -123,7 +123,7 @@
                     <td class="active {{ $sortable['column'] == 'rank_period' ? 'main' : null }}">
                         Ранг
                         <span class="ms-1 badge text-secondary bg-light">
-                            {{ $change_diff->days + 1 }}д
+                            {{ $filter->date[0]->diff($filter->date[1])->days + 1 }}д
                         </span>
                         @include('blackshot::partials.sortable', ['column' => 'rank_period', 'default' => 'desc'])
                     </td>
@@ -246,7 +246,7 @@
                             <div class="table__icons d-flex">
                                 <a href="javascript:void(0);"
                                    onclick="return favorites(this, '{{ $coin->uuid }}')"
-                                   class="table__star favorite {{ $favorites->where('uuid', $coin->uuid)->count() ? 'able' : '' }}">
+                                   class="table__star favorite {{ $favorites->contains($coin->uuid) ? 'able' : '' }}">
                                     <img src="{{ asset('css/img/table/star.svg') }}" alt="" class="svg">
                                 </a>
 

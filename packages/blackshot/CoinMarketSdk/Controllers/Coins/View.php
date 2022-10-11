@@ -2,14 +2,14 @@
 
 namespace Blackshot\CoinMarketSdk\Controllers\Coins;
 
+use App\Http\Controllers\Controller;
 use Blackshot\CoinMarketSdk\Helpers\NumberHelper;
-use Blackshot\CoinMarketSdk\Models\Coin;
-use Blackshot\CoinMarketSdk\Models\Signal;
-use DateTimeImmutable;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Str;
+use Blackshot\CoinMarketSdk\Repositories\CoinRepository;
+use Blackshot\CoinMarketSdk\Repositories\QuoteRepository;
+use Blackshot\CoinMarketSdk\Repositories\SignalRepository;
+use DB;
 
-class View extends \App\Http\Controllers\Controller
+class View extends Controller
 {
     /**
      * @param string $uuid
@@ -17,29 +17,26 @@ class View extends \App\Http\Controllers\Controller
      */
     public function index(string $uuid): \Illuminate\Contracts\View\View
     {
-        $coin = Coin::where('uuid', $uuid)->firstOrFail();
+        /*  */
+        $coin = CoinRepository::handle()
+            ->where('uuid', $uuid)
+            ->firstOrFail();
 
-        $cache_ttl = time() + 1200; // cache ttl: 20 minutes
-        $signals = Cache::remember('signals:'. $coin->uuid, $cache_ttl,
-            function() use ($coin) {
-                return Signal::select(['rank', 'date'])
-                    ->where('coin_uuid', $coin->uuid)
-                    ->where('date', '>=', new DateTimeImmutable('-1 year'))
-                    ->get();
+        /*  */
+        $quotes = QuoteRepository::price($coin)?->first()
+            ->map(function($quote) {
+                $quote['price'] = NumberHelper::format($quote['price']);
+                return $quote;
             });
 
-        $prices = [];
-        foreach($coin->quotes as $quote) {
-            $price = Str::replace(' ', '', NumberHelper::format($quote->price));
-//            $prices[$quote->last_updated->format('Y-m-d')] = floatval($price);
-            $prices[$quote->last_updated->format('Y-m-d')] = $price;
-        }
+        /*  */
+        $signals = SignalRepository::handle($coin)?->first();
 
         return view('blackshot::coins.view', [
             'coin' => $coin,
             'charts' => [
-                'rang' => $signals->pluck('rank', 'date'),
-                'prices' => $prices
+                'rank' => $signals->pluck('rank', 'date'),
+                'prices' => $quotes->pluck('price', 'last_updated')
             ],
         ]);
     }

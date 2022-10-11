@@ -2,6 +2,10 @@
 
 namespace Blackshot\CoinMarketSdk\Methods\Cryptocurrency\Quotes;
 
+/*
+ | Метод получения цен токенов
+ |
+*/
 class Latest extends \Blackshot\CoinMarketSdk\Methods\Method
 {
     public string $id;

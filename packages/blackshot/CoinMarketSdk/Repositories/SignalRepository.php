@@ -3,6 +3,7 @@
 namespace Blackshot\CoinMarketSdk\Repositories;
 
 use App\Models\User;
+use Blackshot\CoinMarketSdk\Models\Coin;
 use Blackshot\CoinMarketSdk\Models\Signal;
 use DateTimeImmutable;
 use Exception;
@@ -16,6 +17,35 @@ use Illuminate\Support\Facades\DB;
  */
 class SignalRepository
 {
+    public static function handle(Coin $coin = null, array $period = []): Collection
+    {
+        $cacheKey = $coin ? 'signals:'. $coin->uuid : 'signals:all';
+
+        if ($period) {
+            $prefix = $coin ? $cacheKey .':' : 'signals:';
+            $cacheKey = $prefix . join(',', [
+                $period[0]->format('Y-m-d'),
+                $period[1]->format('Y-m-d')
+            ]);
+        }
+
+        return Cache::remember($cacheKey, time() + (60 * 30), function() use ($coin, $period) {
+            $builder = DB::table('signals')
+                ->select(['coin_uuid', 'rank', 'date'])
+                ->orderBy('date');
+
+            if ($coin) $builder->where('coin_uuid', $coin->uuid);
+            if ($period) $builder->whereBetween('date', $period);
+
+            return $builder->get()->mapToGroups(function($signal) {
+                return [$signal->coin_uuid => [
+                    'rank' => $signal->rank,
+                    'date' => $signal->date
+                ]];
+            });
+        });
+    }
+
     /**
      * Вернет изменение монет за промежуток времени
      * @param int $days
