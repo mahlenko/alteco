@@ -4,8 +4,8 @@ namespace Blackshot\CoinMarketSdk\Portfolio\Controllers;
 
 use App\Http\Controllers\Controller;
 use Auth;
-use Blackshot\CoinMarketSdk\Portfolio\Actions\DeleteAction;
-use Blackshot\CoinMarketSdk\Portfolio\Actions\StoreAction;
+use Blackshot\CoinMarketSdk\Portfolio\Actions\Portfolio\DeleteAction;
+use Blackshot\CoinMarketSdk\Portfolio\Actions\Portfolio\StoreAction;
 use Blackshot\CoinMarketSdk\Portfolio\Models\Portfolio;
 use Blackshot\CoinMarketSdk\Portfolio\Requests\DeleteRequest;
 use Blackshot\CoinMarketSdk\Portfolio\Requests\StoreRequest;
