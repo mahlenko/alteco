@@ -37,7 +37,7 @@ class CreateTest extends TestCase
         StoreAction::handle($this->user, 'Four');
         StoreAction::handle($this->user, 'Five');
 
-        $this->assertDatabaseCount(Portfolio::class, 2);
+        $this->assertDatabaseCount(Portfolio::class, config('portfolio.max_portfolios'));
         $this->assertEquals('Two', Portfolio::all()->last()->name);
     }
 

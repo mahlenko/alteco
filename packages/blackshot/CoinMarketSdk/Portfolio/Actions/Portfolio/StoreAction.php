@@ -9,10 +9,6 @@ use RuntimeException;
 
 class StoreAction
 {
-    const MAX_PORTFOLIO = 2;
-
-    const LIMIT_ERROR = 'Максимальное количество имеющихся портфолио ' . self::MAX_PORTFOLIO.'.';
-
     /**
      * @param User $user
      * @param string $name
@@ -26,8 +22,9 @@ class StoreAction
         }
 
         if (!$portfolio) {
-            if ($user->portfolios()->count() >= self::MAX_PORTFOLIO) {
-                throw new RuntimeException(self::LIMIT_ERROR, 603);
+            $max_portfolios = config('portfolio.max_portfolios');
+            if ($user->portfolios()->count() >= $max_portfolios) {
+                throw new RuntimeException('Максимальное количество имеющихся портфолио '. $max_portfolios .'.', 603);
             }
 
             // Create new portfolio
