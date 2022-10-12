@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories;
+namespace Blackshot\CoinMarketSdk\Portfolio\Database\factories;
 
 use App\Models\User;
 use Blackshot\CoinMarketSdk\Portfolio\Models\Portfolio;
