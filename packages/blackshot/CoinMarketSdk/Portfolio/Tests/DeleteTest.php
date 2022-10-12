@@ -3,8 +3,8 @@
 namespace Blackshot\CoinMarketSdk\Portfolio\Tests;
 
 use App\Models\User;
-use Blackshot\CoinMarketSdk\Portfolio\Actions\StoreAction;
-use Blackshot\CoinMarketSdk\Portfolio\Actions\DeleteAction;
+use Blackshot\CoinMarketSdk\Portfolio\Actions\Portfolio\DeleteAction;
+use Blackshot\CoinMarketSdk\Portfolio\Actions\Portfolio\StoreAction;
 use Blackshot\CoinMarketSdk\Portfolio\Models\Portfolio;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

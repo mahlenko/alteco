@@ -179,6 +179,9 @@ return [
 
         // BlackShot CoinManager
         \Blackshot\CoinMarketSdk\Providers\CoinMarketProvider::class,
+
+        // Packages Provider
+        \Blackshot\CoinMarketSdk\Portfolio\PortfolioProvider::class,
     ],
 
     /*

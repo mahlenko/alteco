@@ -3,7 +3,7 @@
 namespace Blackshot\CoinMarketSdk\Portfolio\Tests;
 
 use App\Models\User;
-use Blackshot\CoinMarketSdk\Portfolio\Actions\StoreAction;
+use Blackshot\CoinMarketSdk\Portfolio\Actions\Portfolio\StoreAction;
 use Tests\TestCase;
 
 class ListTest extends TestCase

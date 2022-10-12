@@ -3,15 +3,14 @@
 namespace Blackshot\CoinMarketSdk\Portfolio\Tests;
 
 use App\Models\User;
-use Blackshot\CoinMarketSdk\Portfolio\Actions\StoreAction;
+use Blackshot\CoinMarketSdk\Portfolio\Actions\Portfolio\StoreAction;
 use Blackshot\CoinMarketSdk\Portfolio\Models\Portfolio;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class UpdateTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use RefreshDatabase;
 
     private User $user;
     private Portfolio $portfolio;
@@ -41,7 +40,7 @@ class UpdateTest extends TestCase
     public function test_admin_user()
     {
         $admin = User::factory()->admin()->create();
-        $new_name = ucfirst($this->faker->word);
+        $new_name = ucfirst('New name');
 
         StoreAction::handle($admin, $new_name, $this->portfolio);
 
@@ -56,12 +55,11 @@ class UpdateTest extends TestCase
 
     public function test_request()
     {
-        $name = $this->faker->word;
-
-        $response = $this->actingAs($this->user)
+        $response = $this
+            ->actingAs($this->user)
             ->postJson(
                 route('api.portfolio.store', $this->portfolio->id),
-                ['name' => $name])
+                ['name' => $name = 'new name'])
             ->assertOk();
 
         $this->assertTrue($response->json('ok'));
