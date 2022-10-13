@@ -9,14 +9,15 @@ use Blackshot\CoinMarketSdk\Portfolio\Actions\Portfolio\StoreAction;
 use Blackshot\CoinMarketSdk\Portfolio\Models\Portfolio;
 use Blackshot\CoinMarketSdk\Portfolio\Requests\DeleteRequest;
 use Blackshot\CoinMarketSdk\Portfolio\Requests\StoreRequest;
-use Blackshot\CoinMarketSdk\Portfolio\Resources\PortfolioCollection;
+use Blackshot\CoinMarketSdk\Portfolio\Resources\PortfolioResource;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class PortfolioController extends Controller
 {
-    public function index(): PortfolioCollection
+    public function index(): JsonResource
     {
-        return new PortfolioCollection(Auth::user()->portfolios);
+        return PortfolioResource::collection(Auth::user()->portfolios);
     }
 
     public function store(
