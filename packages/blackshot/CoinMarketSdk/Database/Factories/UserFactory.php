@@ -1,8 +1,8 @@
 <?php
 
-namespace Database\Factories;
+namespace Blackshot\CoinMarketSdk\Database\Factories;
 
-use App\Models\User;
+use Blackshot\CoinMarketSdk\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 

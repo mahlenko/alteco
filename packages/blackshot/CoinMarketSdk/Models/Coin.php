@@ -3,8 +3,10 @@
 namespace Blackshot\CoinMarketSdk\Models;
 
 use App;
+use Blackshot\CoinMarketSdk\Database\Factories\CoinFactory;
 use DateTimeImmutable;
 use Exception;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -22,6 +24,8 @@ use InvalidArgumentException;
  */
 class Coin extends Model
 {
+    use HasFactory;
+
     /**
      * @var string
      */
@@ -340,4 +344,8 @@ class Coin extends Model
             : 0;
     }
 
+    protected static function newFactory(): CoinFactory
+    {
+        return CoinFactory::new();
+    }
 }

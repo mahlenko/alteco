@@ -2,8 +2,8 @@
 
 namespace Blackshot\CoinMarketSdk\Portfolio\Models;
 
-use App\Models\User;
-use Database\Factories\PortfolioFactory;
+use Blackshot\CoinMarketSdk\Models\User;
+use Blackshot\CoinMarketSdk\Portfolio\Database\factories\PortfolioFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -26,7 +26,7 @@ class Portfolio extends Model
         return $this->user_id === $user->id;
     }
 
-    protected static function newFactory()
+    protected static function newFactory(): PortfolioFactory
     {
         return PortfolioFactory::new();
     }

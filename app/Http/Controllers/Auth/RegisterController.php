@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Notifications\UserRegistered;
 use App\Providers\RouteServiceProvider;
-use App\Models\User;
 use Blackshot\CoinMarketSdk\Models\TariffModel;
+use Blackshot\CoinMarketSdk\Models\User;
 use DateTimeImmutable;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
@@ -65,7 +65,7 @@ class RegisterController extends Controller
      * Create a new user instance after a valid registration.
      *
      * @param array $data
-     * @return \App\Models\User
+     * @return \Blackshot\CoinMarketSdk\Models\User
      * @throws \Exception
      */
     protected function create(array $data)

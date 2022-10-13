@@ -2,8 +2,8 @@
 
 namespace Blackshot\CoinMarketSdk\Repositories;
 
-use App\Models\User;
 use Blackshot\CoinMarketSdk\Models\TariffModel;
+use Blackshot\CoinMarketSdk\Models\User;
 use Blackshot\CoinMarketSdk\Models\UserPaymentsModel;
 
 /**

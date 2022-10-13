@@ -2,7 +2,6 @@
 
 namespace Blackshot\CoinMarketSdk\Models;
 
-use App\Models\User;
 use DateTimeImmutable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

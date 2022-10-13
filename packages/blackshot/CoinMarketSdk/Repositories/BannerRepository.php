@@ -2,9 +2,8 @@
 
 namespace Blackshot\CoinMarketSdk\Repositories;
 
-use App\Models\User;
-use Blackshot\CoinMarketSdk\Enums\BannerTypes;
 use Blackshot\CoinMarketSdk\Models\Banner;
+use Blackshot\CoinMarketSdk\Models\User;
 use DateTimeImmutable;
 use DomainException;
 use Exception;

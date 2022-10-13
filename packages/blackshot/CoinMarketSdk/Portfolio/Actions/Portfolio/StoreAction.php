@@ -2,7 +2,7 @@
 
 namespace Blackshot\CoinMarketSdk\Portfolio\Actions\Portfolio;
 
-use App\Models\User;
+use Blackshot\CoinMarketSdk\Models\User;
 use Blackshot\CoinMarketSdk\Portfolio\Models\Portfolio;
 use InvalidArgumentException;
 use RuntimeException;

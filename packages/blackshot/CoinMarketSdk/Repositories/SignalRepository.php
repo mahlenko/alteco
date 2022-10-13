@@ -2,9 +2,9 @@
 
 namespace Blackshot\CoinMarketSdk\Repositories;
 
-use App\Models\User;
 use Blackshot\CoinMarketSdk\Models\Coin;
 use Blackshot\CoinMarketSdk\Models\Signal;
+use Blackshot\CoinMarketSdk\Models\User;
 use DateTimeImmutable;
 use Exception;
 use Illuminate\Database\Query\Builder;

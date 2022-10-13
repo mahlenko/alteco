@@ -2,7 +2,6 @@
 
 namespace Blackshot\CoinMarketSdk\Models;
 
-use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TrackingCoin extends \Illuminate\Database\Eloquent\Model

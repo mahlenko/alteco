@@ -1,14 +1,8 @@
 <?php
 
-namespace App\Models;
+namespace Blackshot\CoinMarketSdk\Models;
 
-use Blackshot\CoinMarketSdk\Models\Coin;
-use Blackshot\CoinMarketSdk\Models\TariffModel;
-use Blackshot\CoinMarketSdk\Models\TrackingCoin;
-use Blackshot\CoinMarketSdk\Models\UserCoinBuying;
-use Blackshot\CoinMarketSdk\Models\UserFavorites;
-use Blackshot\CoinMarketSdk\Models\UserPaymentsModel;
-use Blackshot\CoinMarketSdk\Models\UserSetting;
+use Blackshot\CoinMarketSdk\Database\Factories\UserFactory;
 use Blackshot\CoinMarketSdk\Portfolio\Models\Portfolio;
 use DateTimeImmutable;
 use DomainException;
@@ -16,7 +10,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
@@ -296,6 +289,11 @@ class User extends Authenticatable
 
     public function portfolios(): HasMany {
         return $this->hasMany(Portfolio::class, 'user_id', 'id');
+    }
+
+    protected static function newFactory(): UserFactory
+    {
+        return UserFactory::new();
     }
 
     /**

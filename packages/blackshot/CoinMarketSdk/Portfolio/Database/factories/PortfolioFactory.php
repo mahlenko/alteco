@@ -2,7 +2,7 @@
 
 namespace Blackshot\CoinMarketSdk\Portfolio\Database\factories;
 
-use App\Models\User;
+use Blackshot\CoinMarketSdk\Models\User;
 use Blackshot\CoinMarketSdk\Portfolio\Models\Portfolio;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

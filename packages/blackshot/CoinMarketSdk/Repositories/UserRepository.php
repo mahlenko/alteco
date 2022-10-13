@@ -2,10 +2,10 @@
 
 namespace Blackshot\CoinMarketSdk\Repositories;
 
-use App\Models\User;
 use App\Notifications\UserRegistered;
 use Blackshot\CoinMarketSdk\Models\Coin;
 use Blackshot\CoinMarketSdk\Models\TariffModel;
+use Blackshot\CoinMarketSdk\Models\User;
 use DateTimeImmutable;
 use DomainException;
 use Illuminate\Support\Facades\Auth;

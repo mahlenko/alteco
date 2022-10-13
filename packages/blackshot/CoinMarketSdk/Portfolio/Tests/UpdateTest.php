@@ -2,7 +2,7 @@
 
 namespace Blackshot\CoinMarketSdk\Portfolio\Tests;
 
-use App\Models\User;
+use Blackshot\CoinMarketSdk\Models\User;
 use Blackshot\CoinMarketSdk\Portfolio\Actions\Portfolio\StoreAction;
 use Blackshot\CoinMarketSdk\Portfolio\Models\Portfolio;
 use Illuminate\Foundation\Testing\RefreshDatabase;
