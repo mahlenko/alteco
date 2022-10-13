@@ -18,7 +18,7 @@ class PortfolioFactory extends Factory
     public function definition()
     {
         return [
-            'user_id' => User::factory()->create(),
+            'user_id' => User::factory(),
             'name' => $this->faker->word
         ];
     }
