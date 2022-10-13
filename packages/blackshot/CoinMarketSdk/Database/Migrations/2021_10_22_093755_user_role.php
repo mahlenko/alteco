@@ -1,5 +1,6 @@
 <?php
 
+use Blackshot\CoinMarketSdk\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,7 +16,7 @@ class UserRole extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('role', 36)
-                ->default(\App\Models\User::ROLE_USER)
+                ->default(User::ROLE_USER)
                 ->after('id');
         });
     }
