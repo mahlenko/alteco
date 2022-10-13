@@ -6,7 +6,7 @@ use Blackshot\CoinMarketSdk\Models\User;
 use Blackshot\CoinMarketSdk\Portfolio\Actions\Portfolio\StoreAction;
 use Tests\TestCase;
 
-class ListTest extends TestCase
+class PortfolioListTest extends TestCase
 {
     public function test_unauthorized_user()
     {

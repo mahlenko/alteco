@@ -9,7 +9,7 @@ use Blackshot\CoinMarketSdk\Portfolio\Models\Portfolio;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class DeleteTest extends TestCase
+class PortfolioDeleteTest extends TestCase
 {
     use RefreshDatabase;
 
