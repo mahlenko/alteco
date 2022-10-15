@@ -7,18 +7,29 @@ use Blackshot\CoinMarketSdk\Portfolio\Database\factories\PortfolioFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Portfolio extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
         'name'
     ];
 
     public function name(): Attribute {
-        return Attribute::get(fn($value) => ucfirst($value));
+        return Attribute::set(fn($value) => ucfirst(trim($value)));
+    }
+
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function isUserTo(User $user): bool

@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
+use Ramsey\Uuid\Uuid;
 
 /**
  *
@@ -40,6 +41,11 @@ class Coin extends Model
      * @var string
      */
     protected $keyType = 'string';
+
+    /**
+     * @var bool
+     */
+    public $incrementing = false;
 
     /**
      * @var string[]
@@ -347,5 +353,16 @@ class Coin extends Model
     protected static function newFactory(): CoinFactory
     {
         return CoinFactory::new();
+    }
+
+    protected static function booted()
+    {
+        parent::booted();
+
+        parent::creating(function(self $coin) {
+            if (!$coin->uuid) {
+                $coin->uuid = Uuid::uuid4();
+            }
+        });
     }
 }

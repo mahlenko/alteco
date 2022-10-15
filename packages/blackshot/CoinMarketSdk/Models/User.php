@@ -3,6 +3,7 @@
 namespace Blackshot\CoinMarketSdk\Models;
 
 use Blackshot\CoinMarketSdk\Database\Factories\UserFactory;
+use Blackshot\CoinMarketSdk\Portfolio\Models\Transaction;
 use Blackshot\CoinMarketSdk\Portfolio\Models\Portfolio;
 use DateTimeImmutable;
 use DomainException;
@@ -287,7 +288,8 @@ class User extends Authenticatable
         return $this->hasMany(UserPaymentsModel::class);
     }
 
-    public function portfolios(): HasMany {
+    public function portfolios(): HasMany
+    {
         return $this->hasMany(Portfolio::class, 'user_id', 'id');
     }
 
