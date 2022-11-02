@@ -2,9 +2,9 @@
 
 namespace Blackshot\CoinMarketSdk\Repositories;
 
-use App\Models\User;
 use Blackshot\CoinMarketSdk\Models\Coin;
 use Blackshot\CoinMarketSdk\Models\TrackingCoin;
+use Blackshot\CoinMarketSdk\Models\User;
 
 class TrackingRepository
 {

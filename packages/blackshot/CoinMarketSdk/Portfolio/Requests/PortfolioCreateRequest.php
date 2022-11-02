@@ -2,11 +2,11 @@
 
 namespace Blackshot\CoinMarketSdk\Portfolio\Requests;
 
-use Blackshot\CoinMarketSdk\Portfolio\Models\Portfolio;
+use Blackshot\CoinMarketSdk\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class DeleteRequest extends FormRequest
+class PortfolioCreateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,7 +26,8 @@ class DeleteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => ['required', Rule::exists(Portfolio::class)]
+            'user_id' => ['required', Rule::exists(User::class, 'id')],
+            'name' => ['required', 'string', 'max:255']
         ];
     }
 }

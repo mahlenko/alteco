@@ -1,8 +1,8 @@
 <?php
 
-namespace Database\Factories;
+namespace Blackshot\CoinMarketSdk\Portfolio\Database\factories;
 
-use App\Models\User;
+use Blackshot\CoinMarketSdk\Models\User;
 use Blackshot\CoinMarketSdk\Portfolio\Models\Portfolio;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -18,7 +18,7 @@ class PortfolioFactory extends Factory
     public function definition()
     {
         return [
-            'user_id' => User::factory()->create(),
+            'user_id' => User::factory(),
             'name' => $this->faker->word
         ];
     }

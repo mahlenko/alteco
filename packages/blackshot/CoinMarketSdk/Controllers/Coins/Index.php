@@ -4,10 +4,10 @@ namespace Blackshot\CoinMarketSdk\Controllers\Coins;
 
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\Authenticate;
-use App\Models\User;
 use Blackshot\CoinMarketSdk\Commands\CoinExponentialRankCommand;
 use Blackshot\CoinMarketSdk\Models\Banner;
 use Blackshot\CoinMarketSdk\Models\Coin;
+use Blackshot\CoinMarketSdk\Models\User;
 use Blackshot\CoinMarketSdk\Repositories\CoinCategoryRepository;
 use Blackshot\CoinMarketSdk\Repositories\CoinRepository;
 use Blackshot\CoinMarketSdk\Repositories\SignalRepository;

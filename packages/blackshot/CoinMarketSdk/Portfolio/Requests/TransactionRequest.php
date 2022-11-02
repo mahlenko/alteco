@@ -2,18 +2,19 @@
 
 namespace Blackshot\CoinMarketSdk\Portfolio\Requests;
 
-use App\Models\User;
+use Blackshot\CoinMarketSdk\Models\Coin;
+use Blackshot\CoinMarketSdk\Portfolio\Models\Portfolio;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class StoreRequest extends FormRequest
+class TransactionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize(): bool
+    public function authorize()
     {
         return true;
     }
@@ -26,7 +27,8 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255']
+            'portfolio_id' => ['required', Rule::exists(Portfolio::class, 'id')],
+            'coin_uuid' => ['required', Rule::exists(Coin::class, 'uuid')]
         ];
     }
 }

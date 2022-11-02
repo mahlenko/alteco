@@ -2,14 +2,13 @@
 
 namespace Blackshot\CoinMarketSdk\Repositories;
 
-use App\Models\User;
 use Blackshot\CoinMarketSdk\Models\CategoryModel;
 use Blackshot\CoinMarketSdk\Models\Coin;
 use Blackshot\CoinMarketSdk\Models\CoinCategory;
+use Blackshot\CoinMarketSdk\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 
 class CoinCategoryRepository
 {

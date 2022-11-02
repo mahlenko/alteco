@@ -2,8 +2,8 @@
 
 namespace Blackshot\CoinMarketSdk\Controllers\Users;
 
-use App\Models\User;
 use Blackshot\CoinMarketSdk\Models\TariffModel;
+use Blackshot\CoinMarketSdk\Models\User;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;

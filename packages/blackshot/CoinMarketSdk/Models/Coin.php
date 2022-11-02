@@ -3,8 +3,10 @@
 namespace Blackshot\CoinMarketSdk\Models;
 
 use App;
+use Blackshot\CoinMarketSdk\Database\Factories\CoinFactory;
 use DateTimeImmutable;
 use Exception;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -16,12 +18,15 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
+use Ramsey\Uuid\Uuid;
 
 /**
  *
  */
 class Coin extends Model
 {
+    use HasFactory;
+
     /**
      * @var string
      */
@@ -36,6 +41,11 @@ class Coin extends Model
      * @var string
      */
     protected $keyType = 'string';
+
+    /**
+     * @var bool
+     */
+    public $incrementing = false;
 
     /**
      * @var string[]
@@ -340,4 +350,19 @@ class Coin extends Model
             : 0;
     }
 
+    protected static function newFactory(): CoinFactory
+    {
+        return CoinFactory::new();
+    }
+
+    protected static function booted()
+    {
+        parent::booted();
+
+        parent::creating(function(self $coin) {
+            if (!$coin->uuid) {
+                $coin->uuid = Uuid::uuid4();
+            }
+        });
+    }
 }

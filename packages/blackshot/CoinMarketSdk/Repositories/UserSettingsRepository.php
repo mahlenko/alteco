@@ -2,12 +2,10 @@
 
 namespace Blackshot\CoinMarketSdk\Repositories;
 
-use App\Models\User;
+use Blackshot\CoinMarketSdk\Models\User;
 use Blackshot\CoinMarketSdk\Models\UserSetting;
-use DateTimeImmutable;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Auth;
-use stdClass;
 
 class UserSettingsRepository
 {

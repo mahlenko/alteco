@@ -2,8 +2,8 @@
 
 namespace Blackshot\CoinMarketSdk\Controllers;
 
-use App\Models\User;
 use Blackshot\CoinMarketSdk\Models\TariffModel;
+use Blackshot\CoinMarketSdk\Models\User;
 use Blackshot\CoinMarketSdk\Repositories\UserRepository;
 use DateTimeImmutable;
 use Exception;

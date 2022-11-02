@@ -4,47 +4,85 @@ namespace Blackshot\CoinMarketSdk\Portfolio\Controllers;
 
 use App\Http\Controllers\Controller;
 use Auth;
-use Blackshot\CoinMarketSdk\Portfolio\Actions\DeleteAction;
-use Blackshot\CoinMarketSdk\Portfolio\Actions\StoreAction;
+use Blackshot\CoinMarketSdk\Portfolio\Actions\Portfolio\PortfolioDeleteAction;
+use Blackshot\CoinMarketSdk\Portfolio\Actions\Portfolio\PortfolioCreateAction;
+use Blackshot\CoinMarketSdk\Portfolio\Actions\Portfolio\PortfolioUpdateAction;
+use Blackshot\CoinMarketSdk\Portfolio\Exceptions\PortfolioException;
 use Blackshot\CoinMarketSdk\Portfolio\Models\Portfolio;
-use Blackshot\CoinMarketSdk\Portfolio\Requests\DeleteRequest;
-use Blackshot\CoinMarketSdk\Portfolio\Requests\StoreRequest;
-use Blackshot\CoinMarketSdk\Portfolio\Resources\PortfolioCollection;
+use Blackshot\CoinMarketSdk\Portfolio\Requests\PortfolioDeleteRequest;
+use Blackshot\CoinMarketSdk\Portfolio\Requests\PortfolioCreateRequest;
+use Blackshot\CoinMarketSdk\Portfolio\Requests\PortfolioUpdateRequest;
+use Blackshot\CoinMarketSdk\Portfolio\Resources\PortfolioResource;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class PortfolioController extends Controller
 {
-    public function index(): PortfolioCollection
+    public function index(): JsonResource
     {
-        return new PortfolioCollection(Auth::user()->portfolios);
+        return PortfolioResource::collection(Auth::user()->portfolios);
     }
 
-    public function store(
-        StoreRequest $request,
-        StoreAction $action,
-        Portfolio $portfolio = null): JsonResponse
+    /**
+     * Добавить портфолио
+     * @param PortfolioCreateRequest $request
+     * @param PortfolioCreateAction $action
+     * @return JsonResponse
+     */
+    public function add(PortfolioCreateRequest $request, PortfolioCreateAction  $action): JsonResponse
     {
         $data = $request->validated();
 
         try {
-            $portfolio = $action::handle(Auth::user(), $data['name'], $portfolio);
-        } catch (\Exception $exception) {
+            $portfolio = $action::handle(Auth::user(), $data);
+        } catch (PortfolioException $exception) {
             return $this->fail($exception->getMessage());
         }
 
-        return $this->ok(data: $portfolio);
+        return $this->ok(data: new PortfolioResource($portfolio));
     }
 
-    public function delete(DeleteRequest $request, DeleteAction $action): JsonResponse
+    /**
+     * Обновить портфолио
+     * @param PortfolioUpdateRequest $request
+     * @return JsonResponse
+     */
+    public function update(PortfolioUpdateRequest $request): JsonResponse
+    {
+        $data = $request->validated();
+
+        $portfolio = Portfolio::find($data['portfolio_id']);
+
+        try {
+            $portfolio = PortfolioUpdateAction::handle(
+                Auth::user(),
+                $portfolio,
+                $data);
+        } catch (PortfolioException $exception) {
+            return $this->fail($exception->getMessage());
+        }
+
+        return $this->ok(data: new PortfolioResource($portfolio));
+    }
+
+    /**
+     * Удаление портфолио
+     * @param PortfolioDeleteRequest $request
+     * @param PortfolioDeleteAction $action
+     * @return JsonResponse
+     */
+    public function delete(PortfolioDeleteRequest $request, PortfolioDeleteAction $action): JsonResponse
     {
         $data = $request->validated();
 
         try {
             $action::handle(Auth::user(), $data['id']);
-        } catch (\Exception $exception) {
+        } catch (PortfolioException $exception) {
             return $this->fail($exception->getMessage());
         }
 
-        return $this->ok(data: $data['id']);
+        return $this->ok(data: [
+            'id' => $data['id']
+        ]);
     }
 }

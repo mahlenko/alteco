@@ -1,18 +1,18 @@
 <?php
 
-namespace Blackshot\CoinMarketSdk\Providers;
+namespace Blackshot\CoinMarketSdk;
 
+use Blackshot\CoinMarketSdk\Commands\CategoriesLoadCommand;
 use Blackshot\CoinMarketSdk\Commands\CoinCategoryCommand;
 use Blackshot\CoinMarketSdk\Commands\CoinExponentialRankCommand;
-use Blackshot\CoinMarketSdk\Commands\CoinRatioCommand;
-use Blackshot\CoinMarketSdk\Commands\ParseCrixCommand;
 use Blackshot\CoinMarketSdk\Commands\CoinInfoCommand;
 use Blackshot\CoinMarketSdk\Commands\CoinLoadCommand;
 use Blackshot\CoinMarketSdk\Commands\CoinQuotesCommand;
-use Blackshot\CoinMarketSdk\Commands\RankGroupCommand;
+use Blackshot\CoinMarketSdk\Commands\CoinRatioCommand;
 use Blackshot\CoinMarketSdk\Commands\CoinSignalsCommand;
+use Blackshot\CoinMarketSdk\Commands\ParseCrixCommand;
+use Blackshot\CoinMarketSdk\Commands\RankGroupCommand;
 use Blackshot\CoinMarketSdk\Commands\TestMailCommand;
-use Blackshot\CoinMarketSdk\Commands\CategoriesLoadCommand;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 
@@ -41,17 +41,17 @@ class CoinMarketProvider extends ServiceProvider
         ]);
 
         //
-        $this->mergeConfigFrom(__DIR__.'/../Configs/coinmarket.php', 'coinmarket');
+        $this->mergeConfigFrom(__DIR__.'/Configs/coinmarket.php', 'coinmarket');
 
         //
-        $this->loadMigrationsFrom(realpath(__DIR__ . '/../Migrations'));
+        $this->loadMigrationsFrom(realpath(__DIR__ . '/Database/Migrations'));
 
         //
-        $this->loadRoutesFrom(__DIR__ . '/../Configs/routes.php');
-        $this->loadRoutesFrom(__DIR__ . '/../Configs/breadcrumbs.php');
+        $this->loadRoutesFrom(__DIR__ . '/Configs/routes.php');
+        $this->loadRoutesFrom(__DIR__ . '/Configs/breadcrumbs.php');
 
         //
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'blackshot');
+        $this->loadViewsFrom(__DIR__.'/resources/views', 'blackshot');
 
         //
         if ($this->app->runningInConsole()) {

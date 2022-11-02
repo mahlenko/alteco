@@ -2,7 +2,7 @@
 
 namespace Blackshot\CoinMarketSdk\Controllers\Users;
 
-use App\Models\User;
+use Blackshot\CoinMarketSdk\Models\User;
 use Blackshot\CoinMarketSdk\Repositories\UserRepository;
 use Blackshot\CoinMarketSdk\Requests\UserRequest;
 use DateTimeImmutable;

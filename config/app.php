@@ -178,7 +178,10 @@ return [
         App\Providers\TelescopeServiceProvider::class,
 
         // BlackShot CoinManager
-        \Blackshot\CoinMarketSdk\Providers\CoinMarketProvider::class,
+        \Blackshot\CoinMarketSdk\CoinMarketProvider::class,
+
+        // Packages Provider
+        \Blackshot\CoinMarketSdk\Portfolio\PortfolioProvider::class,
     ],
 
     /*
