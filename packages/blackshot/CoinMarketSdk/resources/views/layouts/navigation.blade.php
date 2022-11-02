@@ -21,6 +21,7 @@
                     <ul class="nav__list d-flex" style="max-width: none;">
                         <li class="{{ Request::routeIs('coins.home') ? 'active' : null }}"><a href="{{ route('coins.home') }}">Криптосканер</a></li>
                         <li class="{{ Request::routeIs('signals.home') ? 'active' : null }}"><a href="{{ route('signals.home') }}">Сигналы</a></li>
+                        <li class="{{ Request::routeIs('portfolio.home') ? 'active' : null }}"><a href="{{ route('portfolio.home') }}">Портфолио</a></li>
                     </ul>
                 @endauth
             </div>

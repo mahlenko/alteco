@@ -27,7 +27,7 @@
 
     {{-- filter --}}
     <div class="scan__box">
-        <form action="{{ route('coins.filter.store') }}" method="post" class="scan-form d-flex">
+        <form action="{{ route('coins.filter.store') }}" method="post" class="scan-form d-flex" style="column-gap: 1rem">
             @csrf
 
             {{-- Search --}}
@@ -45,7 +45,7 @@
             </div>
 
             {{-- Category --}}
-            <div class="scan-form__item">
+            <div class="scan-form__item" style="flex-grow: 1;">
                 <label for="category">Категория</label><br>
                 <select class="select" name="filter[category_uuid][]" multiple id="category">
                     @php($disabled = '')

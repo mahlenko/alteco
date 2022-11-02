@@ -4,6 +4,8 @@ namespace Blackshot\CoinMarketSdk\Models;
 
 use App;
 use Blackshot\CoinMarketSdk\Database\Factories\CoinFactory;
+use Blackshot\CoinMarketSdk\Helpers\NumberHelper;
+use Blackshot\CoinMarketSdk\Portfolio\Enums\PeriodEnum;
 use DateTimeImmutable;
 use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -248,9 +250,31 @@ class Coin extends Model
         return $end - $start;
     }
 
-    public function getEmaAttribute()
+    /**
+     * @param PeriodEnum $period
+     * @return array
+     * @throws Exception
+     */
+    public function profit(PeriodEnum $period): array
     {
-        return 10;
+        $now = new DateTimeImmutable();
+
+        $start_date = match ($period) {
+            PeriodEnum::hours24 => $now->modify('-1 day'),
+            PeriodEnum::days7 => $now->modify('-7 days'),
+            PeriodEnum::days30 => $now->modify('-30 days'),
+            PeriodEnum::days90 => $now->modify('-90 days'),
+            default => $now->modify('-1 year'),
+        };
+
+        $current = $this->price;
+        $start_price = $this->quotesByDate($start_date, $start_date)
+            ->last()?->price ?? $this->price;
+
+        return [
+            'price' => NumberHelper::format($current - $start_price),
+            'percent' => NumberHelper::format((($current / $start_price) * 100) - 100)
+        ];
     }
 
     /**
@@ -276,6 +300,12 @@ class Coin extends Model
         }
 
         /*  */
+        $quote = $this->quotes()
+            ->where('last_updated', new DateTimeImmutable($data['last_updated']))
+            ->first();
+
+        if ($quote) return $quote;
+
         $quote = $this->quotes()->create($data);
 
         /*  */
@@ -295,6 +325,10 @@ class Coin extends Model
     {
         if (Cache::has($this->cache_quotes_key)) {
             Cache::forget($this->cache_quotes_key);
+        }
+
+        if (Cache::has('coins')) {
+            Cache::forget('coins');
         }
 
         if (Cache::has('signals:'. $this->uuid)) {

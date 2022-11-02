@@ -2,87 +2,76 @@
 
 namespace Blackshot\CoinMarketSdk\Portfolio\Controllers;
 
-use App\Http\Controllers\Controller;
 use Auth;
-use Blackshot\CoinMarketSdk\Portfolio\Actions\Portfolio\PortfolioDeleteAction;
-use Blackshot\CoinMarketSdk\Portfolio\Actions\Portfolio\PortfolioCreateAction;
-use Blackshot\CoinMarketSdk\Portfolio\Actions\Portfolio\PortfolioUpdateAction;
-use Blackshot\CoinMarketSdk\Portfolio\Exceptions\PortfolioException;
-use Blackshot\CoinMarketSdk\Portfolio\Models\Portfolio;
-use Blackshot\CoinMarketSdk\Portfolio\Requests\PortfolioDeleteRequest;
-use Blackshot\CoinMarketSdk\Portfolio\Requests\PortfolioCreateRequest;
-use Blackshot\CoinMarketSdk\Portfolio\Requests\PortfolioUpdateRequest;
-use Blackshot\CoinMarketSdk\Portfolio\Resources\PortfolioResource;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Blackshot\CoinMarketSdk\Controller;
+use Blackshot\CoinMarketSdk\Portfolio\Controllers\api\ApiChartsController;
+use Blackshot\CoinMarketSdk\Portfolio\Enums\PeriodEnum;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Collection;
 
 class PortfolioController extends Controller
 {
-    public function index(): JsonResource
+    public function index(int $portfolio_id = null): View|RedirectResponse
     {
-        return PortfolioResource::collection(Auth::user()->portfolios);
-    }
+        $portfolios = Auth::user()->portfolios;
 
-    /**
-     * Добавить портфолио
-     * @param PortfolioCreateRequest $request
-     * @param PortfolioCreateAction $action
-     * @return JsonResponse
-     */
-    public function add(PortfolioCreateRequest $request, PortfolioCreateAction  $action): JsonResponse
-    {
-        $data = $request->validated();
+        if (isset($portfolio_id) && $portfolio_id) {
+            if ($portfolio_id == $portfolios->first()->getKey()) {
+                return redirect()->route('portfolio.home');
+            }
 
-        try {
-            $portfolio = $action::handle(Auth::user(), $data);
-        } catch (PortfolioException $exception) {
-            return $this->fail($exception->getMessage());
+            $portfolio = $portfolios->find($portfolio_id);
+            if (!$portfolio) abort(404);
+        } else {
+            $portfolio = $portfolios->first();
         }
 
-        return $this->ok(data: new PortfolioResource($portfolio));
-    }
+        // Изменение за 24 часа
+        // todo: сделать в портфеле эту функцию
+        $changePrice24Data = $portfolio->items()->chartData(PeriodEnum::hours24);
+        if ($changePrice24Data) {
+            $changePrice24 = $changePrice24Data->last()['value'] - $changePrice24Data->first()['value'];
+        } else $changePrice24 = 0;
 
-    /**
-     * Обновить портфолио
-     * @param PortfolioUpdateRequest $request
-     * @return JsonResponse
-     */
-    public function update(PortfolioUpdateRequest $request): JsonResponse
-    {
-        $data = $request->validated();
-
-        $portfolio = Portfolio::find($data['portfolio_id']);
-
-        try {
-            $portfolio = PortfolioUpdateAction::handle(
-                Auth::user(),
-                $portfolio,
-                $data);
-        } catch (PortfolioException $exception) {
-            return $this->fail($exception->getMessage());
-        }
-
-        return $this->ok(data: new PortfolioResource($portfolio));
-    }
-
-    /**
-     * Удаление портфолио
-     * @param PortfolioDeleteRequest $request
-     * @param PortfolioDeleteAction $action
-     * @return JsonResponse
-     */
-    public function delete(PortfolioDeleteRequest $request, PortfolioDeleteAction $action): JsonResponse
-    {
-        $data = $request->validated();
-
-        try {
-            $action::handle(Auth::user(), $data['id']);
-        } catch (PortfolioException $exception) {
-            return $this->fail($exception->getMessage());
-        }
-
-        return $this->ok(data: [
-            'id' => $data['id']
+        return view('portfolio::layout', [
+            'portfolio' => $portfolio,
+            'portfolios' => $portfolios,
+            'totalPrice' => self::totalPortfolioPrice($portfolios),
+            'profit' => self::profitStacking($portfolios),
+            'changePrice24' => $changePrice24
         ]);
+    }
+
+    public function create()
+    {
+        return view('portfolio::portfolio.create');
+    }
+
+    private static function totalPortfolioPrice(Collection $portfolios): float
+    {
+        $price = 0;
+        foreach ($portfolios as $item) {
+            $price += $item->items()->currentPrice();
+        }
+
+        return $price;
+    }
+
+    private static function profitStacking(Collection $portfolios): array
+    {
+        $result = [
+            'month' => 0,
+            'year' => 0
+        ];
+
+        if ($portfolios->count()) {
+            foreach ($portfolios as $portfolio) {
+                $result['month'] += $portfolio->items()->profitStacking(30);
+                $result['year'] += $portfolio->items()->profitStacking(365);
+            }
+        }
+
+        return $result;
     }
 }

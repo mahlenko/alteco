@@ -52,7 +52,7 @@ class CategoryRepository
 
         $category->fill([
             'id' => $id,
-            'type' => self::getCategoryType($category),
+            'type' => self::getCategoryType($name),
             'name' => $name,
             'title' => $title,
             'description' => $description,
@@ -90,12 +90,12 @@ class CategoryRepository
     }
 
     /**
-     * @param CategoryModel $category
+     * @param string $name
      * @return string
      */
-    public static function getCategoryType(CategoryModel $category): string
+    public static function getCategoryType(string $name): string
     {
-        return Str::contains(Str::lower($category->name), 'portfolio')
+        return Str::contains(Str::lower($name), 'portfolio')
             ? CategoryModel::TYPE_FOUNDS
             : CategoryModel::TYPE_OTHER;
     }

@@ -65,7 +65,7 @@ class RegisterController extends Controller
      * Create a new user instance after a valid registration.
      *
      * @param array $data
-     * @return \Blackshot\CoinMarketSdk\Models\User
+     * @return \App\Models\User
      * @throws \Exception
      */
     protected function create(array $data)

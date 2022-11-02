@@ -1,0 +1,587 @@
+.portfolio
+  display: flex
+  flex-direction: column
+  padding: 2rem 0
+
+  @media (min-width: 768px)
+    flex-direction: row
+    column-gap: 2rem
+
+  // Навигация на странице слева
+  &__navigation
+    padding-bottom: 2rem
+    padding-right: 1rem
+    &-info
+      display: flex
+      flex-direction: column
+      row-gap: .25rem
+      margin: 0
+
+    &-item
+      .item
+        border-radius: 1rem
+        color: $black
+        display: flex
+        column-gap: 1rem
+        padding: .5rem .8rem
+
+        .item-content__main
+          font-size: 1.75rem
+
+        .icon
+          background-color: #3E7CEB
+          border-radius: 50%
+          display: flex
+          align-items: center
+          justify-content: center
+          width: 3.3rem
+          height: 3.3rem
+
+          &.current-balance
+            background-color: $orange
+
+          &.passive-year
+            background-color: #363C8A
+
+          &.passive-month
+            background-color: #DCBB90
+
+        &__content
+          .title
+            font-size: .76rem
+
+    a.item
+      &:hover
+        .item__content .title
+          color: $orange
+
+
+  &__info
+    flex-grow: 1
+    display: block
+    @media (min-width: 768px)
+      border-left: 1px solid #EFEFEF
+      padding-left: 2rem
+
+    .link-add-asset
+      background-color: #213CC0
+      border: 1px solid #213CC0
+      border-radius: 1rem
+      color: white
+      column-gap: .5rem
+      font-size: .74rem
+      font-weight: bold
+      padding: .25rem 1.25rem
+
+      .icon
+        width: 1rem
+        height: 1rem
+        fill: white
+        &-wrap
+          height: 1rem
+          width: 1rem
+
+      &:hover
+        background-color: white
+        border-color: $orange
+        color: $orange
+
+        .icon
+          fill: $orange
+
+
+  // Portfolio list items
+  &-list
+    border-top: 1px solid #EFEFEF
+    display: flex
+    flex-direction: column
+    row-gap: .25rem
+    margin-top: 1rem
+    margin-bottom: 1rem
+    padding-top: 1rem
+
+    .portfolio__navigation-item
+      border-radius: 1rem
+      &.active
+        background-color: lighten($blue, 53)
+        .icon
+          background-color: #3E7CEB
+
+      .icon
+        background-color: #F6B28D
+
+
+  .link-add
+    align-items: center
+    display: flex
+    column-gap: .25rem
+    color: $black
+    font-size: .8rem
+    font-weight: bold
+    padding: 0
+    margin: 0
+
+    &:hover
+      color: $orange
+      .icon
+        background-color: $orange
+
+    .icon
+      background-color: #363C8A
+      border-radius: 50%
+      fill: white
+      width: 15px
+      height: 15px
+      padding: .25rem
+      margin: 0
+      transition: background-color .3s ease-in-out
+      &-wrap
+        display: flex
+        align-items: center
+        justify-content: center
+        width: 3.3rem
+        padding: .3rem
+        margin: 0 .5rem
+
+.case
+  padding: 60px 0 117px
+
+  &__box
+    justify-content: space-between
+    margin-bottom: 60px
+
+  &-left
+    display: flex
+    flex-direction: column
+    padding-right: 1rem
+    row-gap: 1rem
+
+    &__text
+      //margin-left: 26px
+      font-weight: 600
+      font-size: 13px
+      line-height: 140%
+      color: #282828
+      transition: color 0.5s
+
+    &__round
+      display: flex
+      align-items: center
+      justify-content: center
+      border-radius: 50%
+      width: 20px
+      height: 20px
+      background: #363C8A
+      transition: background 0.5s
+
+    &__add
+      display: flex
+      align-items: center
+      margin-left: 13px
+
+      .icon
+        width: 12px
+        height: 12px
+        fill: white
+
+      &:hover
+        .case-left__text
+          color: $orange
+
+        .case-left__round
+          background: $orange
+
+    &__name
+      font-weight: 400
+      font-size: 12px
+      line-height: 140%
+      color: #282828
+      margin-bottom: 5px
+      white-space: nowrap
+
+    &__sum
+      font-weight: 800
+      font-size: 26px
+      line-height: 100%
+
+    &__block
+      width: 44px
+      height: 44px
+      display: flex
+      align-items: center
+      justify-content: center
+      border-radius: 50%
+
+    &__item
+      &.current-balance,
+      &.passive-profit-year,
+      &.passive-profit-month,
+      &-link
+        display: flex
+        align-items: center
+        padding: .75rem 1rem
+        border-radius: 1rem
+
+        &.active
+          background-color: lighten(slategray, 45)
+
+      &.current-balance
+        .case-left__block
+          background: #FF7443
+
+      &.passive-profit-year
+        .case-left__block
+          background: #363C8A
+
+      &.passive-profit-month
+        .case-left__block
+          background: #DCBB90
+
+      &.portfolio-item
+        &:first-child
+          padding-top: 1rem
+          border-top: 1px solid #EFEFEF
+
+        .case-left__block
+          background: #3E7CEB
+
+        &.second
+          .case-left__block
+            background: #F6B28D
+
+  &-right
+    padding-left: 38px
+    border-left: 1px solid #EFEFEF
+    width: 100%
+
+    &__text
+      font-weight: 700
+      font-size: 12px
+      line-height: 16px
+      color: #FFFFFF
+      margin-left: 10px
+      transition: color 0.5s
+
+    &__add
+      display: flex
+      align-items: center
+      justify-content: center
+      width: 160px
+      height: 30px
+      background: #213CC0
+      border-radius: 50px
+      transition: background 0.5s, border 0.5s
+      border: 1px solid #213CC0
+
+      &:hover
+        background: transparent
+        border: 1px solid $orange
+
+        .icon
+          fill: $orange
+
+        .case-right__text
+          color: $orange
+
+      .icon
+        width: 16px
+        fill: white
+        height: 16px
+        transition: fill 0.5s
+
+    &__top
+      align-items: center
+      justify-content: space-between
+      margin-bottom: 40px
+
+    &__time
+      width: 35px
+      height: 25px
+      background: #FDF3E9
+      border-radius: 5px
+      display: flex
+      align-items: center
+      justify-content: center
+      font-weight: 400
+      font-size: 13px
+      line-height: 100%
+      margin-left: 7px
+
+    &__flex
+      align-items: center
+      margin-top: 5px
+
+    &__sum
+      font-weight: 800
+      font-size: 16px
+      line-height: 100%
+
+      &.green
+        color: #39A657
+
+      &.red
+        color: #EE463D
+
+    &__row
+      justify-content: space-between
+      align-items: center
+      margin-bottom: 30px
+
+    &__tabs
+      height: 38px
+      background: #EAEBF2
+      border-radius: 5px
+      padding: 5px
+      display: flex
+
+    &__link
+      display: flex
+      align-items: center
+      justify-content: center
+      font-weight: 500
+      font-size: 12px
+      color: #4F4F4F
+      border-radius: 3px
+      background: transparent
+      padding: 0 5px
+
+      &.active
+        background: #213CC0
+        color: $white
+        font-weight: 600
+
+.case-table
+  td[data-label="Действия"]
+    padding-top: 20px
+
+  .table__num
+    font-weight: 600
+
+  td[data-label="Прибыль / убыток"]
+    font-weight: 600
+
+    .table__num
+      display: block
+      margin-top: -5px
+      font-weight: 800
+
+  thead tr td
+    font-size: 12px
+
+  .table__text
+    font-size: 13px
+
+  td
+    font-size: 13px
+
+  tbody tr:first-child td:nth-child(2)
+    width: auto
+
+  &__span
+    display: block
+    font-weight: 600
+    font-size: 13px
+    line-height: 100%
+    color: #B3B3B3
+
+  &__title
+    text-align: left
+    font-style: italic
+    font-weight: 900
+    font-size: 32px
+    line-height: 40px
+    color: #282828
+    margin-bottom: 40px
+
+  &__edit
+    .icon
+      width: 16px
+      height: 13px
+      fill: $orange
+      margin-left: 3px
+      transition: fill 0.5s
+
+    &:hover
+      .icon
+        fill: black
+
+  &__link
+    .icon
+      width: 20px
+      height: 20px
+      transition: fill 0.5s, stroke 0.5s
+      fill: #A6A9BB
+
+    &:hover
+      .icon
+        fill: $orange
+
+    &:last-child
+      .icon
+        stroke: #A6A9BB
+        fill: white
+
+      &:hover
+        .icon
+          stroke: $orange
+
+.case-info
+  align-items: flex-start
+
+  &__open
+    margin-left: 10px
+    cursor: pointer
+
+    &:hover
+      .icon
+        fill: $orange !important
+
+  &__text
+    font-weight: 600
+    font-size: 16px
+
+  &__span
+    font-weight: 400
+    font-size: 14px
+    line-height: 120%
+    color: #9799A5
+
+  &__right
+    margin-left: 10px
+
+  &__item
+    display: flex
+    align-items: center
+    margin-bottom: 25px
+    width: 48%
+
+    &:before
+      content: ""
+      display: inline
+      width: 15px
+      height: 15px
+      border-radius: 50%
+      margin-right: 16px
+      flex: 1 0 auto
+      max-width: 15px
+
+    &:nth-child(1):before
+      background: #3E7CEB
+
+    &:nth-child(2):before
+      background: #DB7FFE
+
+    &:nth-child(3):before
+      background: #FED61C
+
+    &:nth-child(4):before
+      background: #F6B28D
+
+    &:nth-child(5)
+      .icon
+        width: 12px
+        height: 7px
+        fill: #30366E
+        transition: fill 0.5s
+
+      .table__text
+        font-weight: 700
+        font-size: 14px !important
+        line-height: 110% !important
+        color: #282828 !important
+        max-width: 55px
+
+      &:before
+        background: #FF901A
+
+    .table__flex
+      max-width: 100%
+      margin-left: -5px
+      display: flex
+
+      span
+        display: block
+        font-size: 16px
+        color: #282828
+
+      .table__text
+        font-size: 14px
+        line-height: 130%
+        color: #9799A5
+        min-width: 81px
+
+    .table__logo
+      width: 33px
+      height: 33px
+      object-fit: cover
+
+  &__title
+    font-style: italic
+    font-weight: 900
+    font-size: 20px
+    line-height: 25px
+    margin-bottom: 23px
+    font-family: 'Merriweather', serif
+
+  &__num
+    font-weight: 800
+    font-size: 32px
+    line-height: 100%
+    text-align: center
+    margin-bottom: 3px
+    margin-top: 7px
+
+  &__sum
+    font-weight: 600
+    font-size: 16px
+    line-height: 100%
+    text-align: center
+    color: #AFAFAF
+
+  &__list
+    display: flex
+    flex-wrap: wrap
+    justify-content: space-between
+
+  &__graph
+    position: relative
+    width: 100%
+    max-width: 286px
+    flex: 1 0 auto
+    margin-right: 72px
+    height: 286px
+
+    .table__text
+      font-size: 13px
+
+    .table__logo
+      width: 30px
+      height: 30px
+
+  &__pic
+    position: absolute
+    left: 0
+    top: 0
+    width: 286px
+    height: 286px
+    object-fit: contain
+
+  &__wrap
+    text-align: center
+    position: relative
+    top: 101px
+    left: 50%
+    flex-direction: column
+    display: flex
+    align-items: center
+    width: 200px
+    justify-content: center
+    margin-left: -98px
+
+.portfolio-form
+  display: flex
+  flex-direction: column
+  row-gap: 1rem
+
+  [type=submit]
+    width: 100%

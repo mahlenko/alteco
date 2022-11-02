@@ -14,7 +14,7 @@ class PortfolioCreateControllerTest extends TestCase
     public function test_unauthorized()
     {
         $this
-            ->postJson(route('api.portfolio.add'))
+            ->postJson(route('api.portfolio.create'))
             ->assertUnauthorized();
     }
 
@@ -24,7 +24,7 @@ class PortfolioCreateControllerTest extends TestCase
 
         $response = $this
             ->actingAs($user)
-            ->postJson(route('api.portfolio.add'));
+            ->postJson(route('api.portfolio.create'));
 
         $response->assertJsonValidationErrors(['user_id', 'name']);
     }
@@ -35,7 +35,7 @@ class PortfolioCreateControllerTest extends TestCase
 
         $response = $this
             ->actingAs($user)
-            ->postJson(route('api.portfolio.add'), [
+            ->postJson(route('api.portfolio.create'), [
                 'user_id' => $user->getKey(),
                 'name' => 'My portfolio'
             ])->assertOk();
@@ -53,7 +53,7 @@ class PortfolioCreateControllerTest extends TestCase
 
         $response = $this
             ->actingAs($user)
-            ->postJson(route('api.portfolio.add'), [
+            ->postJson(route('api.portfolio.create'), [
                 'user_id' => $user2->getKey(),
                 'name' => 'My portfolio'
             ])->assertOk();

@@ -29,7 +29,7 @@ class CoinCategoryRepository
      */
     static function categoriesForSelect(Authenticatable|User $user): Collection
     {
-        $isFree = !$user->isAdmin() || $user->tariff->isFree();
+//        $isFree = !$user->isAdmin() && $user->tariff->isFree();
 
         $categories = self::allCategories()
             ->groupBy('type')
@@ -40,7 +40,7 @@ class CoinCategoryRepository
             });
 
         // Закрытие фондов в бесплатном тарифе
-        if ($isFree) {
+        if (!$user->isSubscribe()) {
             /* @var Collection $founds */
             $founds = $categories[CategoryModel::TYPE_FOUNDS]->take(3);
 

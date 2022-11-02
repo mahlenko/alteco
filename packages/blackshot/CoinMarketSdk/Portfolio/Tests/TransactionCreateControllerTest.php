@@ -48,7 +48,7 @@ class TransactionCreateControllerTest extends TestCase
     {
         $request = $this
             ->actingAs($this->user)
-            ->postJson(route('api.portfolio.transaction.create'), [
+            ->postJson(route('api.portfolio.transaction.create'), $data = [
                 'user_id' => $this->user->getKey(),
                 'portfolio_id' => $this->portfolio->getKey(),
                 'coin_uuid' => $this->coin->getKey(),

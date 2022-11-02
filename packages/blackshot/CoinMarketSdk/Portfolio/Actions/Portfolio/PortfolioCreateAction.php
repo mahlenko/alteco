@@ -16,7 +16,7 @@ class PortfolioCreateAction
      */
     public static function handle(User $user, array $data): Portfolio
     {
-        if ($user->getKey() !== $data['user_id'] && !$user->isAdmin()) {
+        if ($user->getKey() != $data['user_id'] && !$user->isAdmin()) {
             throw new PortfolioException('Вы не можете добавить портфель для пользователя.');
         }
 

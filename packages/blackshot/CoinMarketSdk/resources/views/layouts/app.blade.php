@@ -14,13 +14,13 @@
 {{--    <link rel="stylesheet" href="{{ asset('css/jquery.arcticmodal-0.3.css') }}">--}}
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 {{--    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css">--}}
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.13.3/css/selectize.bootstrap4.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700;800&family=Merriweather:ital,wght@1,300;1,700;1,900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/jquery.arcticmodal-0.3.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.14.0/css/selectize.bootstrap5.css" integrity="sha512-QomP/COM7vFCHcVHpDh/dW9oDyg44VWNzgrg9cG8T2cYSXPtqkQK54WRpbqttfo0MYlwlLUz3EUR+78/aSbEIw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
     <div class="body-wrap pages">
@@ -96,6 +96,33 @@
                     .parents('form').submit()
             });
         })
+
+
+        function singleDatepicker(input)
+        {
+            $(input).daterangepicker({
+                "singleDatePicker": true,
+                "autoApply": true,
+                "locale": {
+                    "format": "DD.MM.YYYY",
+                    "separator": " - ",
+                    "applyLabel": "Применить",
+                    "cancelLabel": "Отменить",
+                    "fromLabel": "Начало",
+                    "toLabel": "Конец",
+                    "customRangeLabel": "Другое",
+                    "weekLabel": "Н",
+                    "daysOfWeek": ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
+                    "monthNames": ["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"],
+                    "firstDay": 1
+                },
+                "drops": "up"
+            }, function(start, end, label) {
+                console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+            });
+        }
+
+
     </script>
 </body>
 </html>

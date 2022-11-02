@@ -36,7 +36,7 @@ class CoinInfoCommand extends Command
     {
         /* Получим список монет, у которых еще не выгружали инфу */
         $coins = DB::table('coins')
-            ->select(['coins.uuid', 'coins.symbol'])
+            ->select(['coins.uuid', 'coins.id'])
             ->join('coin_info', 'coins.uuid', '=', 'coin_info.coin_uuid', 'left')
             ->whereNull('coin_info.coin_uuid')
             ->get();
@@ -52,7 +52,9 @@ class CoinInfoCommand extends Command
         $coins->chunk(100) /* Метод максимум выдает информации по 100  */
             ->each(function($symbols) use ($method, &$result) {
                 /* */
-                $method->symbol = $symbols->pluck('symbol')->join(',');
+                $method->id = $symbols
+                    ->pluck('id')
+                    ->join(',');
 
                 /* */
                 $response = (new Request())->run($method);
@@ -63,11 +65,15 @@ class CoinInfoCommand extends Command
 
                 /* Добавляем инфо по монетам */
                 $symbols->each(function($coin) use ($response, &$result) {
-                    $info = $response->data[$coin->symbol];
+                    if (!key_exists($coin->id, $response->data)) {
+                        return;
+                    }
+
+                    $info = $response->data[$coin->id];
                     if (!$info) return;
 
                     /* Инфо возвращается массивом */
-                    $info = $info[0];
+//                    $info = $info[0];
 
                     /* Удалим уже не существующие монеты */
                     if ($info->status != 'active') {
@@ -99,7 +105,7 @@ class CoinInfoCommand extends Command
                         'name' => $info->name,
                         'category' => $item->category,
                         'logo' => $item->logo,
-                        'description' => Str::limit($item->description, 50),
+                        'description' => Str::limit($item->description, 20),
                         'date_added' => $item->date_added
                     ];
                 });

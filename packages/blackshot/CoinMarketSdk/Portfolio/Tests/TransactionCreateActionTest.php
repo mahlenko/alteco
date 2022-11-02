@@ -154,7 +154,7 @@ class TransactionCreateActionTest extends TestCase
             'type' => TransactionTypeEnum::Buy,
         ]);
 
-        $this->assertEquals(49.5, $transaction->totalWithFee);
+        $this->assertEquals(50.5, $transaction->totalWithFee);
     }
 
     public function test_sell_type_total_with_fee()
@@ -181,7 +181,7 @@ class TransactionCreateActionTest extends TestCase
             'transfer_type' => TransferTypeEnum::In
         ]);
 
-        $this->assertEquals(49.5, $transaction->totalWithFee);
+        $this->assertEquals(50.5, $transaction->totalWithFee);
     }
 
     public function test_transfer_out_total_with_fee()

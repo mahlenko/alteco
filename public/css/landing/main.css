@@ -2424,8 +2424,8 @@ nav .container {
     position: fixed;
     flex-direction: column;
     right: -150%;
-    top: 0px;
-    z-index: 100000;
+    top: 0;
+    z-index: 2;
     display: flex;
     box-sizing: border-box;
     transition: .3s all ease-in-out;

@@ -1,0 +1,42 @@
+.global-flex
+  display: flex
+  &.y-top
+    align-items: flex-start
+  &.y-bottom
+    align-items: flex-end
+  &.y-center
+    align-items: center
+  &.x-start
+    justify-content: flex-start
+  &.x-center
+    justify-content: center
+  &.x-end
+    justify-content: flex-end
+  &.between
+    justify-content: space-between
+  &.column
+    flex-direction: column
+  &.row
+    flex-direction: row
+  &.mobile-column
+    flex-direction: column
+    @media (min-width: 768px)
+      flex-direction: row
+  &.mobile-row
+    flex-direction: row
+    @media (min-width: 768px)
+      flex-direction: column
+  &.gap-x-1
+    column-gap: .15rem
+  &.gap-x-2
+    column-gap: .25rem
+  &.gap-y-1
+    row-gap: .15rem
+  &.gap-y-2
+    row-gap: .25rem
+  &.gap-1
+    row-gap: .15rem
+    column-gap: .15rem
+  &.gap-2
+    row-gap: .25rem
+    column-gap: .25rem

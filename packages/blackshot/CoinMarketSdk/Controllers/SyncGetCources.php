@@ -8,6 +8,7 @@ use Blackshot\CoinMarketSdk\Repositories\UserRepository;
 use DateTimeImmutable;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -19,60 +20,76 @@ class SyncGetCources extends \App\Http\Controllers\Controller
      * @throws ValidationException
      * @throws Exception
      */
-    public function webhook(Request $request): array
+    public function webhook(Request $request)
     {
-        $validator = Validator::make($request->toArray(), [
+        Log::debug('Webhook request', $request->all());
+
+        $validator = Validator::make($request->all(), [
             'user_email' => ['required', 'email'],
             'tariff_id' => ['nullable', Rule::exists('tariffs', 'id')]
         ]);
 
         if ($validator->fails()) {
-            return [
-                'ok' => false,
-                'errors' => $validator->errors()
-            ];
+            $errors = $validator->errors()->toArray();
+            Log::debug('Validation fails.', $errors);
+            return $this->fail('Validation fails.', $errors);
         }
 
-        $data = $validator->validate();
+        $data = $validator->getData();
 
-        $tariff = $data['tariff_id']
+        /* Тариф */
+        $tariff = key_exists('tariff_id', $data) && $data['tariff_id']
             ? TariffModel::find($data['tariff_id'])
-            : TariffModel::where(['default', true])->first();
+            : TariffModel::where(['default' => true])->first();
 
-        if (!$tariff) {
-            return [
-                'ok' => false,
-                'description' => 'Не указан тариф пользователя.'
-            ];
-        }
 
         /* @var User $user */
         $user = UserRepository::findByEmail($data['user_email']);
 
         if ($user) {
-            // добавляем дни от тарифа
-            $expired_at = $user->expired_at->modify('+'. $tariff->days .' days');
+            $now = new DateTimeImmutable();
 
-//            $user->setExpiredAt($expired_at);
-            $user->tariff_id = $tariff->id;
-            $user->expired_at = $expired_at;
+            $start_date = $user->expiredDays()
+                ? new DateTimeImmutable($user->expired_at)
+                : $now;
+
+            $user->setExpiredAt($start_date->modify(
+                sprintf('+ %d days', $tariff->days)
+            ));
+
             $user->save();
-        } else {
-            $expired_at = new DateTimeImmutable('+' . $tariff->days .' days');
 
+            Log::info(
+                sprintf(
+                    "Обновлена подписка пользователю %d, предыдущая подписка: тариф \"%s\" до %s, изменена на \"%s\" до %s",
+                    $user->getKey(),
+                    $user->tariff->name,
+                    $start_date->format('j F Y'),
+                    $tariff->name,
+                    $user->expired_at->format('j F Y')
+                )
+            );
+        } else {
+            /* Новый пользователь */
             $user = UserRepository::create(
                 'User ' . (User::count() + 1),
                 $data['user_email'],
                 Str::random(8),
                 $tariff->id,
                 User::ROLE_USER,
-                $expired_at
+                (new DateTimeImmutable())->modify(sprintf('+ %d days', $tariff->days))
+            );
+
+            Log::info(
+                sprintf(
+                    "Зарегистрирован новый пользователь ID %d. Текущий тариф \"%s\" до %s.",
+                    $user->getKey(),
+                    $tariff->name,
+                    $user->expired_at->format('j F Y')
+                )
             );
         }
 
-        return [
-            'ok' => true,
-            'data' => $user
-        ];
+        return $this->ok('Webhook success', $user);
     }
 }

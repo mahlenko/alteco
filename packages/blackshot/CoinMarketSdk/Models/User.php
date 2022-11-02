@@ -123,7 +123,6 @@ class User extends Authenticatable
         return $this;
     }
 
-
     /**
      * @param Coin $coin
      * @return bool
@@ -220,6 +219,11 @@ class User extends Authenticatable
         $this->expired_at = null;
     }
 
+    public function isSubscribe()
+    {
+        return !$this->checkExpiredAt(new DateTimeImmutable());
+    }
+
     /**
      * @param DateTimeImmutable $date
      * @return bool
@@ -227,7 +231,7 @@ class User extends Authenticatable
      */
     public function checkExpiredAt(DateTimeImmutable $date): bool
     {
-        if ($this->role === self::ROLE_ADMIN) {
+        if ($this->isAdmin()) {
             return false;
         }
 

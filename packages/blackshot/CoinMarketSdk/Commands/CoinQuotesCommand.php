@@ -29,12 +29,13 @@ class CoinQuotesCommand extends Command
     public function handle(): int
     {
         $this->info($this->description);
-
         /*
          | Максимальное количество монет за 1 запрос 100 штук
          | Ограничение API.
         */
-        CoinRepository::handle()->chunk(100)->each(function($chunk) {
+        $coins = CoinRepository::handle();
+
+        $coins->chunk(100)->each(function($chunk) {
             /* @var Collection $chunk */
             $method = new Latest(['id' => $chunk->pluck('id')->join(',')]);
 
@@ -48,6 +49,7 @@ class CoinQuotesCommand extends Command
             $result = self::store($chunk, $response->data);
 
             $this->table(array_keys($result[0]), $result);
+            return self::SUCCESS;
         });
 
         $this->call('blackshot:coin:ratio');

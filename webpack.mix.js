@@ -11,8 +11,10 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/app.js', 'public/js')
-    // .sass('resources/scss/app.scss', 'public/css')
-    .sass('resources/source/src/sass/main.sass', 'public/css')
-    .sass('resources/source/src/sass/global/dialog.sass', 'public/css')
-    .version();
+mix
+  .js('resources/js/app.js', 'public/js')
+  .js('packages/blackshot/CoinMarketSdk/Portfolio/charts.js', 'public/js/portfolio-charts.js')
+  .sass('resources/scss/app.scss', 'public/css')
+  .sass('resources/source/src/sass/main.sass', 'public/css')
+  .sass('resources/source/src/sass/global/dialog.sass', 'public/css')
+  .version()

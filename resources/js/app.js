@@ -4,10 +4,13 @@ require('bootstrap/js/dist/dropdown')
 import * as am5 from "@amcharts/amcharts5";
 import * as am5xy from "@amcharts/amcharts5/xy";
 import animated from "@amcharts/amcharts5/themes/Animated";
+import IMask from 'imask';
 
 document.addEventListener("DOMContentLoaded", function (event) {
   // диалоговые окна
   Dialog.registerShortcut()
+
+  Modal.register(document.querySelectorAll('[data-modal]'))
 
   // графики
   let graphs = document.querySelectorAll('[data-graph-json]')
@@ -41,52 +44,52 @@ document.addEventListener("DOMContentLoaded", function (event) {
     })
   }
 
-  $('select[multiple]').selectize({
-    render: {
-      option: function (item, escape) {
-        // кнопка подписаться в выпадающем списке
-        if (item.value === 'subscribe') {
-          return '<a href="' + item.url + '" class="subscribe">' + item.text + '</a>';
-        }
+  if ($('select[multiple]').length) {
+    $('select[multiple]').selectize({
+      render: {
+        option: function (item, escape) {
+          // кнопка подписаться в выпадающем списке
+          if (item.value === 'subscribe') {
+            return '<a href="' + item.url + '" class="subscribe">' + item.text + '</a>';
+          }
 
-        return '<div data-value="' + item.value + '" class="option">' + escape(item.text) + '</div>';
+          return '<div data-value="' + item.value + '" class="option">' + escape(item.text) + '</div>';
+        },
       },
-    },
 
-    onItemAdd: function (value) {
-      if (value !== 'subscribe') {
-        return
-      }
-
-      // убираем из выбранных элементов subscribe
-      let values = []
-      let currentValues = this.getValue()
-      let subscribeIndex = currentValues.indexOf('subscribe')
-
-      if (subscribeIndex !== -1) {
-        if (currentValues.length > 0) {
-          currentValues.forEach((val, index) => {
-            if (subscribeIndex !== index) {
-              values.push(val)
-            }
-          })
-          this.setValue(values, true)
+      onItemAdd: function (value) {
+        if (value !== 'subscribe') {
+          return
         }
-      }
 
-      this.close()
-      this.refreshOptions()
+        // убираем из выбранных элементов subscribe
+        let values = []
+        let currentValues = this.getValue()
+        let subscribeIndex = currentValues.indexOf('subscribe')
 
-      // перенаправляем пользователя по ссылке subscribe
-      let subscribeLink = this.$dropdown[0].querySelector('.subscribe')
-      document.location.href = subscribeLink.href
+        if (subscribeIndex !== -1) {
+          if (currentValues.length > 0) {
+            currentValues.forEach((val, index) => {
+              if (subscribeIndex !== index) {
+                values.push(val)
+              }
+            })
+            this.setValue(values, true)
+          }
+        }
 
-      // очищаем весь список
-      // clearOptions(true)
+        this.close()
+        this.refreshOptions()
 
-      return
-    },
-  });
+        // перенаправляем пользователя по ссылке subscribe
+        let subscribeLink = this.$dropdown[0].querySelector('.subscribe')
+        document.location.href = subscribeLink.href
+
+        // очищаем весь список
+        // clearOptions(true)
+      },
+    });
+  }
 
   // очистка выбранных элементов выпадающего списка
   document.querySelectorAll('[data-clear-for]').forEach(button => {
@@ -105,6 +108,253 @@ document.addEventListener("DOMContentLoaded", function (event) {
   numberAnimation(document.querySelectorAll('[data-counter-step]'))
 
 });
+
+const Modal = {
+  register: items => {
+    if (!items || !items.length) return true
+
+    // Предварительно загрузим лоадер, /css/arcticmodal/loading.gif
+    let loader = document.createElement('img')
+    loader.src = '/css/arcticmodal/loading.gif'
+
+    // Клики для открытия модальных окон
+    items.forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault()
+
+        $.arcticmodal({
+          type: 'ajax',
+          url: item.dataset.modal == "" ? item.href : item.dataset.modal,
+          openEffect: {speed: 200},
+          closeEffect: {speed: 200},
+          afterLoadingOnShow: (data, el) => {
+            Modal.loaded($('div.box-modal'))
+          },
+          ajax: {
+            type: 'GET',
+          },
+          overlay: {
+            css: {
+              backgroundColor: 'rgba(10,30,66,.4)',
+              opacity: 1
+            }
+          }
+        });
+      })
+    })
+  },
+
+  errorMessage: (container, response) => {
+    let $container = container.find('[data-id="message"]')
+    if (!$container.length) {
+      return false;
+    }
+
+    let message = []
+
+    if (response.message) {
+      message.push('<p><b>'+ response.message +'</b></p>')
+    }
+
+    if (response.errors) {
+      message.push('<ul>')
+      Object.keys(response.errors).forEach(field => {
+        message.push('<li>'+ response.errors[field].join(',') +'</li>')
+      })
+      message.push('</ul>')
+    }
+
+    $container.html(message.join("\n"))
+    $container.slideDown(200)
+
+    // setTimeout(() => {
+    //   $container.slideUp(200)
+    //   $container.html('')
+    // }, 5000)
+  },
+
+  loaded: $container => {
+    Modal.handleForms($container)
+
+    let container = $container[0]
+    let selectorSelectize = 'select[data-ui="selectize"]'
+
+    // dropdowns
+    if (container.querySelectorAll(selectorSelectize).length) {
+      container.querySelectorAll(selectorSelectize).forEach(select => {
+        // get options
+        let options = []
+        select.querySelectorAll('option').forEach(option => {
+          let dataOption = {
+            text: option.dataset.text ?? option.textContent.trim(),
+            value: option.value,
+            disabled: option.disabled,
+            data: option.dataset,
+          }
+          if (option.dataset.order) {
+            dataOption.order = option.dataset.order
+          }
+
+          options.push(dataOption)
+        })
+
+        $(select).selectize({
+          options: options,
+          sortField: options ? (options[0].order ? 'order' : '$order') : '$order',
+          render: {
+            item: function (item, escape) {
+              let icon = ''
+              if (item.data.icon) {
+                icon = '<span class="icon-wrap">' +
+                  '<img src="'+ item.data.icon +'" class="icon" alt="'+ item.text +'"/>' +
+                  '</span>'
+              }
+
+              return '<div class="selected">'+ icon + '<span class="caption">'+ item.text +'</span>' +'</div>';
+            },
+            option: (item, escape) => {
+              let icon = '<span class="icon-wrap"></span>'
+              if (item.data.icon) {
+                icon = '<span class="icon-wrap">' +
+                  '<img src="'+ item.data.icon +'" class="icon" alt="'+ item.text +'"/>' +
+                  '</span>'
+              }
+
+              return '<div class="brand__option">'+ icon + '<span class="caption">'+ item.text +'</span>' +'</div>'
+            }
+          }
+        })
+
+      })
+    }
+
+    // numbers imask
+    if (container.querySelectorAll('input[data-type="number"]')) {
+      container.querySelectorAll('input[data-type="number"]').forEach(input => {
+        let mask = IMask(input, {
+          mask: Number,
+          scale: 8,
+          signed: true,
+        });
+
+        input.addEventListener('updateMask', () => {
+          mask.value = input.value
+        })
+      })
+    }
+
+    // price
+    if (container.querySelectorAll('input[data-type="price"]')) {
+      container.querySelectorAll('input[data-type="price"]').forEach(input => {
+        let mask = IMask(input, {
+          mask: '$num',
+          blocks: {
+            num: {
+              // nested masks are available!
+              mask: Number,
+              scale: 8,
+              signed: true,
+              thousandsSeparator: ' '
+            }
+          }
+        })
+
+        input.addEventListener('updateMask', () => {
+          mask.value = input.value
+        })
+      })
+    }
+
+    if (container.querySelectorAll('input[data-type="datepicker"]')) {
+      container.querySelectorAll('input[data-type="datepicker"]').forEach(input => {
+        singleDatepicker(input) // function by app.blade.php
+      })
+    }
+  },
+
+  formData: form => {
+    let data = {}
+    $(form).serializeArray().forEach(item => {
+      let inputs = form.querySelectorAll('[name="'+ item.name +'"]')
+
+      if (inputs.length > 1 && inputs[0].type !== 'radio') {
+        if (!data[item.name]) {
+          data[item.name] = []
+        }
+
+        let field = inputs.querySelector('[value="' + item.value + '"]')
+
+        data[item.name].push(Modal.castsFormField(field, item.value))
+      } else {
+        data[item.name] = Modal.castsFormField(inputs[0], item.value)
+      }
+    })
+
+    return data
+  },
+
+  castsFormField: (input, value) => {
+    if (input.dataset.cast) {
+      switch (input.dataset.cast) {
+        case 'integer':
+        case 'number':
+          value = value.replace(/[^0-9,.]/g, '')
+          if (!value) return null
+          return parseInt(value) ?? null
+          break
+        case 'float':
+        case 'double':
+          value = value.replace(/[^0-9,.]/g, '').replace(',', '.')
+          if (!value) return null
+          return parseFloat(value) ?? null
+          break
+        default:
+          return value
+          break
+      }
+    }
+
+    return value
+  },
+
+  handleForms: container => {
+    // Поставим фокус в конец строки, для input[autofocus]
+    let focus = container[0].querySelector('[autofocus]')
+    if (focus && focus.value.length) focus.selectionStart = focus.value.length;
+
+    // Отправка формы
+    let forms = container[0].querySelectorAll('form')
+    forms.forEach(form => {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault()
+
+        axios.post(form.action, Modal.formData(form))
+          .then(response => {
+            if (response.data.ok) {
+              if (response.data.data.url) {
+                window.location.href = response.data.data.url
+                return true
+              }
+
+              if (typeof formSuccessHandle !== 'undefined') {
+                formSuccessHandle(response.data.data)
+              } else {
+                window.location.reload()
+              }
+
+            } else {
+              return Modal.errorMessage(container, response.data)
+            }
+          })
+          .catch(error => {
+            console.log(error)
+            return Modal.errorMessage(container, error.response.data)
+          })
+
+      })
+    })
+  }
+};
 
 /**
  *
@@ -353,7 +603,7 @@ function stepsProgress(elements) {
   })
 }
 
-function numberAnimation(elements)
+window.numberAnimation = elements =>
 {
   elements.forEach(item => {
     let steps = item.dataset.counterStep

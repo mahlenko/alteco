@@ -3,7 +3,6 @@
 namespace Blackshot\CoinMarketSdk\Middleware;
 
 use Closure;
-use DateTimeImmutable;
 use Illuminate\Http\Request;
 
 class Subscribe
@@ -17,7 +16,7 @@ class Subscribe
      */
     public function handle(Request $request, Closure $next)
     {
-        if ($request->user()->checkExpiredAt(new DateTimeImmutable())) {
+        if (!$request->user()->isSubscribe()) {
             abort(503, 'Продлите подписку, чтобы продолжить использовать Криптосканер.');
         }
 

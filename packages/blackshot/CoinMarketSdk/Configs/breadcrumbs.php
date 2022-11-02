@@ -52,6 +52,12 @@ Breadcrumbs::for('banners.home', function ($trail, $data = []) {
     $trail->push('Баннеры', route('banners.home'));
 });
 
+// Home > Portfolio
+Breadcrumbs::for('portfolio', function ($trail, $data = []) {
+    $trail->parent('home');
+    $trail->push('Портфолио', route('portfolio.home'));
+});
+
 Breadcrumbs::for('banners.edit', function ($trail, $data = []) {
 
     if (key_exists('breadcrumb_data', $data) && $data['breadcrumb_data']) {

@@ -39,7 +39,7 @@ class Index extends Controller
     {
         $user = Auth::check() ? Auth::user() : null;
 
-        if (!$user || $user->tariff->isFree()) {
+        if (!$user || !$user->isSubscribe()) {
             abort(503, 'Сигналы недоступны для вашего тарифа. Улучшите тариф, чтобы иметь к ней доступ.');
         }
 

@@ -34,8 +34,10 @@ class TransactionCreateAction
         }
 
         if (floatval($data['fee']) < 0) {
-            throw new TransactionException('Плата должна быть больше 0.');
+            throw new TransactionException('Плата должна быть больше или равна 0.');
         }
+
+        if (!isset($data['fee'])) $data['fee'] = 0;
 
         return $portfolio->transactions()->create(array_merge($data, [
             'user_id' => $user->getKey(),

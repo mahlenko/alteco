@@ -14,7 +14,7 @@ class NumberHelper
 
         return strpos($result, '.')
             ? $result
-            : number_format($number, 2, $decimal_separator, $thousands_separator);
+            : number_format($number, 0, $decimal_separator, $thousands_separator);
     }
 
     public static function decimals(float $number = null): int

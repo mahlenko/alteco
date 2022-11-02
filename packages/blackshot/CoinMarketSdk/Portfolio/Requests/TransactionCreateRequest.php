@@ -9,6 +9,7 @@ use Blackshot\CoinMarketSdk\Portfolio\Enums\TransferTypeEnum;
 use Blackshot\CoinMarketSdk\Portfolio\Models\Portfolio;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 
 class TransactionCreateRequest extends FormRequest
 {
@@ -37,15 +38,8 @@ class TransactionCreateRequest extends FormRequest
             'quantity' => ['required', 'numeric', 'min:0'],
             'fee' => ['nullable','numeric', 'min:0'],
             'date_at' => ['date'],
-            'type' => ['required', Rule::in([
-                TransactionTypeEnum::Buy->name,
-                TransactionTypeEnum::Sell->name,
-                TransactionTypeEnum::Transfer->name,
-            ])],
-            'transfer_type' => ['nullable', Rule::in([
-                TransferTypeEnum::In->name,
-                TransferTypeEnum::Out->name
-            ])]
+            'type' => ['required', new Enum(TransactionTypeEnum::class)],
+            'transfer_type' => ['nullable', new Enum(TransferTypeEnum::class)],
         ];
     }
 }

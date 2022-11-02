@@ -2,8 +2,6 @@
 
 namespace Blackshot\CoinMarketSdk\Commands;
 
-use Blackshot\CoinMarketSdk\Models\Signal;
-use DateTimeImmutable;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;

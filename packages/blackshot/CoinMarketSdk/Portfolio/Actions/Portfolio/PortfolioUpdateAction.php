@@ -17,7 +17,7 @@ class PortfolioUpdateAction
      */
     public static function handle(User $user, Portfolio $portfolio, array $data): Portfolio
     {
-        if ($user->getKey() !== $portfolio->user_id && !$user->isAdmin()) {
+        if ($user->getKey() != $portfolio->user_id && !$user->isAdmin()) {
             throw new PortfolioException('Вы не можете изменить портфель для пользователя.');
         }
 

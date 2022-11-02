@@ -50,7 +50,9 @@ class Transaction extends Model
     public function totalWithFee(): Attribute
     {
         return Attribute::get(function() {
-            return $this->total - $this->fee;
+            return $this->total < 0
+                ? $this->total - $this->fee
+                : $this->total + $this->fee;
         });
     }
 

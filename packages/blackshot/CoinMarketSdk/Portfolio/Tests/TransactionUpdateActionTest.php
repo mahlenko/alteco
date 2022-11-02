@@ -61,7 +61,7 @@ class TransactionUpdateActionTest extends TestCase
         ]);
 
         $this->assertDatabaseCount(Transaction::class, 1);
-        $this->assertGreaterThan(0, $transaction->quantity);
+        $this->assertGreaterThan(0.0, $transaction->quantity);
         $this->assertEquals(TransactionTypeEnum::Transfer, $transaction->type);
         $this->assertEquals(TransferTypeEnum::In, $transaction->transfer_type);
     }
