@@ -100,7 +100,7 @@ class ParseCrixCommand extends Command
     {
         if (empty($string)) return null;
 
-        $string_rows = explode(PHP_EOL, $string);
+        $string_rows = explode("\n", $string);
         $data = null;
 
         // поиск строки с данными
@@ -119,11 +119,11 @@ class ParseCrixCommand extends Command
         $result = [];
         if ($data) {
             $data = trim(rtrim(
-                Str::replace('],[', ']'.PHP_EOL.'[', $data),
+                Str::replace('],[', ']'."\n".'[', $data),
                 ']'
             ));
 
-            foreach (explode(PHP_EOL, $data) as $row) {
+            foreach (explode("\n", $data) as $row) {
                 // чистим "массив" от скобок
                 $row = Str::replace(['[', ']'], '', $row);
 

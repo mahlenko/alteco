@@ -29,11 +29,13 @@ class PortfolioController extends Controller
 
         // Изменение за 24 часа
         // todo: сделать в портфеле эту функцию
-        $changePrice24Data = $portfolio->items()->chartData(PeriodEnum::hours24);
-        if ($changePrice24Data) {
-            $changePrice24 = $changePrice24Data->last()['value'] - $changePrice24Data->first()['value'];
-        } else $changePrice24 = 0;
-
+        $changePrice24 = 0;
+        if($portfolio) {
+            $changePrice24Data = $portfolio->items()->chartData(PeriodEnum::hours24, CurrencyEnum::USD);
+            if ($changePrice24Data && $changePrice24Data->count()) {
+                $changePrice24 = $changePrice24Data->last()['value'] - $changePrice24Data->first()['value'];
+            }
+        }
         return view('portfolio::layout', [
             'portfolio' => $portfolio,
             'portfolios' => $portfolios,

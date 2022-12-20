@@ -9,7 +9,7 @@
             </h1>
 
             <div class="settings__box d-flex" style="margin-top: 2rem;">
-                @if (\Illuminate\Support\Facades\Auth::id() == $user->id)
+                @if (isset($user) && \Illuminate\Support\Facades\Auth::id() == $user->id)
                     <div class="settings__acc">
                         <div class="settings__person">
                             <img src="https://www.gravatar.com/avatar/{{ md5($user->email.'?s=60&d=identicon') }}"
