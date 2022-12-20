@@ -5,7 +5,9 @@ namespace Blackshot\CoinMarketSdk\Portfolio\Controllers;
 use Auth;
 use Blackshot\CoinMarketSdk\Controller;
 use Blackshot\CoinMarketSdk\Portfolio\Controllers\api\ApiChartsController;
+use Blackshot\CoinMarketSdk\Portfolio\Enums\CurrencyEnum;
 use Blackshot\CoinMarketSdk\Portfolio\Enums\PeriodEnum;
+use Blackshot\CoinMarketSdk\Portfolio\Models\Portfolio;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
@@ -16,6 +18,7 @@ class PortfolioController extends Controller
     {
         $portfolios = Auth::user()->portfolios;
 
+        /* @var Portfolio $portfolio */
         if (isset($portfolio_id) && $portfolio_id) {
             if ($portfolio_id == $portfolios->first()->getKey()) {
                 return redirect()->route('portfolio.home');

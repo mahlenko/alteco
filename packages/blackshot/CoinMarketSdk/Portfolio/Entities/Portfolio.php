@@ -5,6 +5,7 @@ namespace Blackshot\CoinMarketSdk\Portfolio\Entities;
 use Blackshot\CoinMarketSdk\Models\Coin;
 use Blackshot\CoinMarketSdk\Portfolio\Actions\Portfolio\CoinPriceStatisticAction;
 use Blackshot\CoinMarketSdk\Portfolio\Enums\PeriodEnum;
+use Blackshot\CoinMarketSdk\Portfolio\Enums\CurrencyEnum;
 use Blackshot\CoinMarketSdk\Portfolio\Exceptions\PortfolioException;
 use Blackshot\CoinMarketSdk\Portfolio\Models\Transaction;
 use DateTimeImmutable;
@@ -112,32 +113,54 @@ class Portfolio extends Collection
 
     /**
      * @param PeriodEnum $period
+     * @param CurrencyEnum $currency
      * @param bool $groupByDay
      * @return Collection
      * @throws Exception
      */
-    public function chartData(PeriodEnum $period, bool $groupByDay = false): Collection
+    public function chartData(PeriodEnum $period, CurrencyEnum $currency, bool $groupByDay = false): Collection
     {
+        $modifiedDate = match ($period) {
+            PeriodEnum::all => '-5 year',
+            PeriodEnum::days7 => '-7 day',
+            PeriodEnum::days30 => '-30 day',
+            PeriodEnum::days90 => '-90 day',
+            default => '-1 day',
+        };
+
+        $startPeriodDate = new DateTimeImmutable($modifiedDate);
+
+
         $price_changed = collect();
         foreach ($this as $portfolio_item) {
             $first_transaction_date = new DateTimeImmutable(
                 $portfolio_item->transactions->min('date_at')
             );
 
-            $startDate = $this->datePeriod($period, $first_transaction_date);
+            $startDate = $this->datePeriod($startPeriodDate, $first_transaction_date);
 
             $coin_price_change = CoinPriceStatisticAction::handle(
                 $portfolio_item->coin,
                 $startDate);
+
 
             $key = $coin_price_change->first()->first()->coin_uuid;
 
             $price_changed[$key] = $coin_price_change->first();
         }
 
-        if (!$price_changed->count()) {
-            throw new PortfolioException('Недостаточно данных для расчета.');
+
+        if($currency->name != CurrencyEnum::USD->name) {
+
+            $coin = Coin::where('symbol', $currency->name)->first();
+
+            $baseCoinPriceChange = CoinPriceStatisticAction::handle($coin, $startPeriodDate)->first();
+
         }
+
+//        if (!$price_changed->count()) {
+//            throw new PortfolioException('Недостаточно данных для расчета.');
+//        }
 
         $result = [];
         foreach ($price_changed as $uuid => $data) {
@@ -171,6 +194,11 @@ class Portfolio extends Collection
                     ? $firstTransaction->price
                     : $item->price;
 
+                if($currency->name != CurrencyEnum::USD->name && $baseCoinPriceChange->isNotEmpty()){
+                    $baseCoinPrice = $baseCoinPriceChange->firstWhere('DATE', $item->DATE);
+                    $price /= $baseCoinPrice->price;
+                }
+
                 $result[$key]['value'] += $coin_quantity * $price;
             }
         }
@@ -180,21 +208,13 @@ class Portfolio extends Collection
     }
 
     /**
-     * @param PeriodEnum $period
+     * @param DateTimeImmutable $startPeriodDate
      * @param DateTimeImmutable $first_date
      * @return DateTimeImmutable
      * @throws PortfolioException
      */
-    private function datePeriod(PeriodEnum $period, DateTimeImmutable $first_date): DateTimeImmutable
+    private function datePeriod(DateTimeImmutable $startPeriodDate, DateTimeImmutable $first_date): DateTimeImmutable
     {
-        $modifiedDate = match ($period) {
-            PeriodEnum::all => '-5 year',
-            PeriodEnum::days7 => '-7 day',
-            PeriodEnum::days30 => '-30 day',
-            PeriodEnum::days90 => '-90 day',
-            default => '-1 day',
-        };
-
         $min_date_portfolio = Transaction::query()
             ->where('portfolio_id', $this->first()->portfolio_id)
             ->min('date_at');
@@ -203,8 +223,6 @@ class Portfolio extends Collection
             throw new PortfolioException('Добавьте активы в портфель.');
         }
 
-        $start_date = new DateTimeImmutable($modifiedDate);
-
-        return max($start_date, $first_date);
+        return max($startPeriodDate, $first_date);
     }
 }

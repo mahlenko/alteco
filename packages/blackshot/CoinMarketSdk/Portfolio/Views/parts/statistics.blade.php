@@ -43,6 +43,14 @@
             </a>
         </div>
         <div class="case-right__tabs">
+            @foreach(\Blackshot\CoinMarketSdk\Portfolio\Enums\CurrencyEnum::cases() as $case)
+                <a href="#"
+                   onclick="event.preventDefault(); return updateChart(document.querySelector('#chart'), this)"
+                   data-currency="{{ $case->name }}"
+                   class="case-right__link {{ $loop->first ? 'active' : null }}">{{ $case->value }}</a>
+            @endforeach
+        </div>
+        <div class="case-right__tabs">
             @foreach(\Blackshot\CoinMarketSdk\Portfolio\Enums\PeriodEnum::cases() as $case)
                 <a href="#" onclick="event.preventDefault(); return updateChart(document.querySelector('#chart'), this)"
                    data-period="{{ $case->name }}"
@@ -57,15 +65,23 @@
 
 {{--    <div id="chart-pie"></div>--}}
 <div id="chart"
-     data-chart="{{ route('api.portfolio.charts', ['portfolio_id' => $portfolio->getKey(), 'period' => \Blackshot\CoinMarketSdk\Portfolio\Enums\PeriodEnum::hours24->name]) }}"></div>
+     data-chart="{{ route('api.portfolio.charts', [
+    'portfolio_id' => $portfolio->getKey(),
+    'period' => \Blackshot\CoinMarketSdk\Portfolio\Enums\PeriodEnum::hours24->name,
+    'currency' => \Blackshot\CoinMarketSdk\Portfolio\Enums\CurrencyEnum::USD->name,
+    ]) }}"></div>
 
 <script>
     function updateChart(container, el) {
-        let query = '?portfolio_id={{ $portfolio->getKey() }}&period='+ el.dataset.period
-        let url = '{{ route('api.portfolio.charts') }}' + query
-        charts.loadData(container, url)
-
         el.parentNode.querySelector('.active').classList.remove('active')
         el.classList.add('active')
+
+        let query = '?portfolio_id={{ $portfolio->getKey() }}';
+
+        query += '&period=' + document.querySelector('.active[data-period]').dataset.period;
+        query += '&currency=' + document.querySelector('.active[data-currency]').dataset.currency;
+
+        let url = '{{ route('api.portfolio.charts') }}' + query
+        charts.loadData(container, url)
     }
 </script>

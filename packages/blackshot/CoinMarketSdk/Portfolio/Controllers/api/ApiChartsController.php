@@ -5,6 +5,7 @@ namespace Blackshot\CoinMarketSdk\Portfolio\Controllers\api;
 use Blackshot\CoinMarketSdk\Controller;
 use Blackshot\CoinMarketSdk\Helpers\NumberHelper;
 use Blackshot\CoinMarketSdk\Portfolio\Enums\PeriodEnum;
+use Blackshot\CoinMarketSdk\Portfolio\Enums\CurrencyEnum;
 use Blackshot\CoinMarketSdk\Portfolio\Exceptions\PortfolioException;
 use Blackshot\CoinMarketSdk\Portfolio\Models\Portfolio;
 use Illuminate\Http\JsonResponse;
@@ -18,10 +19,15 @@ class ApiChartsController extends Controller
     {
         $data = $request->validate([
             'portfolio_id' => ['required', 'integer', 'min:1'],
-            'period' => ['required']
+            'period' => ['required'],
+            'currency' => ['required']
         ]);
 
         if (!$period = PeriodEnum::byName($data['period'])) {
+            return response()->json();
+        }
+
+        if (!$currency = CurrencyEnum::byName($data['currency'])) {
             return response()->json();
         }
 
@@ -37,7 +43,7 @@ class ApiChartsController extends Controller
 
         try {
             $chart_data = $portfolio
-                ->items()->chartData($period, $groupByDay);
+                ->items()->chartData($period, $currency, $groupByDay);
         } catch (PortfolioException $exception) {
             return $this->fail($exception->getMessage());
         }
